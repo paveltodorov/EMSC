@@ -46,7 +46,7 @@ const pot5 = new Set(["Albania", "Belarus", "Bosnia and Herzegovina", "Bulgaria"
 ]);
 const pot6 = new Set(["Algeria", "Armenia", "Azerbaijan", "Egypt", "Georgia", "Jordan", "Lebanon", "Lybia", "Morocco", "Tunesia" , /* ... */ "Tunisia"]);
 
-let getPot = country => { 
+let getPot = country => {
     if (pot1.has(country)) return 'pot1';
     if (pot2.has(country)) return 'pot2';
     if (pot3.has(country)) return 'pot3';
@@ -57,7 +57,7 @@ let getPot = country => {
     return "unknown";
 }
 
-let getPotDigit = country => { 
+let getPotDigit = country => {
     if (pot1.has(country)) return 1;
     if (pot2.has(country)) return 2;
     if (pot3.has(country)) return 3;
@@ -76,7 +76,7 @@ let stats = xlsx.utils.sheet_to_json(
 );
 
 let countryStatsAccumulator = (acc, curr) => {
-    if (!acc.has(curr.Country)) { 
+    if (!acc.has(curr.Country)) {
         acc.set(curr.Country, {
             pos : 0,
             posMov : "new",
@@ -84,16 +84,16 @@ let countryStatsAccumulator = (acc, curr) => {
             flag: flagNew(curr.Country),
             pot: getPotDigit(curr.Country),
             averageExpPoints : 0,
-            expPoints : 0, 
+            expPoints : 0,
             averagePoints : 0,
-            sumPoints : 0, 
-            editionsPlayed : 0, 
-            editionsQualified : 0, 
+            sumPoints : 0,
+            editionsPlayed : 0,
+            editionsQualified : 0,
             qualificationRate : 0,
-            bestRank : 1000, 
+            bestRank : 1000,
             bestRankMov : "new",
             bestEdition : "",
-            bestHod : "",  
+            bestHod : "",
             bestEntry: "",
             wins : 0,
             second : 0,
@@ -109,32 +109,32 @@ let countryStatsAccumulator = (acc, curr) => {
 
     acc.get(curr.Country).editions[curr.Edition] = { rank : undefined, expPoints : undefined,  accAvgExpPoints : 0, accExpPoints : 0, rankAfterEdition : 0, rankMov: "-", bestRank: "", bestRankMov : ""};
 
-    if (curr['Points Semi'] == 'WITHDRAWN') { 
+    if (curr['Points Semi'] == 'WITHDRAWN') {
         acc.get(curr.Country).editions[curr.Edition].rank = "withdr.";
         acc.get(curr.Country).editions[curr.Edition].expPoints = "withdr.";
-        return acc 
+        return acc
     };
-    if (curr['Place Semi'] == 'DISQUALIFIED' || curr['Place Final'] == 'DISQUALIFIED')  { 
+    if (curr['Place Semi'] == 'DISQUALIFIED' || curr['Place Final'] == 'DISQUALIFIED')  {
         acc.get(curr.Country).editions[curr.Edition].rank = "disq.";
         acc.get(curr.Country).editions[curr.Edition].expPoints = "disq.";
-        return acc 
+        return acc
     };
 
     const qualified = !!curr['Points Final'];
-    const pointsToAdd = qualified ? curr['Points Final'] : curr['Points Semi'] / 2;   
+    const pointsToAdd = qualified ? curr['Points Final'] : curr['Points Semi'] / 2;
     acc.get(curr.Country).sumPoints += pointsToAdd;
     acc.get(curr.Country).editionsPlayed += 1;
-    if (qualified) acc.get(curr.Country).editionsQualified += 1;  
+    if (qualified) acc.get(curr.Country).editionsQualified += 1;
 
     const rank = curr['Place Final'] ? curr['Place Final'] : curr['Place Semi'] - 12 + 25;
-    if (rank == 1) acc.get(curr.Country).wins += 1; 
-    if (rank == 2) acc.get(curr.Country).second += 1; 
-    if (rank == 3) acc.get(curr.Country).third += 1; 
+    if (rank == 1) acc.get(curr.Country).wins += 1;
+    if (rank == 2) acc.get(curr.Country).second += 1;
+    if (rank == 3) acc.get(curr.Country).third += 1;
     if (rank <= 3) acc.get(curr.Country).top3 += 1;
     if (rank <= 5) acc.get(curr.Country).top5 += 1;
     if (rank <= 10) acc.get(curr.Country).top10 += 1;
-    if (rank <= 15) acc.get(curr.Country).top15 += 1;  
-    if (rank <= 20) acc.get(curr.Country).top20 += 1;  
+    if (rank <= 15) acc.get(curr.Country).top15 += 1;
+    if (rank <= 20) acc.get(curr.Country).top20 += 1;
 
     const expPoints = exponentRankPoints(rank);
     acc.get(curr.Country).expPoints += exponentRankPoints(rank);
@@ -153,38 +153,38 @@ let countryStatsAccumulator = (acc, curr) => {
 
     acc.get(curr.Country).editions[curr.Edition].rank = rank;
     acc.get(curr.Country).editions[curr.Edition].expPoints = expPoints;
-    
+
     return acc;
 }
 
 let countryStatsSorter = (x,y) => {
     let diff = y[1].averageExpPoints - x[1].averageExpPoints;
-    // console.log("diff " + diff); 
+    // console.log("diff " + diff);
     if (diff > 0.001 || diff < -0.001) return diff;
 
-    // console.log("Tie breaker rule: sum of expPoints " + y[1].expPoints);    
+    // console.log("Tie breaker rule: sum of expPoints " + y[1].expPoints);
     diff = y[1].expPoints - x[1].expPoints;
-    // console.log("diff " + diff); 
+    // console.log("diff " + diff);
     if (diff > 0.001 || diff < -0.001) return diff;
 
     diff = y[1].averagePoints - x[1].averagePoints;
-    // console.log("diff " + diff); 
+    // console.log("diff " + diff);
     if (diff > 0.001 || diff < -0.001) return diff;
 
     // console.log("Tie breaker rule: sum points " +  x[1].sumPoints);
     diff = y[1].sumPoints - x[1].sumPoints;
-    // console.log("diff " + diff); 
+    // console.log("diff " + diff);
     if (diff > 0.001 || diff < -0.001) return diff;
 
     // console.log("Tie breaker rule: pot " + x[1].country + " " + y[1].country);
     diff = getPotDigit(y[1].country) - getPotDigit(x[1].country);
-    // console.log("diff " + diff); 
+    // console.log("diff " + diff);
 
     if (diff > 0.001 || diff < -0.001) return diff;
 
     // console.log("Tie breaker rule: alphabetical order");
     diff = (x[1].country).localeCompare(y[1].country);
-    // console.log("diff " + diff); 
+    // console.log("diff " + diff);
     if (diff > 0.001 || diff < -0.001) return diff;
 }
 
@@ -193,18 +193,18 @@ let countryStatsSorter = (x,y) => {
 let calculateCountryRanking = (from, to, compareToPrev) => {
     let countryRanking = new Map();
     for (let edition = from; edition <= to; edition++) {
-        countryRanking = stats.filter(x => x.Edition == edition).reduce(countryStatsAccumulator, countryRanking); 
+        countryRanking = stats.filter(x => x.Edition == edition).reduce(countryStatsAccumulator, countryRanking);
 
         countryRanking.forEach((info, coutry) => {
             info.averagePoints = info.sumPoints / info.editionsPlayed;
-            info.averageExpPoints = info.expPoints / info.editionsPlayed; 
+            info.averageExpPoints = info.expPoints / info.editionsPlayed;
             info.qualificationRate = info.editionsQualified / info.editionsPlayed;
         });
 
         countryRanking = new Map([...countryRanking.entries()]
             .sort(countryStatsSorter)
-            .map((x, pos) => { 
-                if (!x[1].editions[edition]) x[1].editions[edition] =  { rank : undefined, expPoints : undefined,  accAvgExpPoints : 0, accExpPoints : 0, rankAfterEdition : 0, rankMov: "-", bestRank: "", bestRankMov : ""}; 
+            .map((x, pos) => {
+                if (!x[1].editions[edition]) x[1].editions[edition] =  { rank : undefined, expPoints : undefined,  accAvgExpPoints : 0, accExpPoints : 0, rankAfterEdition : 0, rankMov: "-", bestRank: "", bestRankMov : ""};
                 x[1].editions[edition].accAvgExpPoints = x[1].averageExpPoints;
                 x[1].editions[edition].accExpPoints = x[1].expPoints;
 
@@ -228,7 +228,7 @@ let calculateCountryRanking = (from, to, compareToPrev) => {
     }
 
     let countryRankingList = [...countryRanking.entries()]
-        .map((x, pos) => { 
+        .map((x, pos) => {
           let entry = x[1];
 
           let lastEditionStats = x[1].editions[to];
@@ -237,21 +237,21 @@ let calculateCountryRanking = (from, to, compareToPrev) => {
           entry.bestRankMov = lastEditionStats.bestRankMov;
 
           entry.bestRank = pretifyPosition(entry.bestRank);
-          entry.editions.map((x,i) => { 
+          entry.editions.map((x,i) => {
             entry[i + " rank"] = !Number.isInteger(x.rank) ? x.rank : pretifyPosition(x.rank);
-            entry[i + " expPoints"] = x.expPoints; 
-            entry[i + " accAvgExpPoints"] = x.accAvgExpPoints; 
-            entry[i + " accExpPoints"] = x.accExpPoints; 
-            entry[i + " rankAfterEdition"] = x.rankAfterEdition; 
-            entry[i + " rankMov"] = x.rankMov; 
+            entry[i + " expPoints"] = x.expPoints;
+            entry[i + " accAvgExpPoints"] = x.accAvgExpPoints;
+            entry[i + " accExpPoints"] = x.accExpPoints;
+            entry[i + " rankAfterEdition"] = x.rankAfterEdition;
+            entry[i + " rankMov"] = x.rankMov;
             entry[i + " bestRank"] = pretifyPosition(x.bestRank);
-            entry[i + " bestRankMov"] = x.bestRankMov;     
+            entry[i + " bestRankMov"] = x.bestRankMov;
           });
           return x[1];
       });
-    // console.log(countryRanking);    
+    // console.log(countryRanking);
 
-    // set column names    
+    // set column names
     const countryTableKeys = [
     { label: 'Pos.', value: 'pos' },
     { label: 'Pos. Mov.', value: 'posMov' },
@@ -284,22 +284,22 @@ let calculateCountryRanking = (from, to, compareToPrev) => {
         countryTableKeys.push({ label: 'Avg. Exp. Pts. aft. E'+ i , value: i + ' accAvgExpPoints', format: "#,##0.00"});
         countryTableKeys.push({ label: 'C. Pos. aft. E'       + i   , value: i + ' rankAfterEdition'});
         countryTableKeys.push({ label: 'C. Pos. Mov. aft. E'  + i   , value: i + ' rankMov'});
-        countryTableKeys.push({ label: 'Rank impr. af. E'    + i   , value: i + ' bestRankMov'}); 
+        countryTableKeys.push({ label: 'Rank impr. af. E'    + i   , value: i + ' bestRankMov'});
          // countryTableKeys.push({ label: 'Exp. Pts. after Ed. ' + i         , value: i + ' accExpPoints', format: "#,##0.00"});
         // countryTableKeys.push({ label: 'Best Rank after Ed. ' + i         , value: i + ' bestRank'});
     }
 
     return {ranking: countryRankingList, keys: countryTableKeys};
 };
-// console.log(countryRankingList); 
+// console.log(countryRankingList);
 
-// let sotredByExpPoints = 
+// let sotredByExpPoints =
 //   [...countryRanking.entries()].sort((x,y) => y[1].averageExpPoints - x[1].averageExpPoints).map(x => [x[0], x[1].averageExpPoints]);
-// // console.log(sotredByExpPoints);  
+// // console.log(sotredByExpPoints);
 
 // let sotredByPoints =
 //   [...countryRanking.entries()].sort((x,y) => y[1].averagePoints - x[1].averagePoints).map(x => [x[0], x[1].averagePoints]);
-// console.log(sotredByPoints);  
+// console.log(sotredByPoints);
 
 // pot ranking
 
@@ -310,9 +310,9 @@ let calculateCountryRanking = (from, to, compareToPrev) => {
 // output sheet
 // Old way of calculating the keys
 // const countryTableKeys = Object.keys(countryRankingList[2]).map(x => {
-//     let obj = {}; 
+//     let obj = {};
 //     obj.label = x;
-//     obj.value = x; 
+//     obj.value = x;
 //     return obj;
 // });
 
@@ -324,16 +324,16 @@ function calculatePotRanking(countryStats) {
     let potRanking = [...countryStats.entries()].reduce((acc, curr) => {
         const cur = curr[1];
         const currPot = cur.pot;
-        if (!acc.has(currPot)) acc.set(currPot, { 
-            pot: currPot, 
-            countriesParticipated : 0, 
+        if (!acc.has(currPot)) acc.set(currPot, {
+            pot: currPot,
+            countriesParticipated : 0,
             avgExpPointsOfParticipations : 0,
             avgExpPointsOfCountries: 0,
-            expPoints: 0, 
+            expPoints: 0,
             avgPointsOfParticipations : 0,
-            avgPointsOfCountries: 0, 
-            sumPoints: 0, 
-            editionsPlayed: 0, 
+            avgPointsOfCountries: 0,
+            sumPoints: 0,
+            editionsPlayed: 0,
             editionsQualified : 0,
             qualifRateOfParticipation : 0,
             qualifRateOfCountries : 0,
@@ -356,14 +356,14 @@ function calculatePotRanking(countryStats) {
         acc.get(currPot).avgExpPointsOfCountries += cur.averageExpPoints;
         acc.get(currPot).qualifRateOfCountries += cur.qualificationRate;
 
-        acc.get(currPot).wins += cur.wins; 
-        acc.get(currPot).second += cur.second; 
-        acc.get(currPot).third += cur.third; 
+        acc.get(currPot).wins += cur.wins;
+        acc.get(currPot).second += cur.second;
+        acc.get(currPot).third += cur.third;
         acc.get(currPot).top3 += cur.top3;
         acc.get(currPot).top5 += cur.top5;
         acc.get(currPot).top10 += cur.top10;
-        acc.get(currPot).top15 += cur.top15;  
-        acc.get(currPot).top20 += cur.top20;    
+        acc.get(currPot).top15 += cur.top15;
+        acc.get(currPot).top20 += cur.top20;
 
         return acc;
     }, new Map());
@@ -379,14 +379,14 @@ function calculatePotRanking(countryStats) {
     });
 
     let potRankingList = [...potRanking.entries()]
-        .sort((x,y) => y[1].avgExpPointsOfParticipations - x[1].avgExpPointsOfParticipations) 
+        .sort((x,y) => y[1].avgExpPointsOfParticipations - x[1].avgExpPointsOfParticipations)
         .map(x => x[1]);
 
     const potTableKeys = Object.keys(potRankingList[0]).map(x => {
-      let obj = {}; 
-      obj.label = x.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-      obj.value = x; 
-      return obj;
+        let obj = {};
+        obj.label = x.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+        obj.value = x;
+        return obj;
     });
 
     console.log(potRankingList);
@@ -442,7 +442,7 @@ let data = [
   // },
 ];
 // console.log(data);
- 
+
 let settings = {
   fileName: "CountryRankingAfterE14", // Name of the resulting spreadsheet
   extraLength: 1, // A bigger number means that columns will be wider
@@ -450,14 +450,14 @@ let settings = {
   writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
   RTL: false, // Display the columns from right-to-left (the default value is false)
 }
- 
-jsonToTable(data, settings) 
+
+jsonToTable(data, settings)
 
 // console.log(countryRanking);
 
 // let countryRanking = stats.reduce((acc, curr) => {
 //     if (curr['Points Semi'] == 'WITHDRAWN') return acc;
-//     if (curr['Place Semi'] == 'DISQUALIFIED' || curr['Place Final'] == 'DISQUALIFIED') return acc; 
+//     if (curr['Place Semi'] == 'DISQUALIFIED' || curr['Place Final'] == 'DISQUALIFIED') return acc;
 
 //     acc[curr.Country] = acc[curr.Country] ? acc[curr.Country] : {sumPoints : 0, editionsPlayed : 0, expPoints : 0};
 
@@ -468,11 +468,11 @@ jsonToTable(data, settings)
 //     const rank = curr['Place Final'] ? curr['Place Final'] : curr['Place Semi'] - 12 + 25;
 //     acc[curr.Country].expPoints += exponentRankPoints(rank);
 //     return acc;
-// }, {}); 
+// }, {});
 
 // for (country in countryRanking) {
 //     countryRanking[country].averagePoints = countryRanking[country].sumPoints / countryRanking[country].editionsPlayed;
-//     countryRanking[country].averageExpPoints = countryRanking[country].expPoints / countryRanking[country].editionsPlayed;  
+//     countryRanking[country].averageExpPoints = countryRanking[country].expPoints / countryRanking[country].editionsPlayed;
 // }
 
 // console.log(countryRanking);
