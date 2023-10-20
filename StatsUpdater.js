@@ -12,15 +12,23 @@ const {name} = require('country-emoji');
 
 let countryName = (abbr) => {
     if (abbr == 'uk') return 'United Kingdom';
-    if (abbr == 'mr') return "Marocco";
+    if (abbr == 'mr') return "Morocco";
     if (abbr == 'ru') return "Russia";
     if (abbr == 'tr') return "Türkiye";
     if (abbr == 'gg') return "Georgia";
+    if (abbr == 'md') return "Moldova";
     return name(abbr);
 }
 
 let getServerData = async link => {
-    const finalJuryHtml = await axios.get(link);
+    // const finalJuryHtml = await axios.get(link);
+    const finalJuryHtml = await axios.request({
+        method: 'GET',
+        url: link,
+        responseType: 'json',
+        reponseEncoding: 'utf-8'
+    });
+
     const finalJuryHtmlData = finalJuryHtml.data;
     const start = finalJuryHtmlData.search('{"wiz"');
     const end = finalJuryHtmlData.search('`;');
@@ -54,7 +62,9 @@ let fillEntryDataSemi = (stats, p, idx, sf) => {
         teleScore : 0,
         runningSemi: idx + 1,
         runningFinal : "",
-        isFinalist : ""
+        isFinalist : "",
+        finalPointsFrom : [],
+        semiPointsFrom : []
     });
 }
 
@@ -79,7 +89,9 @@ let fillEntryDataFinal = (stats, p, idx) => {
             teleScore : 0,
             runningSemi: "",
             runningFinal : idx + 1,
-            isFinalist : true
+            isFinalist : true,
+            finalPointsFrom : [],
+            semiPointsFrom : []
         });
     }
     else {
@@ -94,6 +106,7 @@ async function main() {
 
     // Final - Jury
     const serverData = await getServerData("https://scorewiz.eu/scoreboard/sheet/664031/emsc-2304---grand-final/PsSWRDPW");
+    const teleServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/664032/emsc-2304---grand-final---televote/DF2MBQ8n");
     const semi1ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/662125/emsc2304---semi-final-1");
     const semi2ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/662782/emsc2304---semi-final-2");
 
@@ -113,9 +126,11 @@ async function main() {
         stats.get(jurorCountry).hod = juror[1].name;
 
         juror[1].votes.forEach((ptsAndSong) => {
-            const flag = data.participants[ptsAndSong[1]].flag;
+            const participant = data.participants[ptsAndSong[1]];
+            const flag = participant.flag;
             const country = countryName(flag);
             stats.get(country).scoreSemi += ptsAndSong[0];
+            stats.get(country).semiPointsFrom.push({points: ptsAndSong[0], hod: juror[1].name, country: jurorCountry});
         });
     }
     Object.entries(semi1ServerData.juries).forEach(juror => calculateSemiPoints(juror, semi1ServerData));
@@ -123,7 +138,23 @@ async function main() {
 
     let fillSfPlaces = sf => [...stats.entries()]
         .filter(x => x[1].sf == sf )
-        .sort((x,y) => y[1].scoreSemi - x[1].scoreSemi)
+        .sort((x,y) => {
+            if (y[1].scoreSemi != x[1].scoreSemi) return y[1].scoreSemi - x[1].scoreSemi;
+            if (y[1].semiPointsFrom.length != x[1].semiPointsFrom.length) return y[1].semiPointsFrom.length != x[1].semiPointsFrom.length;
+
+            let ptsDiff = (x,y,pts) => y[1].semiPointsFrom.filter(z.points == pts).length - x[1].semiPointsFrom.filter(z.points == pts).length;
+            const diff12 = ptsDiff(x,y,12);
+            if (diff12) return diff12;
+
+            const diff10 = ptsDiff(x,y,10);
+            if (diff10) return diff10;
+
+            const diff8 = ptsDiff(x,y,8);
+            if (diff8) return diff8;
+
+            console.log("Add a tie braking rule");
+            return 0;
+        })
         .forEach((x,idx) => {
             x[1].placeSemi = idx + 1;
             const isFinalist = (idx + 1 <= 12) ? true : false;
@@ -142,14 +173,28 @@ async function main() {
     // calculate final points
     Object.entries(serverData.juries).forEach(juror => {
         const jurorCountry = countryName(juror[1].flag);
-        stats.get(jurorCountry).hod = juror[1].name;
+        stats.get(jurorCountry).hod = juror[1].name; // needed only for the automatic qualifier
 
         juror[1].votes.forEach((ptsAndSong) => {
-            const flag = serverData.participants[ptsAndSong[1]].flag;
+            const participant = serverData.participants[ptsAndSong[1]];
+            const flag = participant.flag;
             const country = countryName(flag);
             stats.get(country).juryScore += ptsAndSong[0];
+
+            stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hod: juror[1].name, country: jurorCountry});
         });
     });
+
+    Object.entries(teleServerData.juries).forEach(juror => {
+        const jurorCountry = countryName(juror[1].flag);
+        juror[1].votes.forEach((ptsAndSong) => {
+            const participant = teleServerData.participants[ptsAndSong[1]];
+            const flag = participant.flag;
+            const country = countryName(flag);
+            stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hod: juror[1].name, country: jurorCountry});
+        });
+    });
+
 
     Object.entries(serverData.televote).forEach(ptsAndSong => {
         const pts = ptsAndSong[1][0];
@@ -163,7 +208,23 @@ async function main() {
 
     [...stats.entries()]
         .filter(x => x[1].isFinalist)
-        .sort((x,y) => y[1].scoreFinal - x[1].scoreFinal)
+        .sort((x,y) => {
+            if (y[1].scoreFinal != x[1].scoreFinal) return y[1].scoreFinal - x[1].scoreFinal;
+            if (y[1].finalPointsFrom.length != x[1].finalPointsFrom.length) return y[1].finalPointsFrom.length != x[1].finalPointsFrom.length;
+
+            let ptsDiff = (x,y,pts) => y[1].finalPointsFrom.filter(z.points == pts).length - x[1].finalPointsFrom.filter(z.points == pts).length;
+            const diff12 = ptsDiff(x,y,12);
+            if (diff12) return diff12;
+
+            const diff10 = ptsDiff(x,y,10);
+            if (diff10) return diff10;
+
+            const diff8 = ptsDiff(x,y,8);
+            if (diff8) return diff8;
+
+            console.log("Add a tie braking rule");
+            return 0;
+        })
         .forEach((x,idx) => x[1].placeFinal = idx + 1);
 
     let statsForExcel = [...stats.entries()]
