@@ -1,0 +1,26 @@
+{
+  "name": "emsc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "stats.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paveltodorov/EMSC.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paveltodorov/EMSC/issues"
+  },
+  "homepage": "https://github.com/paveltodorov/EMSC#readme",
+  "dependencies": {
+    "axios": "^1.5.1",
+    "cheerio": "^1.0.0-rc.12",
+    "country-emoji": "^1.5.6",
+    "json-as-xlsx": "^2.5.4",
+    "xlsx": "^0.18.5"
+  }
+}

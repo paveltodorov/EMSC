@@ -7,9 +7,6 @@ const axios = require("axios");
 var cheerio = require('cheerio');
 const {name} = require('country-emoji');
 
-// table with id sheet
-// div id = "full ranking"
-
 let countryName = (abbr) => {
     if (abbr == 'uk') return 'United Kingdom';
     if (abbr == 'mr') return "Morocco";
@@ -26,19 +23,19 @@ let getServerData = async link => {
         method: 'GET',
         url: link,
         responseType: 'json',
-        reponseEncoding: 'utf-8'
+        reponseEncoding: 'utf-32'
     });
 
     const finalJuryHtmlData = finalJuryHtml.data;
     const start = finalJuryHtmlData.search('{"wiz"');
     const end = finalJuryHtmlData.search('`;');
-    const serverString = finalJuryHtmlData.substring(start, end).replaceAll('\\\\"', '');
+    const serverString = decodeURI(finalJuryHtmlData.substring(start, end).replace(/\\\\u/g, "\\u")).replaceAll('\\\\"', '');
     const serverData = JSON.parse(serverString);
     return serverData;
 }
 
 let getEntryData = p => {
-    const regex = /([\w\d?¿'!¡\\/&., ]+) \((\w\w\w)\) - ([\w\d?¿'!¡\\//&., ]+)/
+    const regex = /(.+) \((\w\w\w)\) - (.+)/
     const m = p[1].name.match(regex);
     const country = countryName(p[1].flag);
 
@@ -57,12 +54,15 @@ let fillEntryDataSemi = (stats, p, idx, sf) => {
         scoreFinal: 0,
         placeSemi : 0,
         scoreSemi: 0,
-        hod: "",
+        hod : "",
+        hodShortName: "",
         juryScore : 0,
         teleScore : 0,
         runningSemi: idx + 1,
         runningFinal : "",
         isFinalist : "",
+        numOfIndivVotesFinal : "",
+        numOfIndivVotesSemi : "",
         finalPointsFrom : [],
         semiPointsFrom : []
     });
@@ -84,12 +84,15 @@ let fillEntryDataFinal = (stats, p, idx) => {
             scoreFinal: 0,
             placeSemi : "",
             scoreSemi: "",
-            hod: "",
+            hod : "",
+            hodShortName: "",
             juryScore : 0,
             teleScore : 0,
             runningSemi: "",
             runningFinal : idx + 1,
             isFinalist : true,
+            numOfIndivVotesFinal : "",
+            numOfIndivVotesSemi : "",
             finalPointsFrom : [],
             semiPointsFrom : []
         });
@@ -99,12 +102,49 @@ let fillEntryDataFinal = (stats, p, idx) => {
     }
 }
 
+let getHods = () => {
+    const hodFileName = "EMSC-HoD-Country-Ranking.xlsx";
+    const workbook = xlsx.readFile(hodFileName);
+    let workbook_sheet = workbook.SheetNames;
+
+    let hodStats = xlsx.utils.sheet_to_json(
+        workbook.Sheets[workbook_sheet[0]]
+    );
+
+    let hods = [];
+    hodStats.forEach(row => {
+        if (row.__EMPTY_5) hods.push(row.__EMPTY_5);
+    });
+
+    return hods;
+}
+
+let getHodFullName = (shortName, hods) => {
+    if (shortName == "Michael") return "Michalis Terzis";
+
+    shortName = shortName.replace(".", "");
+    let splitNames = shortName.split(" ");
+
+    let potentialFullName = hods.find(fullName => fullName.startsWith(shortName));
+    if (potentialFullName) return potentialFullName;
+
+    let serachSplitName = (splitName) => hods.find(fullName => fullName.startsWith(splitName));
+
+    if (splitNames[0]) potentialFullName = serachSplitName(splitNames[0]);
+    if (potentialFullName) return potentialFullName;
+
+    if (splitNames[2]) potentialFullName = serachSplitName(splitNames[2]);
+    if (potentialFullName) return potentialFullName;
+
+    if (splitNames[1]) potentialFullName = serachSplitName(splitNames[1]);
+    if (potentialFullName) return potentialFullName;
+
+    return "??? " + shortName;
+}
 
 async function main() {
-    // console.log(finalJuryHtml);
-    // const $ = cheerio.load(finalJuryHtml.data)
+    const hods = getHods();
 
-    // Final - Jury
     const serverData = await getServerData("https://scorewiz.eu/scoreboard/sheet/664031/emsc-2304---grand-final/PsSWRDPW");
     const teleServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/664032/emsc-2304---grand-final---televote/DF2MBQ8n");
     const semi1ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/662125/emsc2304---semi-final-1");
@@ -123,14 +163,14 @@ async function main() {
     // calculate semi points
     let calculateSemiPoints = (juror, data) => {
         const jurorCountry = countryName(juror[1].flag);
-        stats.get(jurorCountry).hod = juror[1].name;
+        stats.get(jurorCountry).hodShortName = juror[1].name;
 
         juror[1].votes.forEach((ptsAndSong) => {
             const participant = data.participants[ptsAndSong[1]];
             const flag = participant.flag;
             const country = countryName(flag);
             stats.get(country).scoreSemi += ptsAndSong[0];
-            stats.get(country).semiPointsFrom.push({points: ptsAndSong[0], hod: juror[1].name, country: jurorCountry});
+            stats.get(country).semiPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
         });
     }
     Object.entries(semi1ServerData.juries).forEach(juror => calculateSemiPoints(juror, semi1ServerData));
@@ -143,14 +183,13 @@ async function main() {
             if (y[1].semiPointsFrom.length != x[1].semiPointsFrom.length) return y[1].semiPointsFrom.length != x[1].semiPointsFrom.length;
 
             let ptsDiff = (x,y,pts) => y[1].semiPointsFrom.filter(z.points == pts).length - x[1].semiPointsFrom.filter(z.points == pts).length;
-            const diff12 = ptsDiff(x,y,12);
-            if (diff12) return diff12;
+            let ptsSystem = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
 
-            const diff10 = ptsDiff(x,y,10);
-            if (diff10) return diff10;
-
-            const diff8 = ptsDiff(x,y,8);
-            if (diff8) return diff8;
+            for (let i = 0; i < ptsSystem.size; i++) {
+                const diff = ptsDiff(x,y,ptsSystem[i]);
+                console.log("Deciding by tiebreaker rule by # of " + ptsSystem[i] + " pts, countries : " + x[1].country + " " + y[1].country)
+                if (diff) return diff;
+            }
 
             console.log("Add a tie braking rule");
             return 0;
@@ -173,15 +212,15 @@ async function main() {
     // calculate final points
     Object.entries(serverData.juries).forEach(juror => {
         const jurorCountry = countryName(juror[1].flag);
-        stats.get(jurorCountry).hod = juror[1].name; // needed only for the automatic qualifier
+        stats.get(jurorCountry).hodShortName = juror[1].name; // needed only for the automatic qualifier
 
         juror[1].votes.forEach((ptsAndSong) => {
             const participant = serverData.participants[ptsAndSong[1]];
             const flag = participant.flag;
             const country = countryName(flag);
             stats.get(country).juryScore += ptsAndSong[0];
-
-            stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hod: juror[1].name, country: jurorCountry});
+            stats.get(country).scoreFinal += ptsAndSong[0];
+            stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
         });
     });
 
@@ -191,19 +230,10 @@ async function main() {
             const participant = teleServerData.participants[ptsAndSong[1]];
             const flag = participant.flag;
             const country = countryName(flag);
-            stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hod: juror[1].name, country: jurorCountry});
+            stats.get(country).teleScore += ptsAndSong[0];
+            stats.get(country).scoreFinal += ptsAndSong[0];
+            stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
         });
-    });
-
-
-    Object.entries(serverData.televote).forEach(ptsAndSong => {
-        const pts = ptsAndSong[1][0];
-        const song = ptsAndSong[1][1];
-        const flag = serverData.participants[song].flag;
-        const country = countryName(flag);
-        stats.get(country).teleScore += pts;
-        stats.get(country).scoreFinal += pts + stats.get(country).juryScore;
-        // stats[country].placeFinal =
     });
 
     [...stats.entries()]
@@ -213,14 +243,13 @@ async function main() {
             if (y[1].finalPointsFrom.length != x[1].finalPointsFrom.length) return y[1].finalPointsFrom.length != x[1].finalPointsFrom.length;
 
             let ptsDiff = (x,y,pts) => y[1].finalPointsFrom.filter(z.points == pts).length - x[1].finalPointsFrom.filter(z.points == pts).length;
-            const diff12 = ptsDiff(x,y,12);
-            if (diff12) return diff12;
+            let ptsSystem = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
 
-            const diff10 = ptsDiff(x,y,10);
-            if (diff10) return diff10;
-
-            const diff8 = ptsDiff(x,y,8);
-            if (diff8) return diff8;
+            for (let i = 0; i < ptsSystem.size; i++) {
+                const diff = ptsDiff(x,y,ptsSystem[i]);
+                console.log("Deciding by tiebreaker rule by # of " + ptsSystem[i] + " pts, countries : " + x[1].country + " " + y[1].country)
+                if (diff) return diff;
+            }
 
             console.log("Add a tie braking rule");
             return 0;
@@ -231,6 +260,9 @@ async function main() {
         .map(x => {
             x[1].edition = edition;
             x[1].name = editionName;
+            x[1].hod = getHodFullName(x[1].hodShortName, hods);
+            if (x[1].isFinalist) x[1].numOfIndivVotesFinal = x[1].finalPointsFrom.length;
+            if (x[1].sf != 'F') x[1].numOfIndivVotesSemi = x[1].semiPointsFrom.length;
             return x[1];
         })
         .sort((x,y) => {
@@ -257,7 +289,7 @@ async function main() {
     ];
 
     let settings = {
-        fileName: "EMSC Stats Test 2", // Name of the resulting spreadsheet
+        fileName: "EMSC Stats Test 4", // Name of the resulting spreadsheet
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
@@ -268,54 +300,3 @@ async function main() {
 }
 
 main();
-
-
-
-    // stats
-
-    // const $ = cheerio.load(dddd); // html finalJuryHtml
-
-    // // const rankingTable = html.getElementById("full-ranking");
-    // console.log($.name);
-    // const selected = $("div");
-    // // const selected = $('title');
-    // // selected.data
-
-    // // table#sheet tr th 1st line + 1st column of each line
-    // // "table#sheet tr td" points
-
-    // // const rows = selected[0].childNodes
-    // //     .forEach(x => x.childNodes
-    // //       .forEach(y => console.log(y.childNodes)));
-    // //         // .forEach(z => console.log(z))));
-    // // let a = selected.contents();
-
-    // let temp = $("table#sheet tr th[class='sheet-participant'] span");
-
-    // // get from HTML
-    // let finalParticipants = Array(...$("table#sheet tr th[class='sheet-participant'] span").contents()).forEach(x => console.log(x.data));
-    // let juryHods = Array(...$("table#sheet tr th[class='sheet-jury sheet-sortable'] span")).forEach(x => console.log(x.attribs.title));
-    // // sheet-jury-score sheet-score pts
-    // // sheet-televote-score sheet-score pts
-    // let totalScores = Array(...$("table#sheet tr td[class='sheet-total-score sheet-score pts']").contents()).forEach(x => console.log(x.data));
-    // // console.log(a);
-
-    // old
-    // console.log(selected[0].childNodes);
-    // console.log(html("div[id='full-ranking']"));
-    // console.log(pageHtml.data);
-    // const xhr = new XMLHttpRequest();
-    // xhr.open("GET", "https://scorewiz.eu/scoreboard/sheet/664031/emsc-2304---grand-final/PsSWRDPW");
-    // xhr.send();
-    // xhr.responseType = "json";
-    // xhr.onload = () => {
-    //   if (xhr.readyState == 4 && xhr.status == 200) {
-    //     const data = xhr.response;
-    //     console.log(data);
-    //   } else {
-    //     console.log(`Error: ${xhr.status}`);
-    //   }
-    // };
-// {wiz: {…}, juries: {…}, participants: {…}, televote: Array(25)}
-  // const serverData = JSON.parse(serverJson);
-// serverData
