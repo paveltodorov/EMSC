@@ -1,9 +1,10 @@
 const fileName = "EMSC STATISTICS UPDATED.xlsx"
 
-const xlsx = require('xlsx');
 // const jsonToTable = require("json-excel-style")
-const jsonToTable = require("json-as-xlsx")
-const {flag} = require('country-emoji');
+import xlsxPkg from 'xlsx';
+const {readFile, utils} = xlsxPkg;
+import xlsx from "json-as-xlsx";
+import { flag } from 'country-emoji';
 
 let flagNew = country => {
   if (country == "Türkiye") return flag("Turkey");
@@ -68,10 +69,10 @@ let getPotDigit = country => {
     return "unknown";
 }
 
-const workbook = xlsx.readFile(fileName);
+const workbook = readFile(fileName);
 let workbook_sheet = workbook.SheetNames;
 
-let stats = xlsx.utils.sheet_to_json(
+let stats = utils.sheet_to_json(
     workbook.Sheets[workbook_sheet[0]]
 );
 
@@ -278,13 +279,13 @@ let calculateCountryRanking = (from, to, compareToPrev) => {
     { label: 'Top 10', value: 'top10' },
     { label: 'Top 15', value: 'top15' },
     { label: 'Top 20', value: 'top20' }];
-    for (i = to; i >= from ; i--) {
+    for (let i = to; i >= from ; i--) {
         countryTableKeys.push({ label: 'Ed. ' + i + ' Rank',             value: i + ' rank'});
         countryTableKeys.push({ label: 'Ed. ' + i + ' Exp. Pts.',        value: i + ' expPoints'      , format: "#,##0.00" });
-        countryTableKeys.push({ label: 'Avg. Exp. Pts. aft. E'+ i , value: i + ' accAvgExpPoints', format: "#,##0.00"});
+        // countryTableKeys.push({ label: 'Avg. Exp. Pts. aft. E'+ i , value: i + ' accAvgExpPoints', format: "#,##0.00"});
         countryTableKeys.push({ label: 'C. Pos. aft. E'       + i   , value: i + ' rankAfterEdition'});
         countryTableKeys.push({ label: 'C. Pos. Mov. aft. E'  + i   , value: i + ' rankMov'});
-        countryTableKeys.push({ label: 'Rank impr. af. E'    + i   , value: i + ' bestRankMov'});
+        // countryTableKeys.push({ label: 'Rank impr. af. E'    + i   , value: i + ' bestRankMov'});
          // countryTableKeys.push({ label: 'Exp. Pts. after Ed. ' + i         , value: i + ' accExpPoints', format: "#,##0.00"});
         // countryTableKeys.push({ label: 'Best Rank after Ed. ' + i         , value: i + ' bestRank'});
     }
@@ -451,7 +452,7 @@ let settings = {
   RTL: false, // Display the columns from right-to-left (the default value is false)
 }
 
-jsonToTable(data, settings)
+xlsx(data, settings)
 
 // console.log(countryRanking);
 

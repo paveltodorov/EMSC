@@ -1,11 +1,14 @@
 const fileName = "EMSC STATISTICS UPDATED.xlsx"
 
-const xlsx = require('xlsx');
+// var cheerio = require('cheerio');
 // const jsonToTable = require("json-excel-style")
-const jsonToTable = require("json-as-xlsx")
-const axios = require("axios");
-var cheerio = require('cheerio');
-const {name} = require('country-emoji');
+import xlsxPkg from 'xlsx';
+const { readFile, utils } = xlsxPkg;
+import axios from "axios"
+import xlsx from "json-as-xlsx";
+import { name } from 'country-emoji';
+import { scoreGridData } from './ScoreGrids.js';
+import fetch from "node-fetch";
 
 let countryName = (abbr) => {
     if (abbr == 'uk') return 'United Kingdom';
@@ -14,19 +17,27 @@ let countryName = (abbr) => {
     if (abbr == 'tr') return "Türkiye";
     if (abbr == 'gg') return "Georgia";
     if (abbr == 'md') return "Moldova";
+    if (abbr == 'nn') return "North Macedonia";
     return name(abbr);
+}
+
+let numberToEditionName = edNum => {
+    const year = Math.floor(edNum / 5) + 21;
+    const edInYear = edNum % 5;
+    const edName = year + "0" + edInYear;
+    return edName;
 }
 
 let getServerData = async link => {
     // const finalJuryHtml = await axios.get(link);
-    const finalJuryHtml = await axios.request({
+    const html = await axios.request({
         method: 'GET',
         url: link,
         responseType: 'json',
-        reponseEncoding: 'utf-32'
+        reponseEncoding: 'utf-8'
     });
 
-    const finalJuryHtmlData = finalJuryHtml.data;
+    const finalJuryHtmlData = html.data;
     const start = finalJuryHtmlData.search('{"wiz"');
     const end = finalJuryHtmlData.search('`;');
     const serverString = decodeURI(finalJuryHtmlData.substring(start, end).replace(/\\\\u/g, "\\u")).replaceAll('\\\\"', '');
@@ -34,12 +45,45 @@ let getServerData = async link => {
     return serverData;
 }
 
+// let login  = asy
+let getLinks = edition => {
+    const edName = numberToEditionName(edition);
+    const grids = scoreGridData[0].contents;
+
+    const edGrids = grids.filter(x => x.title.includes(edName));
+
+    const finalLink = edGrids.find(x => {
+        const title = x.title.toLowerCase();
+        return title.includes("final") && !title.includes("tele");
+    }).data.menu.view;
+    const teleLink = edGrids.find(x => {
+        const title = x.title.toLowerCase();
+        return title.includes("final") && title.includes("tele");
+    }).data.menu.view;
+    const semi1Link = edGrids.find(x => {
+        const title = x.title.toLowerCase();
+        return title.includes("semi final 1");
+    }).data.menu.view;
+    const semi2Link = edGrids.find(x => {
+        const title = x.title.toLowerCase();
+        return title.includes("semi final 2");
+    }).data.menu.view;
+
+    const links = {finalLink, teleLink, semi1Link, semi2Link}
+    return links;
+}
+
 let getEntryData = p => {
-    const regex = /(.+) \((\w\w\w)\) - (.+)/
+    const regex = /(.+) \((\w+)\) - (.+)/
     const m = p[1].name.match(regex);
     const country = countryName(p[1].flag);
 
-    return {country, artist: m[1], song : m[3]};
+    if (!m) {
+        console.log("Failed to get entry");
+    }
+    const entryData = {country, artist: m[1], song : m[3]};
+
+    return entryData;
 }
 let fillEntryDataSemi = (stats, p, idx, sf) => {
     const entry = getEntryData(p);
@@ -63,6 +107,8 @@ let fillEntryDataSemi = (stats, p, idx, sf) => {
         isFinalist : "",
         numOfIndivVotesFinal : "",
         numOfIndivVotesSemi : "",
+        isDqFinal : false,
+        isDqSemi : false,
         finalPointsFrom : [],
         semiPointsFrom : []
     });
@@ -93,6 +139,8 @@ let fillEntryDataFinal = (stats, p, idx) => {
             isFinalist : true,
             numOfIndivVotesFinal : "",
             numOfIndivVotesSemi : "",
+            isDqFinal : false,
+            isDqSemi : false,
             finalPointsFrom : [],
             semiPointsFrom : []
         });
@@ -104,10 +152,10 @@ let fillEntryDataFinal = (stats, p, idx) => {
 
 let getHods = () => {
     const hodFileName = "EMSC-HoD-Country-Ranking.xlsx";
-    const workbook = xlsx.readFile(hodFileName);
+    const workbook = readFile(hodFileName);
     let workbook_sheet = workbook.SheetNames;
 
-    let hodStats = xlsx.utils.sheet_to_json(
+    let hodStats = utils.sheet_to_json(
         workbook.Sheets[workbook_sheet[0]]
     );
 
@@ -120,7 +168,9 @@ let getHods = () => {
 }
 
 let getHodFullName = (shortName, hods) => {
+    if (shortName == "") return "???";
     if (shortName == "Michael") return "Michalis Terzis";
+    if (shortName == "The Lady Cru") return "Keiron Lynch";
 
     shortName = shortName.replace(".", "");
     let splitNames = shortName.split(" ");
@@ -142,19 +192,20 @@ let getHodFullName = (shortName, hods) => {
     return "??? " + shortName;
 }
 
-async function main() {
-    const hods = getHods();
 
-    const serverData = await getServerData("https://scorewiz.eu/scoreboard/sheet/664031/emsc-2304---grand-final/PsSWRDPW");
-    const teleServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/664032/emsc-2304---grand-final---televote/DF2MBQ8n");
-    const semi1ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/662125/emsc2304---semi-final-1");
-    const semi2ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/662782/emsc2304---semi-final-2");
+async function calculateEditionStats(edition) {
+    const hods = getHods();
+    const links = getLinks(edition);
+
+    const serverData = await getServerData(links.finalLink);
+    const teleServerData = await getServerData(links.teleLink);
+    const semi1ServerData = await getServerData(links.semi1Link);
+    const semi2ServerData = await getServerData(links.semi2Link);
 
     let stats = new Map();
     const edRegex = /[EMSC ]+(\d\d)(\d\d) - GRAND FINAL/;
     const match = serverData.wiz.title.match(edRegex);
-    let editionName = "EMSC" + match[1] + match[2];
-    let edition = (parseInt(match[1])- 21) * 5 + parseInt(match[2]);
+    let editionName = "EMSC " + match[1] + match[2];
 
     Object.entries(semi1ServerData.participants).forEach((p, idx) => fillEntryDataSemi(stats, p, idx, 1));
     Object.entries(semi2ServerData.participants).forEach((p, idx) => fillEntryDataSemi(stats, p, idx, 2));
@@ -172,39 +223,50 @@ async function main() {
             stats.get(country).scoreSemi += ptsAndSong[0];
             stats.get(country).semiPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
         });
+
+        if (data.televote) {
+            data.televote.forEach(ptsAndSong => {
+                const participant = data.participants[ptsAndSong[1]];
+                const flag = participant.flag;
+                const country = countryName(flag);
+                stats.get(country).isDqSemi = true;
+            })
+        }
     }
     Object.entries(semi1ServerData.juries).forEach(juror => calculateSemiPoints(juror, semi1ServerData));
     Object.entries(semi2ServerData.juries).forEach(juror => calculateSemiPoints(juror, semi2ServerData));
 
     let fillSfPlaces = sf => [...stats.entries()]
-        .filter(x => x[1].sf == sf )
-        .sort((x,y) => {
-            if (y[1].scoreSemi != x[1].scoreSemi) return y[1].scoreSemi - x[1].scoreSemi;
-            if (y[1].semiPointsFrom.length != x[1].semiPointsFrom.length) return y[1].semiPointsFrom.length != x[1].semiPointsFrom.length;
+    .filter(x => x[1].sf == sf )
+    .sort((x,y) => {
+        if (x[1].isDqSemi) return 1;
+        if (y[1].isDqSemi) return -1;
+        if (y[1].scoreSemi != x[1].scoreSemi) return y[1].scoreSemi - x[1].scoreSemi;
+        if (y[1].semiPointsFrom.length != x[1].semiPointsFrom.length) return y[1].semiPointsFrom.length - x[1].semiPointsFrom.length;
 
-            let ptsDiff = (x,y,pts) => y[1].semiPointsFrom.filter(z.points == pts).length - x[1].semiPointsFrom.filter(z.points == pts).length;
-            let ptsSystem = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
+        let ptsDiff = (x,y,pts) => y[1].semiPointsFrom.filter(z => z.points == pts).length - x[1].semiPointsFrom.filter(z => z.points == pts).length;
+        let ptsSystem = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
 
-            for (let i = 0; i < ptsSystem.size; i++) {
-                const diff = ptsDiff(x,y,ptsSystem[i]);
-                console.log("Deciding by tiebreaker rule by # of " + ptsSystem[i] + " pts, countries : " + x[1].country + " " + y[1].country)
-                if (diff) return diff;
-            }
+        for (let i = 0; i < ptsSystem.length; i++) {
+            const diff = ptsDiff(x,y,ptsSystem[i]);
+            console.log("Deciding by tiebreaker rule by # of " + ptsSystem[i] + " pts, countries : " + x[1].country + " " + y[1].country)
+            if (diff) return diff;
+        }
 
-            console.log("Add a tie braking rule");
-            return 0;
-        })
-        .forEach((x,idx) => {
-            x[1].placeSemi = idx + 1;
-            const isFinalist = (idx + 1 <= 12) ? true : false;
-            x[1].isFinalist = isFinalist;
-            if (!isFinalist) {
-                x[1].juryScore = '';
-                x[1].teleScore = '';
-                x[1].scoreFinal = '';
-                x[1].placeFinal = '';
-            }
-        })
+        console.log("Add a tie braking rule");
+        return 0;
+    })
+    .forEach((x,idx) => {
+        x[1].placeSemi = idx + 1;
+        const isFinalist = (idx + 1 <= 12) ? true : false;
+        x[1].isFinalist = isFinalist;
+        if (!isFinalist) {
+            x[1].juryScore = '';
+            x[1].teleScore = '';
+            x[1].scoreFinal = '';
+            x[1].placeFinal = '';
+        }
+    })
 
     fillSfPlaces(1);
     fillSfPlaces(2);
@@ -222,6 +284,14 @@ async function main() {
             stats.get(country).scoreFinal += ptsAndSong[0];
             stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
         });
+
+        serverData.televote.forEach(ptsAndSong => {
+            if (ptsAndSong[0] >= 0) return;
+            const participant = serverData.participants[ptsAndSong[1]];
+            const flag = participant.flag;
+            const country = countryName(flag);
+            stats.get(country).isDqFinal = true;
+        });
     });
 
     Object.entries(teleServerData.juries).forEach(juror => {
@@ -237,16 +307,18 @@ async function main() {
     });
 
     [...stats.entries()]
-        .filter(x => x[1].isFinalist)
-        .sort((x,y) => {
-            if (y[1].scoreFinal != x[1].scoreFinal) return y[1].scoreFinal - x[1].scoreFinal;
-            if (y[1].finalPointsFrom.length != x[1].finalPointsFrom.length) return y[1].finalPointsFrom.length != x[1].finalPointsFrom.length;
+    .filter(x => x[1].isFinalist)
+    .sort((x,y) => {
+        if (x[1].isDqFinal) return -1;
+        if (y[1].isDqFinal) return 1;
+        if (y[1].scoreFinal != x[1].scoreFinal) return y[1].scoreFinal - x[1].scoreFinal;
+        if (y[1].finalPointsFrom.length != x[1].finalPointsFrom.length) return y[1].finalPointsFrom.length - x[1].finalPointsFrom.length;
 
-            let ptsDiff = (x,y,pts) => y[1].finalPointsFrom.filter(z.points == pts).length - x[1].finalPointsFrom.filter(z.points == pts).length;
-            let ptsSystem = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
+        let ptsDiff = (x,y,pts) => y[1].finalPointsFrom.filter(z.points == pts).length - x[1].finalPointsFrom.filter(z.points == pts).length;
+        let ptsSystem = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
 
-            for (let i = 0; i < ptsSystem.size; i++) {
-                const diff = ptsDiff(x,y,ptsSystem[i]);
+        for (let i = 0; i < ptsSystem.size; i++) {
+            const diff = ptsDiff(x,y,ptsSystem[i]);
                 console.log("Deciding by tiebreaker rule by # of " + ptsSystem[i] + " pts, countries : " + x[1].country + " " + y[1].country)
                 if (diff) return diff;
             }
@@ -256,47 +328,106 @@ async function main() {
         })
         .forEach((x,idx) => x[1].placeFinal = idx + 1);
 
-    let statsForExcel = [...stats.entries()]
+        let statsForExcel = [...stats.entries()]
         .map(x => {
             x[1].edition = edition;
             x[1].name = editionName;
             x[1].hod = getHodFullName(x[1].hodShortName, hods);
             if (x[1].isFinalist) x[1].numOfIndivVotesFinal = x[1].finalPointsFrom.length;
             if (x[1].sf != 'F') x[1].numOfIndivVotesSemi = x[1].semiPointsFrom.length;
+            if (x[1].isDqSemi) x[1].placeSemi = "DISQUALIFIED";
+            if (x[1].isDqFinal) x[1].placeFinal = "DISQUALIFIED";
             return x[1];
         })
         .sort((x,y) => {
-            if (x.isFinalist && y.isFinalist) return y.scoreFinal - x.scoreFinal;
+            if (x.isFinalist && y.isFinalist) return x.placeFinal - y.placeFinal;
             if (x.isFinalist) return -1;
             if (y.isFinalist) return +1;
             if (x.sf != y.sf) return x.sf - y.sf;
-            return y.scoreSemi - x.scoreSemi
+            return x.placeSemi - y.placeSemi;
         });
 
-    const statsForExcelKeys = Object.keys(statsForExcel[0]).map(x => {
+        return statsForExcel;
+    }
+
+async function main() {
+    let allEditionsData = [];
+
+    let editionsToCalculate = [/*5, 6, 7,*/ 9, 10, 11, 12, 13, 14];
+    for (let i = 0; i < editionsToCalculate.length; i++) {
+        let edData = await calculateEditionStats(editionsToCalculate[i]);
+        allEditionsData.push(...edData);
+    }
+    // editionsToCalculate.map(await e => {
+    //     let edData = await calculateEditionStats(e);
+    //     allEditionsData.push(...edData);
+    // })
+    const statsForExcelKeys = Object.keys(allEditionsData[0]).map(x => {
         let obj = {};
         obj.label = x.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
         obj.value = x;
         return obj;
     });
 
+    // await axios.get("https://scorewiz.eu/logout");
+
     let data = [
         {
-          sheet: "Statistics",
-          columns: statsForExcelKeys,
-          content: statsForExcel,
+            sheet: "Statistics",
+            columns: statsForExcelKeys,
+            content: allEditionsData,
         },
     ];
 
     let settings = {
-        fileName: "EMSC Stats Test 4", // Name of the resulting spreadsheet
+        fileName: "EMSC Stats Test 5", // Name of the resulting spreadsheet
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
         RTL: false, // Display the columns from right-to-left (the default value is false)
     }
 
-    jsonToTable(data, settings)
+    xlsx(data, settings)
 }
 
 main();
+
+ // $.getJSON('ScoreGrids.json', function(json) {
+    //     console.log(json); // this will show the info it in firebug console
+    // });
+    // fetch('../ScoreGrids.json')
+    // .then((response) => response.json())
+    // .then((json) => console.log(json));
+    // PHPSESSID=6qt4qhkfop24sp0q3k343ad947; _gid=GA1.2.1292894849.1698074111;
+    // userid=NONE; hash=NONE; _gat_gtag_UA_110571612_1=1; _ga_HGGEH7V61S=GS1.1.1698080348.50.1.1698083971.0.0.0; _ga=GA1.1.100058024.1666286758
+
+    // const promise = await axios.request({
+    //     method: 'POST',
+    //     url: 'https://scorewiz.eu/login',
+    //     responseType: 'json',
+    //     reponseEncoding: 'utf-8',
+    //     // data: { email: "lutz.bleckmann@netlog.de", password: "1.FCKoeln:"}
+    //     data: { email: "pavel.todorov93@gmail.com", pass: "u!h6i2pBg4Qptn8"}
+    // });
+
+    // let promise = await axios.post("https://scorewiz.eu/login", { email: "pavel.todorov93@gmail.com", pass: "u!h6i2pBg4Qptn8"} )
+
+    // // const html = await axios.get("https://scorewiz.eu/my/scoreboards");
+    // // headers: {
+    // //     Cookie: "cookie1=value; cookie2=value; cookie3=value;"
+    // // }
+    // const html = await axios.request({
+    //     method: 'GET',
+    //     url: "https://scorewiz.eu/my/scoreboards",
+    //     responseType: 'json',
+    //     reponseEncoding: 'utf-8',
+    //     headers: {
+    //         Cookie: "PHPSESSID=6qt4qhkfop24sp0q3k343ad947; _gid=GA1.2.1292894849.1698074111; userid=NONE; hash=NONE; _gat_gtag_UA_110571612_1=1; _ga_HGGEH7V61S=GS1.1.1698080348.50.1.1698086659.0.0.0; _ga=GA1.1.100058024.1666286758;"
+    //     }
+    // });
+    // const htmlData = html.data;
+    // const start = htmlData.search('{"uniqId"');
+    // const end = htmlData.search('}\\];');
+    // const serverString = htmlData.substring(start, end);//.replace(/\\\\u/g, "\\u")).replaceAll('\\\\"', '');
+    // const serverData = JSON.parse(serverString);
+    // return serverData;
