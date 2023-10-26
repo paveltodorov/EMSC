@@ -8,7 +8,49 @@ import axios from "axios"
 import xlsx from "json-as-xlsx";
 import { name } from 'country-emoji';
 import { scoreGridData } from './ScoreGrids.js';
-import fetch from "node-fetch";
+
+/*
+POST
+url : https://scorewiz.eu/register.html
+title: tt
+folder: 0:126650
+system: classic
+votingMethod: manual
+rsvpNumber: 50
+
+Request URL:
+https://scorewiz.eu/saveOptions/participants
+Request Method:
+POST
+
+data
+{
+sid: 669973
+pass: F8PY65Vv
+__flag1: French Guiana
+flag1: fg
+name1: fgsdagffd
+sponsor1:
+__flag2: France
+flag2: fr
+name2: ffgdafg
+sponsor2:
+__flag3: Barbados
+flag3: bb
+name3:
+sponsor3:
+}
+
+$.post("https://scorewiz.eu/saveOptions/participants",
+    {
+    sid: 669973,
+    pass: 'F8PY65Vv',
+
+    __flag1: 'French Guiana',
+    flag1: 'fg',
+    name1: 'fgsdagffd'
+    })
+*/
 
 let countryName = (abbr) => {
     if (abbr == 'uk') return 'United Kingdom';
@@ -18,12 +60,14 @@ let countryName = (abbr) => {
     if (abbr == 'gg') return "Georgia";
     if (abbr == 'md') return "Moldova";
     if (abbr == 'nn') return "North Macedonia";
+    if (abbr == 'le') return "Lebanon";
+    if (abbr == 'tu') return "Tunesia";
     return name(abbr);
 }
 
 let numberToEditionName = edNum => {
-    const year = Math.floor(edNum / 5) + 21;
-    const edInYear = edNum % 5;
+    const year = Math.floor((edNum - 1)/ 5) + 21;
+    const edInYear = edNum % 5 ? edNum % 5 : 5;
     const edName = year + "0" + edInYear;
     return edName;
 }
@@ -40,7 +84,7 @@ let getServerData = async link => {
     const finalJuryHtmlData = html.data;
     const start = finalJuryHtmlData.search('{"wiz"');
     const end = finalJuryHtmlData.search('`;');
-    const serverString = decodeURI(finalJuryHtmlData.substring(start, end).replace(/\\\\u/g, "\\u")).replaceAll('\\\\"', '');
+    const serverString = decodeURI(finalJuryHtmlData.substring(start, end).replace(/\\\\u/g, "\\u")).replaceAll('\\\\"', '').replaceAll("&amp;", "&");
     const serverData = JSON.parse(serverString);
     return serverData;
 }
@@ -49,12 +93,13 @@ let getServerData = async link => {
 let getLinks = edition => {
     const edName = numberToEditionName(edition);
     const grids = scoreGridData[0].contents;
+    grids.push(...grids[0].contents); // push grids from the EMSC folder
 
     const edGrids = grids.filter(x => x.title.includes(edName));
 
     const finalLink = edGrids.find(x => {
         const title = x.title.toLowerCase();
-        return title.includes("final") && !title.includes("tele");
+        return title.includes("final") && !title.includes("tele") && !title.includes("semi");
     }).data.menu.view;
     const teleLink = edGrids.find(x => {
         const title = x.title.toLowerCase();
@@ -74,12 +119,21 @@ let getLinks = edition => {
 }
 
 let getEntryData = p => {
-    const regex = /(.+) \((\w+)\) - (.+)/
-    const m = p[1].name.match(regex);
-    const country = countryName(p[1].flag);
+    let regex = /(.+) \((\w+)\)[ ]*- (.+)/
+    let m = p[1].name.match(regex);
+    let country = countryName(p[1].flag);
 
     if (!m) {
-        console.log("Failed to get entry");
+        regex = /(\w+) \\\/[ ]*(.+) - (.+)/
+        m = p[1].name.match(regex);
+        if (!m) {
+            regex = /\((\w+)\) (.+)[ ]*- (.+)/
+            m = p[1].name.match(regex);
+            if (!m) {
+                console.log("---");
+            }
+        }
+        return {country, artist: m[2], song : m[3]};
     }
     const entryData = {country, artist: m[1], song : m[3]};
 
@@ -169,8 +223,12 @@ let getHods = () => {
 
 let getHodFullName = (shortName, hods) => {
     if (shortName == "") return "???";
-    if (shortName == "Michael") return "Michalis Terzis";
+    if (shortName == "Michael" || shortName == "Mike") return "Michalis Terzis";
+    if (shortName == "Luís Coelho") return "Luís Coelho";
     if (shortName == "The Lady Cru") return "Keiron Lynch";
+    if (shortName == "Christoforos Andrianos" || shortName == "Christoforos") return "Christoforos Andrianos";
+    if (shortName == "Jesus" || shortName == "Jesus Santamaria Rodriguez" || shortName.includes("Jesús")) return "Jesús Santamaría Rodríguez";
+    if (shortName == "Jonathan Zuñiga") return "Jonathan Zuñiga";
 
     shortName = shortName.replace(".", "");
     let splitNames = shortName.split(" ");
@@ -203,9 +261,7 @@ async function calculateEditionStats(edition) {
     const semi2ServerData = await getServerData(links.semi2Link);
 
     let stats = new Map();
-    const edRegex = /[EMSC ]+(\d\d)(\d\d) - GRAND FINAL/;
-    const match = serverData.wiz.title.match(edRegex);
-    let editionName = "EMSC " + match[1] + match[2];
+    let editionName = "EMSC " + numberToEditionName(edition);
 
     Object.entries(semi1ServerData.participants).forEach((p, idx) => fillEntryDataSemi(stats, p, idx, 1));
     Object.entries(semi2ServerData.participants).forEach((p, idx) => fillEntryDataSemi(stats, p, idx, 2));
@@ -214,7 +270,9 @@ async function calculateEditionStats(edition) {
     // calculate semi points
     let calculateSemiPoints = (juror, data) => {
         const jurorCountry = countryName(juror[1].flag);
-        stats.get(jurorCountry).hodShortName = juror[1].name;
+        if (stats.get(jurorCountry)) {
+            stats.get(jurorCountry).hodShortName = juror[1].name;
+        }
 
         juror[1].votes.forEach((ptsAndSong) => {
             const participant = data.participants[ptsAndSong[1]];
@@ -314,10 +372,10 @@ async function calculateEditionStats(edition) {
         if (y[1].scoreFinal != x[1].scoreFinal) return y[1].scoreFinal - x[1].scoreFinal;
         if (y[1].finalPointsFrom.length != x[1].finalPointsFrom.length) return y[1].finalPointsFrom.length - x[1].finalPointsFrom.length;
 
-        let ptsDiff = (x,y,pts) => y[1].finalPointsFrom.filter(z.points == pts).length - x[1].finalPointsFrom.filter(z.points == pts).length;
+        let ptsDiff = (x,y,pts) => y[1].finalPointsFrom.filter(z => z.points == pts).length - x[1].finalPointsFrom.filter(z => z.points == pts).length;
         let ptsSystem = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
 
-        for (let i = 0; i < ptsSystem.size; i++) {
+        for (let i = 0; i < ptsSystem.length; i++) {
             const diff = ptsDiff(x,y,ptsSystem[i]);
                 console.log("Deciding by tiebreaker rule by # of " + ptsSystem[i] + " pts, countries : " + x[1].country + " " + y[1].country)
                 if (diff) return diff;
@@ -353,7 +411,7 @@ async function calculateEditionStats(edition) {
 async function main() {
     let allEditionsData = [];
 
-    let editionsToCalculate = [/*5, 6, 7,*/ 9, 10, 11, 12, 13, 14];
+    let editionsToCalculate = [6, 7, 9 , 8, 10, 11, 12, 13, 14];
     for (let i = 0; i < editionsToCalculate.length; i++) {
         let edData = await calculateEditionStats(editionsToCalculate[i]);
         allEditionsData.push(...edData);
@@ -380,7 +438,7 @@ async function main() {
     ];
 
     let settings = {
-        fileName: "EMSC Stats Test 5", // Name of the resulting spreadsheet
+        fileName: "EMSC Stats Test 6 - 14", // Name of the resulting spreadsheet
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
