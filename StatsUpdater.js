@@ -52,6 +52,22 @@ $.post("https://scorewiz.eu/saveOptions/participants",
     })
 */
 
+let makeTelevotePostBody = (stats) => {
+    let body = {
+        sid: 676019,
+        pass: "a6C2zZYh",
+        enable : "on"
+    };
+
+    [...stats.entries()].filter(x => x[1].isFinalist).forEach(x => {
+        const propertyName = `televote-${x[1].runningFinal}`;
+        const propertyValue = x[1].teleScore;
+        body[propertyName] = propertyValue;
+    })
+
+    return body;
+}
+
 let countryName = (abbr) => {
     if (abbr == 'uk') return 'United Kingdom';
     if (abbr == 'mr') return "Morocco";
@@ -62,7 +78,13 @@ let countryName = (abbr) => {
     if (abbr == 'nn') return "North Macedonia";
     if (abbr == 'le') return "Lebanon";
     if (abbr == 'tu') return "Tunesia";
-    return name(abbr);
+    if (abbr == 'zh') return "Czechia";
+
+    let countryName = name(abbr)
+    if (!countryName) {
+        console.log(`Can't find country for abbr ${abbr}`);
+    }
+    return countryName;
 }
 
 let numberToEditionName = edNum => {
@@ -147,20 +169,23 @@ let fillEntryDataSemi = (stats, p, idx, sf) => {
         country : entry.country,
         artist: entry.artist,
         song : entry.song,
-        sf : sf,
+        SF : sf,
         placeFinal : 0,
-        scoreFinal: 0,
+        pointsFinal: 0,
         placeSemi : 0,
-        scoreSemi: 0,
-        hod : "",
+        pointsSemi: 0,
+        HOD : "",
         hodShortName: "",
         juryScore : 0,
         teleScore : 0,
+        juryTelePtsDifference : "",
         runningSemi: idx + 1,
         runningFinal : "",
         isFinalist : "",
         numOfIndivVotesFinal : "",
         numOfIndivVotesSemi : "",
+        finalSemiPtsDifference : "",
+        finalSemiPositionDifference : "",
         isDqFinal : false,
         isDqSemi : false,
         finalPointsFrom : [],
@@ -179,20 +204,23 @@ let fillEntryDataFinal = (stats, p, idx) => {
             country : entry.country,
             artist: entry.artist,
             song : entry.song,
-            sf : "F",
+            SF : "F",
             placeFinal : 0,
-            scoreFinal: 0,
+            pointsFinal: 0,
             placeSemi : "",
-            scoreSemi: "",
-            hod : "",
+            pointsSemi: "",
+            HOD : "",
             hodShortName: "",
             juryScore : 0,
             teleScore : 0,
+            juryTelePtsDifference : "",
             runningSemi: "",
             runningFinal : idx + 1,
             isFinalist : true,
             numOfIndivVotesFinal : "",
             numOfIndivVotesSemi : "",
+            finalSemiPtsDifference : "",
+            finalSemiPositionDifference : "",
             isDqFinal : false,
             isDqSemi : false,
             finalPointsFrom : [],
@@ -229,6 +257,9 @@ let getHodFullName = (shortName, hods) => {
     if (shortName == "Christoforos Andrianos" || shortName == "Christoforos") return "Christoforos Andrianos";
     if (shortName == "Jesus" || shortName == "Jesus Santamaria Rodriguez" || shortName.includes("Jesús")) return "Jesús Santamaría Rodríguez";
     if (shortName == "Jonathan Zuñiga") return "Jonathan Zuñiga";
+    if (shortName == "Richie C") return "Richard Cox";
+    if (shortName == "Jose") return "José Mora";
+    if (shortName == "Fabio Cuau-Boukentar") return "Fabio Cuau-Boukentar";
 
     shortName = shortName.replace(".", "");
     let splitNames = shortName.split(" ");
@@ -242,10 +273,10 @@ let getHodFullName = (shortName, hods) => {
     if (potentialFullName) return potentialFullName;
 
     if (splitNames[2]) potentialFullName = serachSplitName(splitNames[2]);
-    if (potentialFullName) return potentialFullName;
+    if (potentialFullName) return "???" + potentialFullName;
 
     if (splitNames[1]) potentialFullName = serachSplitName(splitNames[1]);
-    if (potentialFullName) return potentialFullName;
+    if (potentialFullName) return "???" + potentialFullName;
 
     return "??? " + shortName;
 }
@@ -278,7 +309,7 @@ async function calculateEditionStats(edition) {
             const participant = data.participants[ptsAndSong[1]];
             const flag = participant.flag;
             const country = countryName(flag);
-            stats.get(country).scoreSemi += ptsAndSong[0];
+            stats.get(country).pointsSemi += ptsAndSong[0];
             stats.get(country).semiPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
         });
 
@@ -295,36 +326,36 @@ async function calculateEditionStats(edition) {
     Object.entries(semi2ServerData.juries).forEach(juror => calculateSemiPoints(juror, semi2ServerData));
 
     let fillSfPlaces = sf => [...stats.entries()]
-    .filter(x => x[1].sf == sf )
-    .sort((x,y) => {
-        if (x[1].isDqSemi) return 1;
-        if (y[1].isDqSemi) return -1;
-        if (y[1].scoreSemi != x[1].scoreSemi) return y[1].scoreSemi - x[1].scoreSemi;
-        if (y[1].semiPointsFrom.length != x[1].semiPointsFrom.length) return y[1].semiPointsFrom.length - x[1].semiPointsFrom.length;
+        .filter(x => x[1].SF == sf )
+        .sort((x,y) => {
+            if (x[1].isDqSemi) return 1;
+            if (y[1].isDqSemi) return -1;
+            if (y[1].pointsSemi != x[1].pointsSemi) return y[1].pointsSemi - x[1].pointsSemi;
+            if (y[1].semiPointsFrom.length != x[1].semiPointsFrom.length) return y[1].semiPointsFrom.length - x[1].semiPointsFrom.length;
 
-        let ptsDiff = (x,y,pts) => y[1].semiPointsFrom.filter(z => z.points == pts).length - x[1].semiPointsFrom.filter(z => z.points == pts).length;
-        let ptsSystem = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
+            let ptsDiff = (x,y,pts) => y[1].semiPointsFrom.filter(z => z.points == pts).length - x[1].semiPointsFrom.filter(z => z.points == pts).length;
+            let ptsSystem = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
 
-        for (let i = 0; i < ptsSystem.length; i++) {
-            const diff = ptsDiff(x,y,ptsSystem[i]);
-            console.log("Deciding by tiebreaker rule by # of " + ptsSystem[i] + " pts, countries : " + x[1].country + " " + y[1].country)
-            if (diff) return diff;
-        }
+            for (let i = 0; i < ptsSystem.length; i++) {
+                const diff = ptsDiff(x,y,ptsSystem[i]);
+                console.log("Deciding by tiebreaker rule by # of " + ptsSystem[i] + " pts, countries : " + x[1].country + " " + y[1].country)
+                if (diff) return diff;
+            }
 
-        console.log("Add a tie braking rule");
-        return 0;
-    })
-    .forEach((x,idx) => {
-        x[1].placeSemi = idx + 1;
-        const isFinalist = (idx + 1 <= 12) ? true : false;
-        x[1].isFinalist = isFinalist;
-        if (!isFinalist) {
-            x[1].juryScore = '';
-            x[1].teleScore = '';
-            x[1].scoreFinal = '';
-            x[1].placeFinal = '';
-        }
-    })
+            console.log("Add a tie braking rule");
+            return 0;
+        })
+        .forEach((x,idx) => {
+            x[1].placeSemi = idx + 1;
+            const isFinalist = (idx + 1 <= 12) ? true : false;
+            x[1].isFinalist = isFinalist;
+            if (!isFinalist) {
+                x[1].juryScore = '';
+                x[1].teleScore = '';
+                x[1].pointsFinal = '';
+                x[1].placeFinal = '';
+            }
+        })
 
     fillSfPlaces(1);
     fillSfPlaces(2);
@@ -339,19 +370,23 @@ async function calculateEditionStats(edition) {
             const flag = participant.flag;
             const country = countryName(flag);
             stats.get(country).juryScore += ptsAndSong[0];
-            stats.get(country).scoreFinal += ptsAndSong[0];
+            stats.get(country).pointsFinal += ptsAndSong[0];
             stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
         });
 
-        serverData.televote.forEach(ptsAndSong => {
-            if (ptsAndSong[0] >= 0) return;
-            const participant = serverData.participants[ptsAndSong[1]];
-            const flag = participant.flag;
-            const country = countryName(flag);
-            stats.get(country).isDqFinal = true;
-        });
+        // add disqualifications (if any) marked as negative televoting points
+        if (serverData.televote) {
+            serverData.televote.forEach(ptsAndSong => {
+                if (ptsAndSong[0] >= 0) return;
+                const participant = serverData.participants[ptsAndSong[1]];
+                const flag = participant.flag;
+                const country = countryName(flag);
+                stats.get(country).isDqFinal = true;
+            });
+        }
     });
 
+    // add televote
     Object.entries(teleServerData.juries).forEach(juror => {
         const jurorCountry = countryName(juror[1].flag);
         juror[1].votes.forEach((ptsAndSong) => {
@@ -359,59 +394,69 @@ async function calculateEditionStats(edition) {
             const flag = participant.flag;
             const country = countryName(flag);
             stats.get(country).teleScore += ptsAndSong[0];
-            stats.get(country).scoreFinal += ptsAndSong[0];
+            stats.get(country).pointsFinal += ptsAndSong[0];
             stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
         });
     });
 
+    // set final place
     [...stats.entries()]
-    .filter(x => x[1].isFinalist)
-    .sort((x,y) => {
-        if (x[1].isDqFinal) return -1;
-        if (y[1].isDqFinal) return 1;
-        if (y[1].scoreFinal != x[1].scoreFinal) return y[1].scoreFinal - x[1].scoreFinal;
-        if (y[1].finalPointsFrom.length != x[1].finalPointsFrom.length) return y[1].finalPointsFrom.length - x[1].finalPointsFrom.length;
+        .filter(x => x[1].isFinalist)
+        .sort((x,y) => {
+            if (x[1].isDqFinal) return -1;
+            if (y[1].isDqFinal) return 1;
+            if (y[1].pointsFinal != x[1].pointsFinal) return y[1].pointsFinal - x[1].pointsFinal;
+            if (y[1].finalPointsFrom.length != x[1].finalPointsFrom.length) return y[1].finalPointsFrom.length - x[1].finalPointsFrom.length;
 
-        let ptsDiff = (x,y,pts) => y[1].finalPointsFrom.filter(z => z.points == pts).length - x[1].finalPointsFrom.filter(z => z.points == pts).length;
-        let ptsSystem = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
+            let ptsDiff = (x,y,pts) => y[1].finalPointsFrom.filter(z => z.points == pts).length - x[1].finalPointsFrom.filter(z => z.points == pts).length;
+            let ptsSystem = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1];
 
-        for (let i = 0; i < ptsSystem.length; i++) {
-            const diff = ptsDiff(x,y,ptsSystem[i]);
-                console.log("Deciding by tiebreaker rule by # of " + ptsSystem[i] + " pts, countries : " + x[1].country + " " + y[1].country)
-                if (diff) return diff;
-            }
+            for (let i = 0; i < ptsSystem.length; i++) {
+                const diff = ptsDiff(x,y,ptsSystem[i]);
+                    console.log("Deciding by tiebreaker rule by # of " + ptsSystem[i] + " pts, countries : " + x[1].country + " " + y[1].country)
+                    if (diff) return diff;
+                }
 
-            console.log("Add a tie braking rule");
-            return 0;
+                console.log("Add a tie braking rule");
+                return 0;
         })
         .forEach((x,idx) => x[1].placeFinal = idx + 1);
 
-        let statsForExcel = [...stats.entries()]
-        .map(x => {
-            x[1].edition = edition;
-            x[1].name = editionName;
-            x[1].hod = getHodFullName(x[1].hodShortName, hods);
-            if (x[1].isFinalist) x[1].numOfIndivVotesFinal = x[1].finalPointsFrom.length;
-            if (x[1].sf != 'F') x[1].numOfIndivVotesSemi = x[1].semiPointsFrom.length;
-            if (x[1].isDqSemi) x[1].placeSemi = "DISQUALIFIED";
-            if (x[1].isDqFinal) x[1].placeFinal = "DISQUALIFIED";
-            return x[1];
-        })
-        .sort((x,y) => {
-            if (x.isFinalist && y.isFinalist) return x.placeFinal - y.placeFinal;
-            if (x.isFinalist) return -1;
-            if (y.isFinalist) return +1;
-            if (x.sf != y.sf) return x.sf - y.sf;
-            return x.placeSemi - y.placeSemi;
-        });
+    let statsForExcel = [...stats.entries()].map(x => {
+        x[1].edition = edition;
+        x[1].name = editionName;
+        x[1].HOD = getHodFullName(x[1].hodShortName, hods);
+        if (x[1].isFinalist) {
+            x[1].numOfIndivVotesFinal = x[1].finalPointsFrom.length;
+            x[1].juryTelePtsDifference = x[1].juryScore - x[1].teleScore;
+            if (x[1].SF != 'F') {
+                x[1].finalSemiPtsDifference = x[1].pointsFinal - x[1].pointsSemi;
+                x[1].finalSemiPositionDifference = x[1].placeFinal - x[1].placeSemi;
+            }
+        }
+        if (x[1].SF != 'F') x[1].numOfIndivVotesSemi = x[1].semiPointsFrom.length;
+        if (x[1].isDqSemi) x[1].placeSemi = "DISQUALIFIED";
+        if (x[1].isDqFinal) x[1].placeFinal = "DISQUALIFIED";
+        return x[1];
+    })
+    .sort((x,y) => {
+        if (x.isFinalist && y.isFinalist) return x.placeFinal - y.placeFinal;
+        if (x.isFinalist) return -1;
+        if (y.isFinalist) return +1;
+        if (x.SF != y.SF) return x.SF - y.SF;
+        return x.placeSemi - y.placeSemi;
+    });
 
-        return statsForExcel;
-    }
+    makeTelevotePostBody(stats);
+
+    return statsForExcel;
+}
 
 async function main() {
     let allEditionsData = [];
 
-    let editionsToCalculate = [6, 7, 9 , 8, 10, 11, 12, 13, 14];
+    // let editionsToCalculate = [15];
+    let editionsToCalculate = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
     for (let i = 0; i < editionsToCalculate.length; i++) {
         let edData = await calculateEditionStats(editionsToCalculate[i]);
         allEditionsData.push(...edData);
@@ -438,7 +483,9 @@ async function main() {
     ];
 
     let settings = {
-        fileName: "EMSC Stats Test 6 - 14", // Name of the resulting spreadsheet
+        // fileName: "Summary of edition 15", // Name of the resulting spreadsheet
+        // EMSC Stats Test 6 - 14
+        fileName: "EmscFullStats",
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options

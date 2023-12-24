@@ -60,7 +60,7 @@ stats.forEach(x => {
     if (rank <= 20) finalRunningStats[running].top20 += 1;
     if (rank == 25) finalRunningStats[running].last += 1;
 
-    const sf = x.Sf;
+    const sf = x.SF;
     if (sf == 1) finalRunningStats[running].sf1 += 1;
     else if (sf == 2) finalRunningStats[running].sf2 += 1;
     else if (sf == 'F') finalRunningStats[running].aqs += 1;
@@ -106,13 +106,13 @@ const lastEdition = stats[stats.length - 1].Edition;
 const semiParticipantsPerEdition = [...Array(lastEdition + 1).keys()].map(x => [0, 0, 0]);
 
 stats.forEach(x => {
-    const sf = x.Sf;
+    const sf = x.SF;
     if (sf == 1 || sf == 2) semiParticipantsPerEdition[x.Edition][sf] += 1;
 })
 stats.forEach(x => {
     const edition = x["Edition"];
     const runn = x['Running Semi'];
-    const patricipantsInSemi = semiParticipantsPerEdition[x.Edition][x.Sf];
+    const patricipantsInSemi = semiParticipantsPerEdition[x.Edition][x.SF];
     const runnCountedFromLast = runn - patricipantsInSemi - 1;
     const keys = [runn, runnCountedFromLast];
 
