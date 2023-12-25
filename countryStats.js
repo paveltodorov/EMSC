@@ -32,7 +32,7 @@ let pretifyPosition = (pos , qualCount) => pos <= 25 ? pos : "SF-" + (pos - 25 +
 
 const base = 0.9;
 const multiplier = 100;
-const Positions_Count = 56;
+const Positions_Count = 38;
 const Positions_Semi_Count = 24;
 
 let exponentRankPoints = rank => multiplier * Math.pow(base, rank - 1);
@@ -108,6 +108,8 @@ let countryStatsAccumulator = (acc, curr, qualCount) => {
             top10 : 0,
             top15 : 0,
             top20 : 0,
+            medalsRank: 0,
+            medalsSemiRank : 0,
             editions: []
         });
     }
@@ -254,6 +256,8 @@ export let calculateCountryRanking = (stats, from, to, qualCount, compareToPrev)
           entry.bestRankMov = lastEditionStats.bestRankMov;
 
           entry.bestRank = pretifyPosition(entry.bestRank, qualCount);
+
+          // potentially remove
           entry.editions.forEach((x,i) => {
             entry[i + " rank"] = !Number.isInteger(x.rank) ? x.rank : pretifyPosition(x.rank, qualCount);
             entry[i + " expPoints"] = x.expPoints;
@@ -264,14 +268,6 @@ export let calculateCountryRanking = (stats, from, to, qualCount, compareToPrev)
             entry[i + " bestRank"] = pretifyPosition(x.bestRank, qualCount);
             entry[i + " bestRankMov"] = x.bestRankMov;
           });
-
-          entry.positions.forEach((x, index) => {
-            entry["positions" + index] = x;
-          })
-
-          entry.positionsSemi.forEach((x, index) => {
-            entry["positionsSemi" + index] = x;
-          })
 
           return x[1];
       });
@@ -315,20 +311,41 @@ export let calculateCountryRanking = (stats, from, to, qualCount, compareToPrev)
         // countryTableKeys.push({ label: 'Best Rank after Ed. ' + i         , value: i + ' bestRank'});
     }
 
+    // set column names for positions stats
     let positionsKeys = [];
+    positionsKeys.push({label: 'Medals Pos.', value: 'medalsRank'});
     positionsKeys.push({label: 'Country', value: 'country'});
+    positionsKeys.push({label: 'Flag', value: 'flag'});
     for (let i = 1; i < Positions_Count; i++) {
-        positionsKeys.push({label: i, value: "positions" + i });
+        positionsKeys.push({label: " " + pretifyPosition(i, qualCount) + " ", value: row => row.positions[i] });
     }
+    positionsKeys.push({label: "AQ", value: row => row.positionsSemi[0] });
 
+    // set column names for positions semi stats
     let positionsSemiKeys = [];
+    positionsSemiKeys.push({label: 'Medals Pos.', value: 'medalsSemiRank'});
     positionsSemiKeys.push({label: 'Country', value: 'country'});
+    positionsSemiKeys.push({label: 'Flag', value: 'flag'});
     for (let i = 1; i < Positions_Semi_Count; i++) {
-      positionsSemiKeys.push({label: i, value: "positionsSemi" + i });
+        positionsSemiKeys.push({label: "" + i + " ", value: row => row.positionsSemi[i] });
     }
-    positionsKeys.push({label: "AQ", value: "positionsSemi" + 0 });
 
-    return {ranking: countryRankingList, keys: countryTableKeys, positionsKeys, positionsSemiKeys};
+    // cacluate sorted by positions
+    let positionsStats = [...countryRankingList].sort((x,y) => {
+        for (let i = 1; i < Positions_Count; ++i) {
+            if (x.positions[i] != y.positions[i]) return y.positions[i] - x.positions[i];
+        }
+        return 0;
+    }).map((x,i) => { x['medalsRank'] = i + 1; return x});
+
+    let positionsSemiStats = [...countryRankingList].sort((x,y) => {
+        for (let i = 1; i < Positions_Semi_Count; ++i) {
+          if (x.positionsSemi[i] != y.positionsSemi[i]) return y.positionsSemi[i] - x.positionsSemi[i];
+      }
+      return 0;
+    }).map((x,i) => { x.medalsSemiRank = i + 1; return x; });
+
+    return {ranking: countryRankingList, keys: countryTableKeys, positionsKeys, positionsStats, positionsSemiKeys, positionsSemiStats};
 };
 // console.log(countryRankingList);
 
@@ -479,12 +496,12 @@ let data = [
   {
     sheet: "CountryPositions",
     columns: countryStats.positionsKeys,
-    content: countryStats.ranking,
+    content: countryStats.positionsStats,
   },
   {
     sheet: "CountryPositionsSemi",
     columns: countryStats.positionsSemiKeys,
-    content: countryStats.ranking,
+    content: countryStats.positionsSemiStats,
   },
   // {
   //   sheet: "Children",
