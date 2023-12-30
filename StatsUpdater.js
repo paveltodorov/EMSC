@@ -94,15 +94,19 @@ let numberToEditionName = edNum => {
     return edName;
 }
 
-let getServerData = async link => {
+export let getServerData = async link => {
     // const finalJuryHtml = await axios.get(link);
     const html = await axios.request({
         method: 'GET',
         url: link,
         responseType: 'json',
         reponseEncoding: 'utf-8'
-    });
+    }).catch(err => {/*console.log(err)*/});
 
+    if (!html || !html.data) {
+        console.log(`Cannot get data for ${link}`);
+        return {};
+    }
     const finalJuryHtmlData = html.data;
     const start = finalJuryHtmlData.search('{"wiz"');
     const end = finalJuryHtmlData.search('`;');
@@ -112,11 +116,17 @@ let getServerData = async link => {
 }
 
 // let login  = asy
+
+export let getGridListFromScoreGridData = (scoreGridData) => {
+    const grids = scoreGridData[0].contents
+        .filter(x => !x.hasOwnProperty("contents"));
+    grids.push(...scoreGridData[0].contents[0].contents); // push grids from the EMSC folder
+    return grids;
+}
+
 let getLinks = edition => {
     const edName = numberToEditionName(edition);
-    const grids = scoreGridData[0].contents;
-    grids.push(...grids[0].contents); // push grids from the EMSC folder
-
+    const grids = getGridListFromScoreGridData(scoreGridData);
     const edGrids = grids.filter(x => x.title.includes(edName));
 
     const finalLink = edGrids.find(x => {
