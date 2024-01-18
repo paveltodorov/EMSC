@@ -78,9 +78,19 @@ const countryStats = calculateCountryRanking(stats, 1, 29, 10, true);
 
 let data = [
     {
-      sheet: "CountryRanking",
-      columns: countryStats.keys,
-      content: countryStats.ranking,
+        sheet: "CountryRanking",
+        columns: countryStats.keys,
+        content: countryStats.ranking,
+    },
+    {
+        sheet: "CountryPositions",
+        columns: countryStats.positionsKeys,
+        content: countryStats.positionsStats,
+    },
+    {
+        sheet: "CountryPositionsSemi",
+        columns: countryStats.positionsSemiKeys,
+        content: countryStats.positionsSemiStats,
     },
 ];
 

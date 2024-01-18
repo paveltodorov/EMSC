@@ -462,6 +462,56 @@ async function calculateEditionStats(edition) {
     return statsForExcel;
 }
 
+let caculateHodPointExchangeStats = (edData) => {
+    let finalHodExchangeStats = new Map();
+    const hods = getHods();
+    hods.forEach(leftHod => {
+        finalHodExchangeStats.set(leftHod, new Map());
+        hods.forEach(rightHods => {
+            finalHodExchangeStats.get(leftHod).set(rightHods, {sumPoints : 0, editionsCoincided: 0})
+        })
+    });
+
+    edData.forEach(entry => {
+        if (entry.isFinalist) {
+            entry.finalPointsFrom.forEach(pointsFrom => {
+                const leftHod = getHodFullName(pointsFrom.hodShortName, hods);
+                if (!finalHodExchangeStats.has(entry.HOD)) {
+                    console.log(entry.HOD);
+                    return;
+                }
+                if (!finalHodExchangeStats.get(entry.HOD).has(leftHod)) {
+                    console.log(leftHod);
+                    return;
+                }
+                finalHodExchangeStats.get(entry.HOD).get(leftHod).sumPoints += pointsFrom.points;
+                finalHodExchangeStats.get(entry.HOD).get(leftHod).editionsCoincided += 1;
+            })
+        }
+    })
+
+    let finalHodExchangeStatsList = [];
+    // [...finalHodExchangeStats.entries()].forEach(x => [...x[1].entries()].forEach( y => {
+    //     y[1].hod = x[0];
+    //     y[1].pointsFrom = y[0]
+    //     finalHodExchangeStatsList.push(y[1]);
+    // }))
+
+    [...finalHodExchangeStats.entries()].forEach(x => {
+        [...x[1].entries()].forEach( y => {
+            // y[1].hod = x[0];
+            // y[1].pointsFrom = y[0]
+
+            x[1][y[0]] = y[1].sumPoints;
+            // finalHodExchangeStatsList.push(y[1]);
+        })
+        x[1].hod = x[0];
+        finalHodExchangeStatsList.push(x[1]);
+    })
+
+    return finalHodExchangeStatsList;
+}
+
 async function main() {
     let allEditionsData = [];
 
@@ -502,7 +552,33 @@ async function main() {
         RTL: false, // Display the columns from right-to-left (the default value is false)
     }
 
-    xlsx(data, settings)
+    // xlsx(data, settings)
+
+    let hodPointExchangeStats = caculateHodPointExchangeStats(allEditionsData);
+    let hodPointExchangeKeys = Object.keys(hodPointExchangeStats[0]).map(x => {
+        let obj = {};
+        obj.label = x.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+        obj.value = x;
+        return obj;
+    });
+    let dataPointExchange = [
+        {
+            sheet: "PointExchange",
+            columns: hodPointExchangeKeys,
+            content: hodPointExchangeStats,
+        },
+    ];
+
+    let settingsPointExchange = {
+        // fileName: "Summary of edition 15", // Name of the resulting spreadsheet
+        // EMSC Stats Test 6 - 14
+        fileName: "PointExchange",
+        extraLength: 1, // A bigger number means that columns will be wider
+        writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
+        writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
+        RTL: false, // Display the columns from right-to-left (the default value is false)
+    }
+    xlsx(dataPointExchange, settingsPointExchange)
 }
 
 main();

@@ -526,7 +526,11 @@ let settings = {
   RTL: false, // Display the columns from right-to-left (the default value is false)
 }
 
-xlsx(data, settings) // uncomment to save to file
+// xlsx(data, settings) // uncomment to save to file
+
+let shortMedalStats = countryStats.positionsStats.map((entry, idx) => {
+    return {flag: entry.flag, country: entry.country, positions: entry.positions}
+});
 
 // console.log(countryRanking);
 
