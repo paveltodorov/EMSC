@@ -53,12 +53,12 @@ statsUnscFormat.forEach(entry => {
         if (entry.FINAL == "---") {
             newEntry['Place Final'] = "";
             newEntry['Points Final'] = "";
-        } else if (entry.FINAL.includes("isq")) {
+        } else if (entry.FINAL.toLowerCase().includes("isq")) {
             newEntry['Place Final'] = "DISQUALIFIED";
             newEntry['Points Final'] = "DISQUALIFIED";
             newEntry['Place Semi'] = "DISQUALIFIED";
             newEntry['Points Semi'] = "DISQUALIFIED";
-        } else if (entry.FINAL.includes("ith")) {
+        } else if (entry.FINAL.toLowerCase().includes("ith")) {
             newEntry['Place Final'] = "WITHDRAWN";
             newEntry['Points Final'] = "WITHDRAWN";
             newEntry['Place Semi'] = "WITHDRAWN";
@@ -74,7 +74,7 @@ statsUnscFormat.forEach(entry => {
 
 console.log(statsUnscFormat);
 
-const countryStats = calculateCountryRanking(stats, 1, 29, 10, true);
+const countryStats = calculateCountryRanking(stats, 1, 30, 10, true);
 
 let data = [
     {
