@@ -37,7 +37,7 @@ countries.all.forEach(countryEntry => {
 
 let parseTitle = (title, videoOwner) => {
     // let regex = /([^-–|]+)[ ]*[-–|][ ]*([\p{Latin}\wЁёА-я ]+).+/;
-    let regex = /([^-–|[]+)[ ]*[-–|[][ ]*([^-–|()\[]+).*/;
+    let regex = /([^-–|[•]+)[ ]*[-–|[•][ ]*([^-–|()\[•]+).*/;
 
     let m = title.match(regex);
     if (!m || !m[1] || !m[2]) {
@@ -100,7 +100,7 @@ async function main() {
     const conf = dotenv.config().parsed;
     const key = conf['GOOGLE_API_TOKEN'];
     const playlistItemsApi = "https://www.googleapis.com/youtube/v3/playlistItems";
-    const playlistId = "PL2X_tHrqOyT12zqFunXhK1mMhXh5nt0sm";
+    const playlistId = "PL2X_tHrqOyT1qpL5AKvawTpIpUtXPp8ma";
 
     const itemsUri = `${playlistItemsApi}?key=${key}&part=snippet&playlistId=${playlistId}&maxResults=50`;
     let html = await axios.get(itemsUri);
@@ -144,7 +144,7 @@ async function main() {
     //     console.log(error);
     //   });
     // // 'PHPSESSID=91pm0e0eu38tthn022k71qoaa3; path=/'
-    updateScoregridParticpants(674114, "5tVfF5BC", songsData);
+    updateScoregridParticpants(689470, "9RsQMTx9", songsData);
 
     // songsData;
     // countries;
