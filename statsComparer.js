@@ -36,7 +36,7 @@ const gioStatsFileName = "EMSC STATISTICS UPDATED.xlsx";
 let gioStats = readExcelSheet1(gioStatsFileName);
 
 gioStats = gioStats
-    .filter(x => x.Edition >= 6)
+    // .filter(x => x.Edition >= 6)
     .sort((x,y) => {
         if (x.Edition != y.Edition) return x.Edition - y.Edition;
         if ((x["Place Final"] && y["Place Final"])) return x["Place Final"] - y["Place Final"];
@@ -80,6 +80,10 @@ let compare = (i,j) => {
     }
 
     if (i["SF"] != j["SF"]) {
+        console.log(`${i.Edition} ${i.Country} ${j.Edition} ${j.Country}`);
+        return;
+    }
+    if (i["HOD"] != j["HOD"]) {
         console.log(`${i.Edition} ${i.Country} ${j.Edition} ${j.Country}`);
         return;
     }

@@ -42,6 +42,9 @@ stats.forEach(x => {
         || x['Place Final'] == 'DISQUALIFIED') return;
 
     const running = x['Running Final'] - 1;
+    if (!finalRunningStats[running]) {
+        console.log("error");
+    }
     finalRunningStats[running].sumPoints += x['Points Final'];
     // finalRunningStats[running].sumPoints += x['Points Final'];
 

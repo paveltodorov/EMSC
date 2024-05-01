@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Ranking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ebfc00;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: center;
+            padding: 15px;
+            color: #fff; /* White text */
+        }
+        th {
+            background-color: #020081; /* Darker background */
+            font-weight: bold;
+        }
+        .title-row {
+            background-color: #ff00ff; /* Purple background */
+        }
+        .climbers-row {
+            background-color: #00ffff; /* Cyan background */
+        }
+        tr:nth-child(even) {
+            background-color: #4586ff; /* Darker background */
+        }
+        tr:nth-child(odd) {
+            background-color: #0400ff; /* Darker background */
+        }
+        img {
+            width: 30px;
+            height: auto;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        .rank {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .country {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .improvement {
+            font-weight: bold;
+        }
+        .positive {
+            color: #01ff0a;
+        }
+        .negative {
+            color: #ff0800;
+        }
+        .points {
+            font-weight: bold;
+        }
+        .table-title {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Country Ranking</h2>
+
+    <div class="table-wrapper" id="top10-wrapper">
+        <h3 class="table-title">Top 10</h3>
+        <table id="top10-table">
+            <tr>
+                <th>Rank</th>
+                <th>Movement</th>
+                <th>Flag</th>
+                <th>Country</th>
+                <th>Points</th>
+            </tr>
+        </table>
+    </div>
+
+    <div class="table-wrapper" id="climbers-wrapper">
+        <h3 class="table-title">Highest Climbers</h3>
+        <table id="climbers-table">
+            <tr>
+                <th>Rank</th>
+                <th>Movement</th>
+                <th>Flag</th>
+                <th>Country</th>
+                <th>Points</th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    const countries = [
+        { rank: 1, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/sm.png", country: "San Marino", points: "61,03" },
+        { rank: 2, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/gb.png", country: "United Kingdom", points: "47,09" },
+        { rank: 3, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/it.png", country: "Italy", points: "46,97" },
+        { rank: 4, improvement: -1, flag: "https://flagpedia.net/data/flags/w580/ie.png", country: "Ireland", points: "44,01" },
+        { rank: 5, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/dk.png", country: "Denmark", points: "42,73" },
+        { rank: 6, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/sk.png", country: "Slovakia", points: "42,14" },
+        { rank: 7, improvement: 5, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "37,22" },
+        { rank: 8, improvement: 2, flag: "https://flagpedia.net/data/flags/w580/de.png", country: "Germany", points: "36,06" },
+        { rank: 9, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/au.png", country: "Australia", points: "35,47" },
+        { rank: 10, improvement: -2, flag: "https://flagpedia.net/data/flags/w580/ua.png", country: "Ukraine", points: "35,40" },
+        { rank: 21, improvement: 11, flag: "https://flagpedia.net/data/flags/w580/is.png", country: "Iceland", points: "27,83" },
+        { rank: 15, improvement: 8, flag: "https://flagpedia.net/data/flags/w580/no.png", country: "Norway", points: "29,88" },
+        { rank: 7, improvement: 5, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "37,22" }
+    ];
+
+    const top10 = countries.slice(0, 10);
+    const climbers = countries.slice(10);
+
+    const top10Table = document.getElementById("top10-table");
+    const climbersTable = document.getElementById("climbers-table");
+
+    top10.forEach(country => {
+        const row = top10Table.insertRow();
+        row.innerHTML = `
+            <td class="rank">${country.rank}</td>
+            <td class="improvement ${country.improvement === 0 ? 'no-movement' : (country.improvement > 0 ? 'positive' : 'negative')}">${country.improvement === 0 ? '=' : (country.improvement > 0 ? '+' + country.improvement : country.improvement)}</td>
+            <td><img src="${country.flag}" alt="${country.country} Flag"></td>
+            <td class="country">${country.country}</td>
+            <td class="points">${country.points}</td>
+        `;
+    });
+
+    climbers.forEach(country => {
+        const row = climbersTable.insertRow();
+        row.classList.add("climbers-row");
+        row.innerHTML = `
+            <td class="rank">${country.rank}</td>
+            <td class="improvement ${country.improvement === 0 ? 'no-movement' : (country.improvement > 0 ? 'positive' : 'negative')}">${country.improvement === 0 ? '=' : (country.improvement > 0 ? '+' + country.improvement : country.improvement)}</td>
+            <td><img src="${country.flag}" alt="${country.country} Flag"></td>
+            <td class="country">${country.country}</td>
+            <td class="points">${country.points}</td>
+        `;
+    });
+</script>
+
+</body>
+</html>

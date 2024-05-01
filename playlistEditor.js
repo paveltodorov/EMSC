@@ -100,7 +100,8 @@ async function main() {
     const conf = dotenv.config().parsed;
     const key = conf['GOOGLE_API_TOKEN'];
     const playlistItemsApi = "https://www.googleapis.com/youtube/v3/playlistItems";
-    const playlistId = "PL2X_tHrqOyT1qpL5AKvawTpIpUtXPp8ma";
+    // const playlistId = "PL2X_tHrqOyT3pjbXvov_QPLImsqZHX2gj";
+    const playlistId = "PL2X_tHrqOyT3MvhyCgTCMkZH8hw12VOc-"
 
     const itemsUri = `${playlistItemsApi}?key=${key}&part=snippet&playlistId=${playlistId}&maxResults=50`;
     let html = await axios.get(itemsUri);
@@ -144,7 +145,7 @@ async function main() {
     //     console.log(error);
     //   });
     // // 'PHPSESSID=91pm0e0eu38tthn022k71qoaa3; path=/'
-    updateScoregridParticpants(689470, "9RsQMTx9", songsData);
+    updateScoregridParticpants(709449, "ztAPqW39", songsData);
 
     // songsData;
     // countries;

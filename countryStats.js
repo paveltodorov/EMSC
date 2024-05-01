@@ -39,36 +39,35 @@ let exponentRankPoints = rank => multiplier * Math.pow(base, rank - 1);
 // for (i = 1; i < 50; i++) {
 //   console.log(exponentRankPoints(i));
 // }
+const sortCriteria_t = {
+  sum : "sum",
+  average : "average",
+  expSum : "expSum",
+  expAverage : "expAverage",
+}
 
-const pot1 = new Set(["France" , "Germany" , "Italy" , "Russia" , "Spain" , "Sweden" , "United Kingdom"]);
-const pot2 = new Set(["Australia", "Belgium", "Denmark", "Finland", "Iceland", "Ireland", "Israel", "The Netherlands", "Norway", "Turkey", /*..*/ "Türkiye"]);
-const pot3 = new Set(["Andorra", "Austria", "Cyprus", "Greece", "Luxembourg", "Malta", "Monaco", "Portugal", "San Marino", "Switzerland" ]);
-const pot4 = new Set(["Croatia", "Estonia", "Hungary", "Latvia", "Lithuania", "Poland", "Romania", "Slovenia", "Serbia", "Ukraine"]);
-const pot5 = new Set(["Albania", "Belarus", "Bosnia and Herzegovina", "Bulgaria", "Czechia", "Kazhakstan",  /* ... */ 'Kazakhstan',
+
+const pots = [];
+pots[1] = new Set(["France" , "Germany" , "Italy" , "Russia" , "Spain" , "Sweden" , "United Kingdom"]);
+pots[2] = new Set(["Australia", "Belgium", "Denmark", "Finland", "Iceland", "Ireland", "Israel", "The Netherlands", "Norway", "Turkey", /*..*/ "Türkiye", "Netherlands"]);
+pots[3] = new Set(["Andorra", "Austria", "Cyprus", "Greece", "Luxembourg", "Malta", "Monaco", "Portugal", "San Marino", "Switzerland" ]);
+pots[4] = new Set(["Croatia", "Estonia", "Hungary", "Latvia", "Lithuania", "Poland", "Romania", "Slovenia", "Serbia", "Ukraine"]);
+pots[5] = new Set(["Albania", "Belarus", "Bosnia and Herzegovina", "Bulgaria", "Czechia", "Kazhakstan",  /* ... */ 'Kazakhstan',
   "Moldova", "Montenegro", "North Macedonia", "Slovakia"
 ]);
-const pot6 = new Set(["Algeria", "Armenia", "Azerbaijan", "Egypt", "Georgia", "Jordan", "Lebanon", "Lybia", "Morocco", "Tunesia" , /* ... */ "Tunisia"]);
+pots[6] = new Set(["Algeria", "Armenia", "Azerbaijan", "Egypt", "Georgia", "Jordan", "Lebanon", "Lybia", "Morocco", "Tunesia" , /* ... */ "Tunisia"]);
 
-let getPot = country => {
-    if (pot1.has(country)) return 'pot1';
-    if (pot2.has(country)) return 'pot2';
-    if (pot3.has(country)) return 'pot3';
-    if (pot4.has(country)) return 'pot4';
-    if (pot5.has(country)) return 'pot5';
-    if (pot6.has(country)) return 'pot6';
-    console.log(`Unknown pot for ${country}`);
+let getPotDigit = country => {
+    for (let i = 1; i <= 6; i++) {
+        if (pots[i].has(country)) return i;
+    }
+
+    console.log(country);
     return "unknown";
 }
 
-let getPotDigit = country => {
-    if (pot1.has(country)) return 1;
-    if (pot2.has(country)) return 2;
-    if (pot3.has(country)) return 3;
-    if (pot4.has(country)) return 4;
-    if (pot5.has(country)) return 5;
-    if (pot6.has(country)) return 6;
-    console.log(country);
-    return "unknown";
+export let getCountries = () => {
+    return pots.flatMap(x => Array.from(x));
 }
 
 const workbook = readFile(fileName);
@@ -170,24 +169,25 @@ let countryStatsAccumulator = (acc, curr, qualCount) => {
     return acc;
 }
 
-let countryStatsSorter = (x,y) => {
+let countryStatsSorter = (x,y, sortCriteria) => {
     let diff = y[1].averageExpPoints - x[1].averageExpPoints;
     // console.log("diff " + diff);
-    if (diff > 0.001 || diff < -0.001) return diff;
+    if ((!sortCriteria || sortCriteria == sortCriteria_t.expAverage)
+        && (diff > 0.001 || diff < -0.001)) return diff;
 
     // console.log("Tie breaker rule: sum of expPoints " + y[1].expPoints);
     diff = y[1].expPoints - x[1].expPoints;
     // console.log("diff " + diff);
-    if (diff > 0.001 || diff < -0.001) return diff;
+    if (sortCriteria == sortCriteria_t.expSum && (diff > 0.001 || diff < -0.001)) return diff;
 
     diff = y[1].averagePoints - x[1].averagePoints;
     // console.log("diff " + diff);
-    if (diff > 0.001 || diff < -0.001) return diff;
+    if (sortCriteria == sortCriteria_t.average && (diff > 0.001 || diff < -0.001)) return diff;
 
     // console.log("Tie breaker rule: sum points " +  x[1].sumPoints);
     diff = y[1].sumPoints - x[1].sumPoints;
     // console.log("diff " + diff);
-    if (diff > 0.001 || diff < -0.001) return diff;
+    if (sortCriteria == sortCriteria_t.sum && (diff > 0.001 || diff < -0.001)) return diff;
 
     // console.log("Tie breaker rule: pot " + x[1].country + " " + y[1].country);
     diff = getPotDigit(y[1].country) - getPotDigit(x[1].country);
@@ -203,7 +203,7 @@ let countryStatsSorter = (x,y) => {
 
 
 // country ranking
-export let calculateCountryRanking = (stats, from, to, qualCount, compareToPrev) => {
+export let calculateCountryRanking = (stats, from, to, qualCount, compareToPrev, sortCriteria) => {
     let countryRanking = new Map();
     for (let edition = from; edition <= to; edition++) {
         countryRanking = stats
@@ -220,7 +220,7 @@ export let calculateCountryRanking = (stats, from, to, qualCount, compareToPrev)
         });
 
         countryRanking = new Map([...countryRanking.entries()]
-            .sort(countryStatsSorter)
+            .sort((x, y) => countryStatsSorter(x, y, sortCriteria))
             .map((x, pos) => {
                 if (!x[1].editions[edition]) x[1].editions[edition] =  { rank : undefined, expPoints : undefined,  accAvgExpPoints : 0, accExpPoints : 0, rankAfterEdition : 0, rankMov: "-", bestRank: "", bestRankMov : ""};
                 x[1].editions[edition].accAvgExpPoints = x[1].averageExpPoints;
@@ -303,9 +303,9 @@ export let calculateCountryRanking = (stats, from, to, qualCount, compareToPrev)
     for (let i = to; i >= from ; i--) {
         countryTableKeys.push({ label: 'Ed. ' + i + ' Rank',             value: i + ' rank'});
         countryTableKeys.push({ label: 'Ed. ' + i + ' Exp. Pts.',        value: i + ' expPoints'      , format: "#,##0.00" });
-        // countryTableKeys.push({ label: 'Avg. Exp. Pts. aft. E'+ i , value: i + ' accAvgExpPoints', format: "#,##0.00"});
         countryTableKeys.push({ label: 'C. Pos. aft. E'       + i   , value: i + ' rankAfterEdition'});
         countryTableKeys.push({ label: 'C. Pos. Mov. aft. E'  + i   , value: i + ' rankMov'});
+        // countryTableKeys.push({ label: 'Avg. Exp. Pts. aft. E'+ i , value: i + ' accAvgExpPoints', format: "#,##0.00"});
         // countryTableKeys.push({ label: 'Rank impr. af. E'    + i   , value: i + ' bestRankMov'});
         // countryTableKeys.push({ label: 'Exp. Pts. after Ed. ' + i         , value: i + ' accExpPoints', format: "#,##0.00"});
         // countryTableKeys.push({ label: 'Best Rank after Ed. ' + i         , value: i + ' bestRank'});
@@ -460,10 +460,11 @@ function calculatePotRanking(countryStats) {
 }
 
 // console.log(potRanking);
-const countryStats = calculateCountryRanking(stats, 1, 15, 12, true);
+const countryStats = calculateCountryRanking(stats, 1, 17, 12, true);
 const countryStats2021 = calculateCountryRanking(stats, 1, 5, 12, true);
 const countryStats2022 = calculateCountryRanking(stats, 6, 10, 12, true);
 const countryStats2023 = calculateCountryRanking(stats, 11, 15, 12, true);
+const countryStats2024 = calculateCountryRanking(stats, 16, 17, 12, true);
 // console.log(countryStats)
 
 const potStats = calculatePotRanking(countryStats.ranking);
@@ -487,6 +488,11 @@ let data = [
     sheet: "CountryRanking2023",
     columns: countryStats2023.keys,
     content: countryStats2023.ranking,
+  },
+  {
+    sheet: "CountryRanking2024",
+    columns: countryStats2024.keys,
+    content: countryStats2024.ranking,
   },
   {
     sheet: "PotRanking",
@@ -519,14 +525,14 @@ let data = [
 // console.log(data);
 
 let settings = {
-  fileName: "CountryRankingAfterE15", // Name of the resulting spreadsheet
+  fileName: "CountryRankingAfterE17", // Name of the resulting spreadsheet
   extraLength: 1, // A bigger number means that columns will be wider
   writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
   writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
   RTL: false, // Display the columns from right-to-left (the default value is false)
 }
 
-// xlsx(data, settings) // uncomment to save to file
+xlsx(data, settings) // uncomment to save to file
 
 let shortMedalStats = countryStats.positionsStats.map((entry, idx) => {
     return {flag: entry.flag, country: entry.country, positions: entry.positions}

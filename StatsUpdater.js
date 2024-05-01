@@ -8,6 +8,7 @@ import axios from "axios"
 import xlsx from "json-as-xlsx";
 import { name } from 'country-emoji';
 import { scoreGridData } from './ScoreGrids.js';
+import { getCountries } from './countryStats.js';
 
 /*
 POST
@@ -54,8 +55,8 @@ $.post("https://scorewiz.eu/saveOptions/participants",
 
 let makeTelevotePostBody = (stats) => {
     let body = {
-        sid: 676019,
-        pass: "a6C2zZYh",
+        sid: 692246,
+        pass: "4ubK8uhF",
         enable : "on"
     };
 
@@ -76,13 +77,20 @@ let countryName = (abbr) => {
     if (abbr == 'gg') return "Georgia";
     if (abbr == 'md') return "Moldova";
     if (abbr == 'nn') return "North Macedonia";
+    if (abbr == 'mk') return "North Macedonia";
     if (abbr == 'le') return "Lebanon";
-    if (abbr == 'tu') return "Tunesia";
+    if (abbr == 'tu') return "Tunisia"; //
     if (abbr == 'zh') return "Czechia";
+    if (abbr == 'ch') return "Switzerland";
 
     let countryName = name(abbr)
     if (!countryName) {
         console.log(`Can't find country for abbr ${abbr}`);
+        if (countryName == "") return "Switzerland"; // assuming that this is the error in edition 2104 with the swiss flag
+        if (countryName == "zz") {
+            return "";
+        }
+        return abbr;
     }
     return countryName;
 }
@@ -129,22 +137,29 @@ let getLinks = edition => {
     const grids = getGridListFromScoreGridData(scoreGridData);
     const edGrids = grids.filter(x => x.title.includes(edName));
 
-    const finalLink = edGrids.find(x => {
+    const finalScoreboard = edGrids.find(x => {
         const title = x.title.toLowerCase();
         return title.includes("final") && !title.includes("tele") && !title.includes("semi");
-    }).data.menu.view;
-    const teleLink = edGrids.find(x => {
+    });
+    const finalLink = finalScoreboard && finalScoreboard.data.menu.view;
+
+    const teleScoreoard = edGrids.find(x => {
         const title = x.title.toLowerCase();
         return title.includes("final") && title.includes("tele");
-    }).data.menu.view;
-    const semi1Link = edGrids.find(x => {
+    });
+    const teleLink = teleScoreoard && teleScoreoard.data.menu.view;
+
+    const semi1Scoreboard = edGrids.find(x => {
         const title = x.title.toLowerCase();
         return title.includes("semi final 1");
-    }).data.menu.view;
-    const semi2Link = edGrids.find(x => {
+    })
+    const semi1Link = semi1Scoreboard && semi1Scoreboard.data.menu.view;
+
+    const semi2Scoreboard = edGrids.find(x => {
         const title = x.title.toLowerCase();
         return title.includes("semi final 2");
-    }).data.menu.view;
+    })
+    const semi2Link = semi2Scoreboard.data.menu.view;
 
     const links = {finalLink, teleLink, semi1Link, semi2Link}
     return links;
@@ -159,10 +174,16 @@ let getEntryData = p => {
         regex = /(\w+) \\\/[ ]*(.+) - (.+)/
         m = p[1].name.match(regex);
         if (!m) {
-            regex = /\((\w+)\) (.+)[ ]*- (.+)/
+            regex = /\((\w +)\) (.+)[ ]*- (.+)/
             m = p[1].name.match(regex);
             if (!m) {
-                console.log("---");
+                regex = /(.+) \((\w+)\)[ ]*/
+                m = p[1].name.match(regex);
+                if (!m) {
+                    console.log("Еrror in parsing entry data");
+                    return {country, artist: "", song : ""};
+                }
+                return {country, artist: m[2], song : p[1].sponsor};
             }
         }
         return {country, artist: m[2], song : m[3]};
@@ -173,6 +194,9 @@ let getEntryData = p => {
 }
 let fillEntryDataSemi = (stats, p, idx, sf) => {
     const entry = getEntryData(p);
+    if (!entry.country) {
+        entry.country = "Switzerland"; //compensation for the mistake in edition 2104
+    }
     stats.set(entry.country, {
         edition: "",
         name: "",
@@ -239,6 +263,8 @@ let fillEntryDataFinal = (stats, p, idx) => {
     }
     else {
         stats.get(entry.country).runningFinal = idx + 1;
+        if (!stats.get(entry.country).artist) stats.get(entry.country).artist = entry.artist;
+        if (!stats.get(entry.country).song) stats.get(entry.country).song = entry.song;
     }
 }
 
@@ -264,12 +290,29 @@ let getHodFullName = (shortName, hods) => {
     if (shortName == "Michael" || shortName == "Mike") return "Michalis Terzis";
     if (shortName == "Luís Coelho") return "Luís Coelho";
     if (shortName == "The Lady Cru") return "Keiron Lynch";
-    if (shortName == "Christoforos Andrianos" || shortName == "Christoforos") return "Christoforos Andrianos";
-    if (shortName == "Jesus" || shortName == "Jesus Santamaria Rodriguez" || shortName.includes("Jesús")) return "Jesús Santamaría Rodríguez";
+    if (shortName == "Christoforos Andrianos" || shortName == "Christoforos"
+        || shortName == "Christoph" || shortName == "Christophoros Andrianos") return "Christoforos Andrianos";
+    if (shortName == "Jesus" || shortName == "Jesus Santamaria Rodriguez"
+        || shortName.includes("Jesús") || shortName == "Jesus Santmaria Rodriguez") return "Jesús Santamaría Rodríguez";
     if (shortName == "Jonathan Zuñiga") return "Jonathan Zuñiga";
     if (shortName == "Richie C") return "Richard Cox";
     if (shortName == "Jose") return "José Mora";
-    if (shortName == "Fabio Cuau-Boukentar") return "Fabio Cuau-Boukentar";
+    if (shortName == "Fabio Cuau-Boukentar") return "Fábio Cuau-Boukentar";
+    if (shortName == "Fabiomassimo") return "FabioMassimo Falchi";
+    if (shortName == "SMOKING" || shortName == "maurice") return "Maurice Dupont";
+    if (shortName == "Sven Cheese :-)") return "Sven Van der Lelie";
+    if (shortName == "Tom") return "Tomislav Roso"; // in edition 6, 7, 10, 12 is Tomislav Roso
+    // in edition 9 is Tom Jan
+    if (shortName == "Sven Van der Lelie") return "Sven van der Lelie";
+    if (shortName == "Sven") return "Sven van der Lelie";
+    if (shortName == "Sve") return "Sven Biwald";
+    if (shortName == "joseph cruz") return "Joseph Cruz";
+    if (shortName == "Freddie aka Rich C.") return "Richard Cox";
+    if (shortName == "john blue") return "John Blue";
+    if (shortName == "Chris S.") return "Christian Sandmann";
+    if (shortName == "Fabio Cuau Boukentar") return "Fábio Cuau-Boukentar";
+    if (shortName == "Stefan") return "Stefano Di Betta";
+
 
     shortName = shortName.replace(".", "");
     let splitNames = shortName.split(" ");
@@ -297,15 +340,19 @@ async function calculateEditionStats(edition) {
     const links = getLinks(edition);
 
     const serverData = await getServerData(links.finalLink);
-    const teleServerData = await getServerData(links.teleLink);
+    const teleServerData = links.teleLink && await getServerData(links.teleLink);
     const semi1ServerData = await getServerData(links.semi1Link);
     const semi2ServerData = await getServerData(links.semi2Link);
+    // const serverData = await getServerData("https://scorewiz.eu/scoreboard/sheet/709449/emsc-2402---semi-final-1/ztAPqW39")
+    // const teleServerData = undefined
+    // const semi1ServerData = undefined;
+    // const semi2ServerData = undefined;
 
     let stats = new Map();
     let editionName = "EMSC " + numberToEditionName(edition);
 
-    Object.entries(semi1ServerData.participants).forEach((p, idx) => fillEntryDataSemi(stats, p, idx, 1));
-    Object.entries(semi2ServerData.participants).forEach((p, idx) => fillEntryDataSemi(stats, p, idx, 2));
+    if (semi1ServerData) Object.entries(semi1ServerData.participants).forEach((p, idx) => fillEntryDataSemi(stats, p, idx, 1));
+    if (semi2ServerData) Object.entries(semi2ServerData.participants).forEach((p, idx) => fillEntryDataSemi(stats, p, idx, 2));
     Object.entries(serverData.participants).forEach((p, idx) => fillEntryDataFinal(stats, p, idx, 2));
 
     // calculate semi points
@@ -318,7 +365,11 @@ async function calculateEditionStats(edition) {
         juror[1].votes.forEach((ptsAndSong) => {
             const participant = data.participants[ptsAndSong[1]];
             const flag = participant.flag;
-            const country = countryName(flag);
+            const country = countryName(flag) || "Switzerland";
+
+            if (!stats.get(country)) {
+                console.log("Failed to get country stats");
+            }
             stats.get(country).pointsSemi += ptsAndSong[0];
             stats.get(country).semiPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
         });
@@ -332,8 +383,8 @@ async function calculateEditionStats(edition) {
             })
         }
     }
-    Object.entries(semi1ServerData.juries).forEach(juror => calculateSemiPoints(juror, semi1ServerData));
-    Object.entries(semi2ServerData.juries).forEach(juror => calculateSemiPoints(juror, semi2ServerData));
+    if (semi1ServerData) Object.entries(semi1ServerData.juries).forEach(juror => calculateSemiPoints(juror, semi1ServerData));
+    if (semi2ServerData) Object.entries(semi2ServerData.juries).forEach(juror => calculateSemiPoints(juror, semi2ServerData));
 
     let fillSfPlaces = sf => [...stats.entries()]
         .filter(x => x[1].SF == sf )
@@ -373,13 +424,22 @@ async function calculateEditionStats(edition) {
     // calculate final points
     Object.entries(serverData.juries).forEach(juror => {
         const jurorCountry = countryName(juror[1].flag);
-        stats.get(jurorCountry).hodShortName = juror[1].name; // needed only for the automatic qualifier
+        if (stats.get(jurorCountry)) {
+            stats.get(jurorCountry).hodShortName = juror[1].name; // needed only for the automatic qualifier
+        } else {
+            console.log("Can't load the country of the juror");
+        }
 
         juror[1].votes.forEach((ptsAndSong) => {
             const participant = serverData.participants[ptsAndSong[1]];
             const flag = participant.flag;
             const country = countryName(flag);
-            stats.get(country).juryScore += ptsAndSong[0];
+
+            // if (!stats.get(jurorCountry).isFinalist)
+
+            if (stats.get(jurorCountry).isFinalist) stats.get(country).juryScore += ptsAndSong[0];
+            else stats.get(country).teleScore += ptsAndSong[0];
+
             stats.get(country).pointsFinal += ptsAndSong[0];
             stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
         });
@@ -397,24 +457,26 @@ async function calculateEditionStats(edition) {
     });
 
     // add televote
-    Object.entries(teleServerData.juries).forEach(juror => {
-        const jurorCountry = countryName(juror[1].flag);
-        juror[1].votes.forEach((ptsAndSong) => {
-            const participant = teleServerData.participants[ptsAndSong[1]];
-            const flag = participant.flag;
-            const country = countryName(flag);
-            stats.get(country).teleScore += ptsAndSong[0];
-            stats.get(country).pointsFinal += ptsAndSong[0];
-            stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
+    if (teleServerData && teleServerData.juries) {
+        Object.entries(teleServerData.juries).forEach(juror => {
+            const jurorCountry = countryName(juror[1].flag);
+            juror[1].votes.forEach((ptsAndSong) => {
+                const participant = teleServerData.participants[ptsAndSong[1]];
+                const flag = participant.flag;
+                const country = countryName(flag);
+                stats.get(country).teleScore += ptsAndSong[0];
+                stats.get(country).pointsFinal += ptsAndSong[0];
+                stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
+            });
         });
-    });
+    }
 
     // set final place
     [...stats.entries()]
         .filter(x => x[1].isFinalist)
         .sort((x,y) => {
-            if (x[1].isDqFinal) return -1;
-            if (y[1].isDqFinal) return 1;
+            if (x[1].isDqFinal) return 10000;
+            if (y[1].isDqFinal) return -10000;
             if (y[1].pointsFinal != x[1].pointsFinal) return y[1].pointsFinal - x[1].pointsFinal;
             if (y[1].finalPointsFrom.length != x[1].finalPointsFrom.length) return y[1].finalPointsFrom.length - x[1].finalPointsFrom.length;
 
@@ -441,7 +503,7 @@ async function calculateEditionStats(edition) {
             x[1].juryTelePtsDifference = x[1].juryScore - x[1].teleScore;
             if (x[1].SF != 'F') {
                 x[1].finalSemiPtsDifference = x[1].pointsFinal - x[1].pointsSemi;
-                x[1].finalSemiPositionDifference = x[1].placeFinal - x[1].placeSemi;
+                x[1].finalSemiPositionDifference = x[1].placeSemi - x[1].placeFinal;
             }
         }
         if (x[1].SF != 'F') x[1].numOfIndivVotesSemi = x[1].semiPointsFrom.length;
@@ -462,77 +524,127 @@ async function calculateEditionStats(edition) {
     return statsForExcel;
 }
 
+let pointsToPlace = (points) => {
+    if (points == 12) return 1;
+    if (points == 10) return 2;
+    return 11 - points;
+}
+
 let caculateHodPointExchangeStats = (edData) => {
-    let finalHodExchangeStats = new Map();
+    // initialize HoD exchange map
+    let hodExchangeStats = new Map();
     const hods = getHods();
     hods.forEach(leftHod => {
-        finalHodExchangeStats.set(leftHod, new Map());
+        hodExchangeStats.set(leftHod, new Map());
         hods.forEach(rightHods => {
-            finalHodExchangeStats.get(leftHod).set(rightHods, {sumPoints : 0, editionsCoincided: 0})
+            hodExchangeStats.get(leftHod).set(rightHods,
+                {
+                    sumPointsFinal : 0,
+                    avgPointsFinal : 0,
+                    editionsPossibleExchange: 0,
+                    relativePosSum: 0,
+                    relativePosAvg: 0,
+                })
         })
     });
 
+    let participatingHodsPerEdition = new Object();
+    edData.forEach(entry => {
+        if (!participatingHodsPerEdition[entry.edition]) {
+            participatingHodsPerEdition[entry.edition] = new Set();
+        }
+        participatingHodsPerEdition[entry.edition].add(entry.HOD);
+    });
+
+    // calculate HoD exchange map
     edData.forEach(entry => {
         if (entry.isFinalist) {
             entry.finalPointsFrom.forEach(pointsFrom => {
-                const leftHod = getHodFullName(pointsFrom.hodShortName, hods);
-                if (!finalHodExchangeStats.has(entry.HOD)) {
+                const giverHod = getHodFullName(pointsFrom.hodShortName, hods);
+                if (entry.HOD === giverHod) {
+                    console.log(`The Hod has voted for themselves, hod: ${giverHod}`)
+                    return;
+                }
+                if (!hodExchangeStats.has(entry.HOD)) {
                     console.log(entry.HOD);
                     return;
                 }
-                if (!finalHodExchangeStats.get(entry.HOD).has(leftHod)) {
-                    console.log(leftHod);
+                if (!hodExchangeStats.get(entry.HOD).has(giverHod)) {
+                    console.log(giverHod);
                     return;
                 }
-                finalHodExchangeStats.get(entry.HOD).get(leftHod).sumPoints += pointsFrom.points;
-                finalHodExchangeStats.get(entry.HOD).get(leftHod).editionsCoincided += 1;
+                hodExchangeStats.get(entry.HOD).get(giverHod).sumPointsFinal += pointsFrom.points;
+
+                const ptsRespectToOthers = Math.min(entry.placeSemi, 11) - pointsToPlace(pointsFrom.points);
+                hodExchangeStats.get(entry.HOD).get(giverHod).relativePosSum += ptsRespectToOthers;
+            });
+
+            participatingHodsPerEdition[entry.edition].forEach(hodVotedName => {
+                const giverHod = getHodFullName(hodVotedName, hods);
+                if (entry.HOD === giverHod) return;
+                if (!hodExchangeStats.has(entry.HOD)) {
+                    console.log(entry.HOD);
+                    return;
+                }
+                if (!hodExchangeStats.get(entry.HOD).has(giverHod)) {
+                    console.log(giverHod);
+                    return;
+                }
+                hodExchangeStats.get(entry.HOD).get(giverHod).editionsPossibleExchange += 1;
+            });
+        }
+    });
+    hods.forEach(leftHod => {
+        hods.forEach(rightHod => {
+            let hodStats = hodExchangeStats.get(leftHod).get(rightHod);
+            hodStats.avgPointsFinal = hodStats.editionsPossibleExchange ? hodStats.sumPointsFinal / hodStats.editionsPossibleExchange : 0;
+            hodStats.relativePosAvg = hodStats.editionsPossibleExchange ? hodStats.relativePosSum / hodStats.editionsPossibleExchange : 0;
+        })
+    });
+
+    return [...hodExchangeStats.entries()];
+}
+
+let caculateFavoriteCountries = (edData) => {
+    let favoriteCountries = new Map();
+
+    const hods = getHods();
+    const countries = getCountries();
+    hods.forEach(hod => {
+        favoriteCountries.set(hod, new Map());
+        countries.forEach(c => favoriteCountries.get(hod).set(c, {
+            sumPointsFinal : 0,
+        }))
+    })
+    edData.forEach(entry => {
+        if (entry.isFinalist) {
+            entry.finalPointsFrom.forEach(pointsFrom => {
+                const giverHod = getHodFullName(pointsFrom.hodShortName, hods);
+                if (!favoriteCountries.has(giverHod)) {
+                    console.log(`The following HoD was not found: ${giverHod}`);
+                    return;
+                }
+                favoriteCountries.get(giverHod).get(entry.country).sumPointsFinal += pointsFrom.points;
             })
         }
-    })
-
-    let finalHodExchangeStatsList = [];
-    // [...finalHodExchangeStats.entries()].forEach(x => [...x[1].entries()].forEach( y => {
-    //     y[1].hod = x[0];
-    //     y[1].pointsFrom = y[0]
-    //     finalHodExchangeStatsList.push(y[1]);
-    // }))
-
-    [...finalHodExchangeStats.entries()].forEach(x => {
-        [...x[1].entries()].forEach( y => {
-            // y[1].hod = x[0];
-            // y[1].pointsFrom = y[0]
-
-            x[1][y[0]] = y[1].sumPoints;
-            // finalHodExchangeStatsList.push(y[1]);
-        })
-        x[1].hod = x[0];
-        finalHodExchangeStatsList.push(x[1]);
-    })
-
-    return finalHodExchangeStatsList;
+    });
+    return [...favoriteCountries.entries()];
 }
 
 async function main() {
     let allEditionsData = [];
 
-    // let editionsToCalculate = [15];
-    let editionsToCalculate = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+    let editionsToCalculate = [/*1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16*/ 17];
     for (let i = 0; i < editionsToCalculate.length; i++) {
         let edData = await calculateEditionStats(editionsToCalculate[i]);
         allEditionsData.push(...edData);
     }
-    // editionsToCalculate.map(await e => {
-    //     let edData = await calculateEditionStats(e);
-    //     allEditionsData.push(...edData);
-    // })
     const statsForExcelKeys = Object.keys(allEditionsData[0]).map(x => {
         let obj = {};
         obj.label = x.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
         obj.value = x;
         return obj;
     });
-
-    // await axios.get("https://scorewiz.eu/logout");
 
     let data = [
         {
@@ -545,34 +657,73 @@ async function main() {
     let settings = {
         // fileName: "Summary of edition 15", // Name of the resulting spreadsheet
         // EMSC Stats Test 6 - 14
-        fileName: "EmscFullStats",
+        // fileName: "EmscFullStats",
+        fileName: "EMSC2402 Summary",
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
         RTL: false, // Display the columns from right-to-left (the default value is false)
     }
 
-    // xlsx(data, settings)
+    xlsx(data, settings)
+    // return 0;
 
     let hodPointExchangeStats = caculateHodPointExchangeStats(allEditionsData);
-    let hodPointExchangeKeys = Object.keys(hodPointExchangeStats[0]).map(x => {
+    let getHodPointExchangeKeys = f => {
+        let keys = [{label: "HOD", value : row => row[0]}]
+        keys.push(...[...hodPointExchangeStats].map(x => {
+            let obj = {};
+            obj.label = "From " + x[0];
+            obj.value = row => f(row[1].get(x[0]));
+            obj.format = "#,#0.0";
+            return obj;
+        }));
+        return keys;
+    }
+
+    let favoriteCountries = caculateFavoriteCountries(allEditionsData);
+    let favoriteCountriesKeys = [{label : "HOD", value : row => row[0]}]
+    // let favoriteCountriesKeys = [];
+    favoriteCountriesKeys.push(...[...favoriteCountries[0][1]].map(country => {
         let obj = {};
-        obj.label = x.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-        obj.value = x;
+        obj.label = country[0];
+        obj.value = row => row[1].get(country[0]).sumPointsFinal
+        // obj.value = row => row[1].sumPointsFinal;
+        // obj.format = "#,#0.0";
         return obj;
-    });
+    }));
+
     let dataPointExchange = [
         {
             sheet: "PointExchange",
-            columns: hodPointExchangeKeys,
-            content: hodPointExchangeStats,
+            columns: getHodPointExchangeKeys(x => x.sumPointsFinal),
+            content: hodPointExchangeStats
+        },
+        {
+            sheet: "AveragePointExchange",
+            columns: getHodPointExchangeKeys(x => x.avgPointsFinal),
+            content: hodPointExchangeStats
+        },
+        {
+            sheet: "RelativeSumPointExchange",
+            columns: getHodPointExchangeKeys(x => x.relativePosSum),
+            content: hodPointExchangeStats
+        },
+        {
+            sheet: "RelativeAveragePointExchange",
+            columns: getHodPointExchangeKeys(x => x.relativePosAvg),
+            content: hodPointExchangeStats
+        },
+        {
+            sheet: "FavoriteCountries",
+            columns: favoriteCountriesKeys,
+            content: favoriteCountries
         },
     ];
 
     let settingsPointExchange = {
-        // fileName: "Summary of edition 15", // Name of the resulting spreadsheet
-        // EMSC Stats Test 6 - 14
-        fileName: "PointExchange",
+        // fileName: "PointExchange-TTest",
+        fileName: "EMSC Semi 2",
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
