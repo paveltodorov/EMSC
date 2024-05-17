@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Country Ranking</title>
+    <!-- <title>Country Ranking</title> -->
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #ebfc00;
+            background-color: #d8db96;
             padding: 20px;
         }
         h2 {
@@ -38,7 +38,7 @@
             color: #fff; /* White text */
         }
         th {
-            background-color: #020081; /* Darker background */
+            background-color: #4F4739; /* Darker background */
             font-weight: bold;
         }
         .title-row {
@@ -48,10 +48,10 @@
             background-color: #00ffff; /* Cyan background */
         }
         tr:nth-child(even) {
-            background-color: #4586ff; /* Darker background */
+            background-color: #AD9872; /* Darker background */
         }
         tr:nth-child(odd) {
-            background-color: #0400ff; /* Darker background */
+            background-color: #8a7959; /* Darker background */
         }
         img {
             width: 30px;
@@ -79,6 +79,14 @@
         .points {
             font-weight: bold;
         }
+        .hod {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .entry {
+            color: #ffffff;
+            font-weight: bold;
+        }
         .table-title {
             text-align: center;
             margin-bottom: 10px;
@@ -88,10 +96,18 @@
 <body>
 
 <div class="container">
-    <h2>Country Ranking</h2>
+    <!-- <h2>All Time Country Ranking</h2> -->
+    <style>
+        h2 {
+            color: #000000;
+        }
+        h3 {
+            color: #000000;
+        }
+    </style>
 
     <div class="table-wrapper" id="top10-wrapper">
-        <h3 class="table-title">Top 10</h3>
+        <h3 class="table-title">All Time Top 10</h3>
         <table id="top10-table">
             <tr>
                 <th>Rank</th>
@@ -115,30 +131,83 @@
             </tr>
         </table>
     </div>
+
+    <div class="table-wrapper" id="best-rank-improvement-wrapper">
+        <h3 class="table-title">Best Rank Improvement</h3>
+        <table id="best-rank-improvement-table">
+            <tr>
+                <th>New Best Rank</th>
+                <th>Impr.</th>
+                <th>Flag</th>
+                <th>Country</th>
+                <th>HOD</th>
+                <th>Entry</th>
+            </tr>
+        </table>
+    </div>
+
+    <div class="table-wrapper" id="annual-top5-wrapper">
+        <h3 class="table-title">Annual Top 5</h3>
+        <table id="annual-top5-table">
+            <tr>
+                <th>Rank</th>
+                <th>Movement</th>
+                <th>Flag</th>
+                <th>Country</th>
+                <th>Points</th>
+            </tr>
+        </table>
+    </div>
 </div>
 
 <script>
     const countries = [
-        { rank: 1, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/sm.png", country: "San Marino", points: "61,03" },
-        { rank: 2, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/gb.png", country: "United Kingdom", points: "47,09" },
-        { rank: 3, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/it.png", country: "Italy", points: "46,97" },
-        { rank: 4, improvement: -1, flag: "https://flagpedia.net/data/flags/w580/ie.png", country: "Ireland", points: "44,01" },
-        { rank: 5, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/dk.png", country: "Denmark", points: "42,73" },
+        { rank: 1, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/sm.png", country: "San Marino", points: "58,15" },
+        { rank: 2, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/gb.png", country: "United Kingdom", points: "47,84" },
+        { rank: 3, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/it.png", country: "Italy", points: "45,07" },
+        { rank: 4, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/dk.png", country: "Denmark", points: "42,73" },
+        { rank: 5, improvement: -1, flag: "https://flagpedia.net/data/flags/w580/ie.png", country: "Ireland", points: "42,22" },
+
         { rank: 6, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/sk.png", country: "Slovakia", points: "42,14" },
-        { rank: 7, improvement: 5, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "37,22" },
-        { rank: 8, improvement: 2, flag: "https://flagpedia.net/data/flags/w580/de.png", country: "Germany", points: "36,06" },
-        { rank: 9, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/au.png", country: "Australia", points: "35,47" },
-        { rank: 10, improvement: -2, flag: "https://flagpedia.net/data/flags/w580/ua.png", country: "Ukraine", points: "35,40" },
-        { rank: 21, improvement: 11, flag: "https://flagpedia.net/data/flags/w580/is.png", country: "Iceland", points: "27,83" },
-        { rank: 15, improvement: 8, flag: "https://flagpedia.net/data/flags/w580/no.png", country: "Norway", points: "29,88" },
-        { rank: 7, improvement: 5, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "37,22" }
+        { rank: 7, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "39,8" },
+        { rank: 8, improvement: 3, flag: "https://flagpedia.net/data/flags/w580/lu.png", country: "Luxembourg", points: "39,50" },
+        { rank: 9, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/au.png", country: "Australia", points: "37.67" },
+        { rank: 10, improvement: -2, flag: "https://flagpedia.net/data/flags/w580/de.png", country: "Germany", points: "35.43" },
+
+        { rank: 33, improvement: 16, flag: "https://flagpedia.net/data/flags/w580/ee.png", country: "Estonia", points: "19,85" },
+        { rank: 35, improvement: 8, flag: "https://flagpedia.net/data/flags/w580/hr.png", country: "Croatia", points: "17,78" },
+        { rank: 50, improvement: 6, flag: "https://flagpedia.net/data/flags/w580/jo.png", country: "Jordan", points: "12,13" },
+
+        { rank: 1, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/is.png", country: "Iceland", points: "90,00" },
+        { rank: 2, improvement: 4, flag: "https://flagpedia.net/data/flags/w580/no.png", country: "Norway", points: "79,52" },
+        { rank: 3, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "76,95" },
+        { rank: 4, improvement: 4, flag: "https://flagpedia.net/data/flags/w580/lu.png", country: "Luxembourg", points: "68,91" },
+        { rank: 5, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/gb.png", country: "United Kingdom", points: "62,33" },
+
+        // { rank: 6, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/sk.png", country: "Slovakia", points: "42,14" },
+        // { rank: 7, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "39,8" },
+        // { rank: 8, improvement: 3, flag: "https://flagpedia.net/data/flags/w580/lu.png", country: "Luxembourg", points: "39,50" },
+        // { rank: 9, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/au.png", country: "Australia", points: "37.67" },
+        // { rank: 10, improvement: -2, flag: "https://flagpedia.net/data/flags/w580/de.png", country: "Germany", points: "35.43" },
     ];
+    let bestImprovers = [
+        { bestRank: 13, improvement: 17, flag: "https://flagpedia.net/data/flags/w580/jo.png", country: "Jordan", hod: "Stefan Schneider", entry: "Nater - Aziz x Adonis"},
+        { bestRank: 23, improvement: 7, flag: "https://flagpedia.net/data/flags/w580/tn.png", country: "Tunisia", hod: "Rodrigo Erazo", entry: "Ghareeb Alay - Elyanna & Balti"},
+        { bestRank: 1, improvement: 5, flag: "https://flagpedia.net/data/flags/w580/no.png", country: "Norway", hod: "Valentin Durchev", entry: "Burn Down This Room - Ruben"},
+        { bestRank: 5, improvement: 4, flag: "https://flagpedia.net/data/flags/w580/ee.png", country: "Estonia", hod: "Gabriel Yau", entry: "Kiri külmkapi peal - STEFAN"},
+        { bestRank: 2, improvement: 2, flag: "https://flagpedia.net/data/flags/w580/lu.png", country: "Luxembourg", hod: "FabioMassimo Falchi", entry: "Alors alors - LINH"},
+        { bestRank: 7, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/hr.png", country: "Croatia", hod: "Mile Gojčević", entry: "Nismo Isti Svijet - MARCELA"},
+        { bestRank: 3, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", hod: "Paolo Bortoli", entry: "Parapluie - Jeck"},
+    ]
 
     const top10 = countries.slice(0, 10);
-    const climbers = countries.slice(10);
+    const climbers = countries.slice(10, 13);
+    const annualTop5 = countries.slice(13, 19);
 
     const top10Table = document.getElementById("top10-table");
     const climbersTable = document.getElementById("climbers-table");
+    const annualTop5Table = document.getElementById("annual-top5-table");
+    const bestRankImprovementTable = document.getElementById("best-rank-improvement-table");
 
     top10.forEach(country => {
         const row = top10Table.insertRow();
@@ -162,6 +231,30 @@
             <td class="points">${country.points}</td>
         `;
     });
+
+    annualTop5.forEach(country => {
+        const row = annualTop5Table.insertRow();
+        row.innerHTML = `
+            <td class="rank">${country.rank}</td>
+            <td class="improvement ${country.improvement === 0 ? 'no-movement' : (country.improvement > 0 ? 'positive' : 'negative')}">${country.improvement === 0 ? '=' : (country.improvement > 0 ? '+' + country.improvement : country.improvement)}</td>
+            <td><img src="${country.flag}" alt="${country.country} Flag"></td>
+            <td class="country">${country.country}</td>
+            <td class="points">${country.points}</td>
+        `;
+    });
+
+    bestImprovers.forEach(country => {
+        const row = bestRankImprovementTable.insertRow();
+        row.innerHTML = `
+            <td class="rank">${country.bestRank}</td>
+            <td class="improvement ${country.improvement === 0 ? 'no-movement' : (country.improvement > 0 ? 'positive' : 'negative')}">${country.improvement === 0 ? '=' : (country.improvement > 0 ? '+' + country.improvement : country.improvement)}</td>
+            <td><img src="${country.flag}" alt="${country.country} Flag"></td>
+            <td class="country">${country.country}</td>
+            <td class="hod">${country.hod}</td>
+            <td class="entry">${country.entry}</td>
+        `;
+    });
+
 </script>
 
 </body>

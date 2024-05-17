@@ -562,7 +562,7 @@ let caculateHodPointExchangeStats = (edData) => {
             entry.finalPointsFrom.forEach(pointsFrom => {
                 const giverHod = getHodFullName(pointsFrom.hodShortName, hods);
                 if (entry.HOD === giverHod) {
-                    console.log(`The Hod has voted for themselves, hod: ${giverHod}`)
+            console.log(`The Hod has voted for themselves, hod: ${giverHod}`)
                     return;
                 }
                 if (!hodExchangeStats.has(entry.HOD)) {
@@ -634,7 +634,7 @@ let caculateFavoriteCountries = (edData) => {
 async function main() {
     let allEditionsData = [];
 
-    let editionsToCalculate = [/*1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16*/ 17];
+    let editionsToCalculate = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
     for (let i = 0; i < editionsToCalculate.length; i++) {
         let edData = await calculateEditionStats(editionsToCalculate[i]);
         allEditionsData.push(...edData);
@@ -665,7 +665,7 @@ async function main() {
         RTL: false, // Display the columns from right-to-left (the default value is false)
     }
 
-    xlsx(data, settings)
+    // xlsx(data, settings)
     // return 0;
 
     let hodPointExchangeStats = caculateHodPointExchangeStats(allEditionsData);
@@ -722,8 +722,8 @@ async function main() {
     ];
 
     let settingsPointExchange = {
-        // fileName: "PointExchange-TTest",
-        fileName: "EMSC Semi 2",
+        fileName: "PointExchange-TTest",
+        // fileName: "EMSC Semi 2",
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options

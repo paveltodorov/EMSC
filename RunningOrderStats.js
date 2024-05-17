@@ -158,6 +158,23 @@ const semiKeys = Object.keys(semiRunningStats.get(0)).map(x => {
     return obj;
 });
 
+let runningAndEditionPoints = []
+for (let i = 0; i <= 25; i++) {
+    for (let j = 0; j <= 17; j++) {
+        if (!runningAndEditionPoints[i]) runningAndEditionPoints[i] = {};
+        runningAndEditionPoints[i][j] = 0
+    }
+ }
+stats.forEach(x => {
+    if (x && x['Running Final'])  runningAndEditionPoints[x['Running Final']][x.Edition] = x['Points Final']
+})
+let runningAndEditionKeys = [...Array(18).keys()].map(x => {
+    let obj = {};
+    obj.label = x.toString();
+    obj.value = x.toString();
+    return obj;
+})
+
 let data = [
     {
         sheet: "Final",
@@ -168,6 +185,11 @@ let data = [
         sheet: "Semis",
         columns: semiKeys,
         content: semiStatsArray
+    },
+    {
+        sheet: "RunningAndEditionPoints",
+        columns: runningAndEditionKeys,
+        content: runningAndEditionPoints
     },
 ];
 
