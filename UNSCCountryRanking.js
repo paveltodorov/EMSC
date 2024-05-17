@@ -74,7 +74,7 @@ statsUnscFormat.forEach(entry => {
 
 console.log(statsUnscFormat);
 
-const countryStats = calculateCountryRanking(stats, 1, 32, 10, true, "sum");
+const countryStats = calculateCountryRanking(stats, 1, 33, 10, true, "sum");
 
 let data = [
     {
