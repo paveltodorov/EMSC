@@ -9,6 +9,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
+from sklearn.ensemble import AdaBoostClassifier, HistGradientBoostingClassifier
+from sklearn.impute import SimpleImputer
 import matplotlib.pyplot as plt
 
 import joblib
@@ -18,6 +20,7 @@ filename = "EmscFullStats.xlsx"
 # Read the Excel file into a DataFrame
 data = pd.read_excel(filename)
 runningOrderStats = pd.read_excel("Running Order Stats.xlsx")
+hodStats = pd.read_excel("EMSC-HoD-Country-Ranking.xlsx")
 
 # Remove rows where either the features or the target value is non-numerical
 data = data[pd.to_numeric(data["Place Semi"], errors='coerce').notnull()]
@@ -25,6 +28,7 @@ data = data[pd.to_numeric(data["Running Final"], errors='coerce').notnull()]
 data = data[pd.to_numeric(data["Place Final"], errors='coerce').notnull()]
 
 data = pd.merge(data, runningOrderStats, on='Running Final', how='left')
+data = pd.merge(data, hodStats, on='HOD', how='left')
 
 # data = data[data["Country"] != "Malta"]
 
@@ -36,7 +40,8 @@ X = data[[
     "Running Semi",
     "Avg Position",
     "Country",
-    # "HOD",
+    "HOD",
+    # "Average"
     # "SF"
 ]]  # Features
 # X[:2] = runningOrderStats
@@ -47,13 +52,10 @@ y = data["Place Final"]  # Target variable
 preprocessor = ColumnTransformer(
     transformers=[
         ('num', StandardScaler(), ["Points Semi", "Place Semi", "Running Semi"]),
-        ('cat', OneHotEncoder(handle_unknown='ignore'),
-            [
-             "Running Final",
-             "Country",
-            #  "SF"
-               #"HOD"#
-            ])
+        # ('num', SimpleImputer(), ["Points Semi", "Place Semi", "Running Semi", "Average"]),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), ["Running Final"]),
+        ('cat2', OneHotEncoder(handle_unknown='ignore'), ["HOD"]),
+        ('cat3', OneHotEncoder(handle_unknown='ignore'), ["Country"])
     ],
     remainder='passthrough'
 )
@@ -92,7 +94,7 @@ data = data.sort_values(by=["Edition","Predicted Place Final"])
 
 print(data[["Country", "Name", "Place Semi", "Running Final", "Place Final", "Predicted Place Final", "Predicted Rank"]])
 
-shortData = data[["Country", "Name", "Place Semi", "Running Final", "Place Final", "Predicted Place Final", "Predicted Rank", "Difference"]]
+shortData = data[["Country", "Artist", "Song", "Name", "Place Semi", "Running Final", "Place Final", "Predicted Place Final", "Predicted Rank", "Difference"]]
 shortData.to_excel("predictions.xlsx")
 
 joblib.dump(pipeline, 'trained_model1.pkl')
