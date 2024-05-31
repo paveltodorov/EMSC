@@ -8,7 +8,7 @@ data = pd.read_excel(filename)
 runningOrderStats = pd.read_excel("Running Order Stats.xlsx")
 
 # Filter the data to include only rows where Edition equals 17
-data_17 = data[data["Edition"] == 4]
+data_17 = data[data["Edition"] == 16]
 
 # Remove rows where either the features or the target value is non-numeric
 data_17 = data_17[pd.to_numeric(data_17["Place Semi"], errors='coerce').notnull()]
