@@ -339,21 +339,21 @@ async function calculateEditionStats(edition) {
     const hods = getHods();
     const links = getLinks(edition);
 
-    const serverData = await getServerData(links.finalLink);
-    const teleServerData = links.teleLink && await getServerData(links.teleLink);
-    const semi1ServerData = await getServerData(links.semi1Link);
-    const semi2ServerData = await getServerData(links.semi2Link);
-    // const serverData = await getServerData("https://scorewiz.eu/scoreboard/sheet/709449/emsc-2402---semi-final-1/ztAPqW39")
-    // const teleServerData = undefined
-    // const semi1ServerData = undefined;
-    // const semi2ServerData = undefined;
+    // const serverData = await getServerData(links.finalLink);
+    // const teleServerData = links.teleLink && await getServerData(links.teleLink);
+    // const semi1ServerData = await getServerData(links.semi1Link);
+    // const semi2ServerData = await getServerData(links.semi2Link);
+    const serverData = undefined
+    const teleServerData = undefined
+    const semi1ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/721726/unsc-34-semi-final-1");
+    const semi2ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/721729/unsc-34-semi-final-2");
 
     let stats = new Map();
     let editionName = "EMSC " + numberToEditionName(edition);
 
     if (semi1ServerData) Object.entries(semi1ServerData.participants).forEach((p, idx) => fillEntryDataSemi(stats, p, idx, 1));
     if (semi2ServerData) Object.entries(semi2ServerData.participants).forEach((p, idx) => fillEntryDataSemi(stats, p, idx, 2));
-    Object.entries(serverData.participants).forEach((p, idx) => fillEntryDataFinal(stats, p, idx, 2));
+    if (serverData) Object.entries(serverData.participants).forEach((p, idx) => fillEntryDataFinal(stats, p, idx, 2));
 
     // calculate semi points
     let calculateSemiPoints = (juror, data) => {
@@ -422,39 +422,41 @@ async function calculateEditionStats(edition) {
     fillSfPlaces(2);
 
     // calculate final points
-    Object.entries(serverData.juries).forEach(juror => {
-        const jurorCountry = countryName(juror[1].flag);
-        if (stats.get(jurorCountry)) {
-            stats.get(jurorCountry).hodShortName = juror[1].name; // needed only for the automatic qualifier
-        } else {
-            console.log("Can't load the country of the juror");
-        }
+    if (serverData) {
+        Object.entries(serverData.juries).forEach(juror => {
+            const jurorCountry = countryName(juror[1].flag);
+            if (stats.get(jurorCountry)) {
+                stats.get(jurorCountry).hodShortName = juror[1].name; // needed only for the automatic qualifier
+            } else {
+                console.log("Can't load the country of the juror");
+            }
 
-        juror[1].votes.forEach((ptsAndSong) => {
-            const participant = serverData.participants[ptsAndSong[1]];
-            const flag = participant.flag;
-            const country = countryName(flag);
-
-            // if (!stats.get(jurorCountry).isFinalist)
-
-            if (stats.get(jurorCountry).isFinalist) stats.get(country).juryScore += ptsAndSong[0];
-            else stats.get(country).teleScore += ptsAndSong[0];
-
-            stats.get(country).pointsFinal += ptsAndSong[0];
-            stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
-        });
-
-        // add disqualifications (if any) marked as negative televoting points
-        if (serverData.televote) {
-            serverData.televote.forEach(ptsAndSong => {
-                if (ptsAndSong[0] >= 0) return;
+            juror[1].votes.forEach((ptsAndSong) => {
                 const participant = serverData.participants[ptsAndSong[1]];
                 const flag = participant.flag;
                 const country = countryName(flag);
-                stats.get(country).isDqFinal = true;
+
+                // if (!stats.get(jurorCountry).isFinalist)
+
+                if (stats.get(jurorCountry).isFinalist) stats.get(country).juryScore += ptsAndSong[0];
+                else stats.get(country).teleScore += ptsAndSong[0];
+
+                stats.get(country).pointsFinal += ptsAndSong[0];
+                stats.get(country).finalPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
             });
-        }
-    });
+
+            // add disqualifications (if any) marked as negative televoting points
+            if (serverData.televote) {
+                serverData.televote.forEach(ptsAndSong => {
+                    if (ptsAndSong[0] >= 0) return;
+                    const participant = serverData.participants[ptsAndSong[1]];
+                    const flag = participant.flag;
+                    const country = countryName(flag);
+                    stats.get(country).isDqFinal = true;
+                });
+            }
+        });
+    }
 
     // add televote
     if (teleServerData && teleServerData.juries) {
@@ -634,7 +636,7 @@ let caculateFavoriteCountries = (edData) => {
 async function main() {
     let allEditionsData = [];
 
-    let editionsToCalculate = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+    let editionsToCalculate = [/*1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,*/ 17];
     for (let i = 0; i < editionsToCalculate.length; i++) {
         let edData = await calculateEditionStats(editionsToCalculate[i]);
         allEditionsData.push(...edData);
@@ -658,15 +660,16 @@ async function main() {
         // fileName: "Summary of edition 15", // Name of the resulting spreadsheet
         // EMSC Stats Test 6 - 14
         // fileName: "EmscFullStats",
-        fileName: "EMSC2402 Summary",
+        // fileName: "EMSC2402 Summary",
+        fileName: "UNSC 34 summary",
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
         RTL: false, // Display the columns from right-to-left (the default value is false)
     }
 
-    // xlsx(data, settings)
-    // return 0;
+    xlsx(data, settings)
+    return 0;
 
     let hodPointExchangeStats = caculateHodPointExchangeStats(allEditionsData);
     let getHodPointExchangeKeys = f => {

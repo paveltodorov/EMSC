@@ -57,7 +57,7 @@ pots[5] = new Set(["Albania", "Belarus", "Bosnia and Herzegovina", "Bulgaria", "
 ]);
 pots[6] = new Set(["Algeria", "Armenia", "Azerbaijan", "Egypt", "Georgia", "Jordan", "Lebanon", "Lybia", "Morocco", "Tunesia" , /* ... */ "Tunisia"]);
 
-let getPotDigit = country => {
+export let getPotDigit = country => {
     for (let i = 1; i <= 6; i++) {
         if (pots[i].has(country)) return i;
     }

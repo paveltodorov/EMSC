@@ -160,49 +160,105 @@
     </div>
 </div>
 
-<script>
-    const countries = [
-        { rank: 1, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/sm.png", country: "San Marino", points: "58,15" },
-        { rank: 2, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/gb.png", country: "United Kingdom", points: "47,84" },
-        { rank: 3, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/it.png", country: "Italy", points: "45,07" },
-        { rank: 4, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/dk.png", country: "Denmark", points: "42,73" },
-        { rank: 5, improvement: -1, flag: "https://flagpedia.net/data/flags/w580/ie.png", country: "Ireland", points: "42,22" },
+<!-- <script src="json-as-xlsx"></script>
+<script src="xlsx"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script type="module">
+    // const { defineConfig } = require("cypress");
+    // import {defineConfig} from "https://cdn.jsdelivr.net/npm/cypress@13.10.0/index.min.js"
+    // module.exports = defineConfig({
+    // e2e: {
+    //     setupNodeEvents(on, config) {
+    //     on('task', {
+    //         readXlsxFile() {
+    //         return getDataFromHtmlWatchlistIntoJson()
+    //         },
+    //     })
+    //     },
+    // },
+    // });
+    // import xlsxPkg from 'xlsx';
+    // const {readFile, utils} = xlsxPkg;
+    // import * as XLSX from 'https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js';
+    // XLSX.
+    // import xlsx from "json-as-xlsx";
+    // const xlsx = require("json-as-xlsx");
+    import { readFile, utils } from 'https://esm.sh/xlsx?bundle';
+    import Papa from 'https://esm.sh/papaparse@5?bundle';
 
-        { rank: 6, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/sk.png", country: "Slovakia", points: "42,14" },
-        { rank: 7, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "39,8" },
-        { rank: 8, improvement: 3, flag: "https://flagpedia.net/data/flags/w580/lu.png", country: "Luxembourg", points: "39,50" },
-        { rank: 9, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/au.png", country: "Australia", points: "37.67" },
-        { rank: 10, improvement: -2, flag: "https://flagpedia.net/data/flags/w580/de.png", country: "Germany", points: "35.43" },
+    const fileName = "CountryRankingAfterE17.xlsx"
+    // const fileName = "./EMSC STATISTICS UPDATED.xlsx"
 
-        { rank: 33, improvement: 16, flag: "https://flagpedia.net/data/flags/w580/ee.png", country: "Estonia", points: "19,85" },
-        { rank: 35, improvement: 8, flag: "https://flagpedia.net/data/flags/w580/hr.png", country: "Croatia", points: "17,78" },
-        { rank: 50, improvement: 6, flag: "https://flagpedia.net/data/flags/w580/jo.png", country: "Jordan", points: "12,13" },
 
-        { rank: 1, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/is.png", country: "Iceland", points: "90,00" },
-        { rank: 2, improvement: 4, flag: "https://flagpedia.net/data/flags/w580/no.png", country: "Norway", points: "79,52" },
-        { rank: 3, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "76,95" },
-        { rank: 4, improvement: 4, flag: "https://flagpedia.net/data/flags/w580/lu.png", country: "Luxembourg", points: "68,91" },
-        { rank: 5, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/gb.png", country: "United Kingdom", points: "62,33" },
+    Papa.parse( fileName , {
+            worker: true,
+            header: true,
+            complete: function(results) {
+                console.log(results.data);
+            }
+        });
 
-        // { rank: 6, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/sk.png", country: "Slovakia", points: "42,14" },
-        // { rank: 7, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "39,8" },
-        // { rank: 8, improvement: 3, flag: "https://flagpedia.net/data/flags/w580/lu.png", country: "Luxembourg", points: "39,50" },
-        // { rank: 9, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/au.png", country: "Australia", points: "37.67" },
-        // { rank: 10, improvement: -2, flag: "https://flagpedia.net/data/flags/w580/de.png", country: "Germany", points: "35.43" },
-    ];
-    let bestImprovers = [
-        { bestRank: 13, improvement: 17, flag: "https://flagpedia.net/data/flags/w580/jo.png", country: "Jordan", hod: "Stefan Schneider", entry: "Nater - Aziz x Adonis"},
-        { bestRank: 23, improvement: 7, flag: "https://flagpedia.net/data/flags/w580/tn.png", country: "Tunisia", hod: "Rodrigo Erazo", entry: "Ghareeb Alay - Elyanna & Balti"},
-        { bestRank: 1, improvement: 5, flag: "https://flagpedia.net/data/flags/w580/no.png", country: "Norway", hod: "Valentin Durchev", entry: "Burn Down This Room - Ruben"},
-        { bestRank: 5, improvement: 4, flag: "https://flagpedia.net/data/flags/w580/ee.png", country: "Estonia", hod: "Gabriel Yau", entry: "Kiri külmkapi peal - STEFAN"},
-        { bestRank: 2, improvement: 2, flag: "https://flagpedia.net/data/flags/w580/lu.png", country: "Luxembourg", hod: "FabioMassimo Falchi", entry: "Alors alors - LINH"},
-        { bestRank: 7, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/hr.png", country: "Croatia", hod: "Mile Gojčević", entry: "Nismo Isti Svijet - MARCELA"},
-        { bestRank: 3, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", hod: "Paolo Bortoli", entry: "Parapluie - Jeck"},
-    ]
+    const workbook = readFile(fileName);
+    let workbook_sheet = workbook.SheetNames;
 
-    const top10 = countries.slice(0, 10);
-    const climbers = countries.slice(10, 13);
-    const annualTop5 = countries.slice(13, 19);
+    let allTimeStats = utils.sheet_to_json(
+        workbook.Sheets[workbook_sheet[0]]
+    );
+
+    let annualStats = utils.sheet_to_json(
+        workbook.Sheets[workbook_sheet[4]]
+    );
+
+    let top10 = allTimeStats.slice(0, 10)
+    let climbers = allTimeStats.filter(x => x["Best Rank Mov."] != "")
+    let bestImprovers = allTimeStats.sort((x,y) => x["Pos. Mov."] - y["Pos. Mov."]).slice(0, 5)
+    const annualTop5 = annualStats.slice(0, 5);
+
+    // const countries = [
+    //     { rank: 1, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/sm.png", country: "San Marino", points: "58,15" },
+    //     { rank: 2, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/gb.png", country: "United Kingdom", points: "47,84" },
+    //     { rank: 3, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/it.png", country: "Italy", points: "45,07" },
+    //     { rank: 4, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/dk.png", country: "Denmark", points: "42,73" },
+    //     { rank: 5, improvement: -1, flag: "https://flagpedia.net/data/flags/w580/ie.png", country: "Ireland", points: "42,22" },
+
+    //     { rank: 6, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/sk.png", country: "Slovakia", points: "42,14" },
+    //     { rank: 7, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "39,8" },
+    //     { rank: 8, improvement: 3, flag: "https://flagpedia.net/data/flags/w580/lu.png", country: "Luxembourg", points: "39,50" },
+    //     { rank: 9, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/au.png", country: "Australia", points: "37.67" },
+    //     { rank: 10, improvement: -2, flag: "https://flagpedia.net/data/flags/w580/de.png", country: "Germany", points: "35.43" },
+
+    //     { rank: 33, improvement: 16, flag: "https://flagpedia.net/data/flags/w580/ee.png", country: "Estonia", points: "19,85" },
+    //     { rank: 35, improvement: 8, flag: "https://flagpedia.net/data/flags/w580/hr.png", country: "Croatia", points: "17,78" },
+    //     { rank: 50, improvement: 6, flag: "https://flagpedia.net/data/flags/w580/jo.png", country: "Jordan", points: "12,13" },
+
+    //     { rank: 1, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/is.png", country: "Iceland", points: "90,00" },
+    //     { rank: 2, improvement: 4, flag: "https://flagpedia.net/data/flags/w580/no.png", country: "Norway", points: "79,52" },
+    //     { rank: 3, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "76,95" },
+    //     { rank: 4, improvement: 4, flag: "https://flagpedia.net/data/flags/w580/lu.png", country: "Luxembourg", points: "68,91" },
+    //     { rank: 5, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/gb.png", country: "United Kingdom", points: "62,33" },
+
+    //     // { rank: 6, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/sk.png", country: "Slovakia", points: "42,14" },
+    //     // { rank: 7, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", points: "39,8" },
+    //     // { rank: 8, improvement: 3, flag: "https://flagpedia.net/data/flags/w580/lu.png", country: "Luxembourg", points: "39,50" },
+    //     // { rank: 9, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/au.png", country: "Australia", points: "37.67" },
+    //     // { rank: 10, improvement: -2, flag: "https://flagpedia.net/data/flags/w580/de.png", country: "Germany", points: "35.43" },
+    // ];
+    // let bestImprovers = [
+    //     { bestRank: 13, improvement: 17, flag: "https://flagpedia.net/data/flags/w580/jo.png", country: "Jordan", hod: "Stefan Schneider", entry: "Nater - Aziz x Adonis"},
+    //     { bestRank: 23, improvement: 7, flag: "https://flagpedia.net/data/flags/w580/tn.png", country: "Tunisia", hod: "Rodrigo Erazo", entry: "Ghareeb Alay - Elyanna & Balti"},
+    //     { bestRank: 1, improvement: 5, flag: "https://flagpedia.net/data/flags/w580/no.png", country: "Norway", hod: "Valentin Durchev", entry: "Burn Down This Room - Ruben"},
+    //     { bestRank: 5, improvement: 4, flag: "https://flagpedia.net/data/flags/w580/ee.png", country: "Estonia", hod: "Gabriel Yau", entry: "Kiri külmkapi peal - STEFAN"},
+    //     { bestRank: 2, improvement: 2, flag: "https://flagpedia.net/data/flags/w580/lu.png", country: "Luxembourg", hod: "FabioMassimo Falchi", entry: "Alors alors - LINH"},
+    //     { bestRank: 7, improvement: 1, flag: "https://flagpedia.net/data/flags/w580/hr.png", country: "Croatia", hod: "Mile Gojčević", entry: "Nismo Isti Svijet - MARCELA"},
+    //     { bestRank: 3, improvement: 0, flag: "https://flagpedia.net/data/flags/w580/fr.png", country: "France", hod: "Paolo Bortoli", entry: "Parapluie - Jeck"},
+    // ]
+
+    // const top10 = countries.slice(0, 10);
+    // const climbers = countries.slice(10, 13);
+    // const annualTop5 = countries.slice(13, 19);
+    //  bestImprovers
+
+
 
     const top10Table = document.getElementById("top10-table");
     const climbersTable = document.getElementById("climbers-table");
@@ -212,8 +268,8 @@
     top10.forEach(country => {
         const row = top10Table.insertRow();
         row.innerHTML = `
-            <td class="rank">${country.rank}</td>
-            <td class="improvement ${country.improvement === 0 ? 'no-movement' : (country.improvement > 0 ? 'positive' : 'negative')}">${country.improvement === 0 ? '=' : (country.improvement > 0 ? '+' + country.improvement : country.improvement)}</td>
+            <td class="rank">${country["Pos."]}</td>
+            <td class="improvement ${country["Pos. Mov."] === 0 ? 'no-movement' : (country["Pos. Mov."] > 0 ? 'positive' : 'negative')}">${country["Pos. Mov."] === 0 ? '=' : (country["Pos. Mov."] > 0 ? '+' + country["Pos. Mov."] : country["Pos. Mov."])}</td>
             <td><img src="${country.flag}" alt="${country.country} Flag"></td>
             <td class="country">${country.country}</td>
             <td class="points">${country.points}</td>
@@ -224,22 +280,22 @@
         const row = climbersTable.insertRow();
         row.classList.add("climbers-row");
         row.innerHTML = `
-            <td class="rank">${country.rank}</td>
-            <td class="improvement ${country.improvement === 0 ? 'no-movement' : (country.improvement > 0 ? 'positive' : 'negative')}">${country.improvement === 0 ? '=' : (country.improvement > 0 ? '+' + country.improvement : country.improvement)}</td>
-            <td><img src="${country.flag}" alt="${country.country} Flag"></td>
-            <td class="country">${country.country}</td>
-            <td class="points">${country.points}</td>
+            <td class="rank">${country["Pos."]}</td>
+            <td class="improvement ${country["Pos. Mov."] === 0 ? 'no-movement' : (country["Pos. Mov."] > 0 ? 'positive' : 'negative')}">${country["Pos. Mov."] === 0 ? '=' : (country["Pos. Mov."] > 0 ? '+' + country["Pos. Mov."] : country["Pos. Mov."])}</td>
+            <td><img src="${country.Flag}" alt="${country.Country} Flag"></td>
+            <td class="country">${country.Country}</td>
+            <td class="points">${country["Avg. Exp. Pts."]}</td>
         `;
     });
 
     annualTop5.forEach(country => {
         const row = annualTop5Table.insertRow();
         row.innerHTML = `
-            <td class="rank">${country.rank}</td>
-            <td class="improvement ${country.improvement === 0 ? 'no-movement' : (country.improvement > 0 ? 'positive' : 'negative')}">${country.improvement === 0 ? '=' : (country.improvement > 0 ? '+' + country.improvement : country.improvement)}</td>
-            <td><img src="${country.flag}" alt="${country.country} Flag"></td>
-            <td class="country">${country.country}</td>
-            <td class="points">${country.points}</td>
+            <td class="rank">${country["Pos."]}</td>
+            <td class="improvement ${country["Pos. Mov."] === 0 ? 'no-movement' : (country["Pos. Mov."] > 0 ? 'positive' : 'negative')}">${country["Pos. Mov."] === 0 ? '=' : (country["Pos. Mov."] > 0 ? '+' + country["Pos. Mov."] : country["Pos. Mov."])}</td>
+            <td><img src="${country.Flag}" alt="${country.Country} Flag"></td>
+            <td class="country">${country.Country}</td>
+            <td class="points">${country["Avg. Exp. Pts."]}</td>
         `;
     });
 
@@ -247,11 +303,11 @@
         const row = bestRankImprovementTable.insertRow();
         row.innerHTML = `
             <td class="rank">${country.bestRank}</td>
-            <td class="improvement ${country.improvement === 0 ? 'no-movement' : (country.improvement > 0 ? 'positive' : 'negative')}">${country.improvement === 0 ? '=' : (country.improvement > 0 ? '+' + country.improvement : country.improvement)}</td>
-            <td><img src="${country.flag}" alt="${country.country} Flag"></td>
-            <td class="country">${country.country}</td>
-            <td class="hod">${country.hod}</td>
-            <td class="entry">${country.entry}</td>
+            <td class="improvement ${country["Pos. Mov."] === 0 ? 'no-movement' : (country["Pos. Mov."] > 0 ? 'positive' : 'negative')}">${country["Pos. Mov."] === 0 ? '=' : (country["Pos. Mov."] > 0 ? '+' + country["Pos. Mov."] : country["Pos. Mov."])}</td>
+            <td><img src="${country.Flag}" alt="${country.Country} Flag"></td>
+            <td class="country">${country.Country}</td>
+            <td class="hod">${country["Best Rank HoD(s)"]}</td>
+            <td class="entry">${country["Best Ranked Entry/Entries"]}</td>
         `;
     });
 

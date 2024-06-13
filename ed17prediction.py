@@ -3,12 +3,13 @@ from sklearn.linear_model import LinearRegression
 import joblib
 
 # Read the Excel file into a DataFrame
-filename = "EmscFullStats.xlsx"
+# filename = "EmscFullStats.xlsx
+filename = "UNSC 34 summary.xlsx"
 data = pd.read_excel(filename)
 runningOrderStats = pd.read_excel("Running Order Stats.xlsx")
 
 # Filter the data to include only rows where Edition equals 17
-data_17 = data[data["Edition"] == 16]
+data_17 = data # [data["Edition"] == 16]
 
 # Remove rows where either the features or the target value is non-numeric
 data_17 = data_17[pd.to_numeric(data_17["Place Semi"], errors='coerce').notnull()]
@@ -23,7 +24,13 @@ X_17 = data_17[[
     "Running Final",
     "Running Semi",
     "Avg Position",
-    "Country"
+    "Country",
+    #
+    'Previous Place Semi',
+    'Next Place Semi',
+    'Previous Points Semi',
+    'Next Points Semi',
+    'Num Of Indiv Votes Semi'
 ]]  # Features
 
 # Load the trained model (assuming 'model' is already trained)

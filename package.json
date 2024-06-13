@@ -21,9 +21,11 @@
     "cheerio": "^1.0.0-rc.12",
     "country-data": "^0.0.31",
     "country-emoji": "^1.5.6",
+    "cypress": "^13.10.0",
     "dotenv": "^16.4.4",
     "json-as-xlsx": "^2.5.4",
     "node-fetch": "^3.3.2",
+    "readline-sync": "^1.4.10",
     "xlsx": "^0.18.5"
   },
   "type": "module"

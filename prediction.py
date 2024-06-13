@@ -55,36 +55,36 @@ X = data[[
     "Place Semi",
     "Running Final",
     "Running Semi",
-    "Avg Position",
+    # "Avg Position",
     "Country",
-    "HOD",
-    "Previous Place Semi",
-    "Next Place Semi",
-    "Previous Points Semi",
-    "Next Points Semi",
-    "Num Of Indiv Votes Semi",
+    # # "HOD",
+    # "Previous Place Semi",
+    # "Next Place Semi",
+    # "Previous Points Semi",
+    # "Next Points Semi",
+    # "Num Of Indiv Votes Semi",
     # "Average"
     # "SF"
 ]]  # Features
 # X[:2] = runningOrderStats
 y = data["Place Final"]  # Target variable
-data.to_excel("inout.xlsx")
+# data.to_excel("inout.xlsx")
 
 # Define column transformer for preprocessing
 # Numeric features will be scaled, categorical features will be one-hot encoded
 preprocessor = ColumnTransformer(
     transformers=[
-        ('num', StandardScaler(), ["Points Semi", "Place Semi", "Running Semi",
-            "Previous Place Semi",
-            "Next Place Semi",
-            "Previous Points Semi",
-            "Next Points Semi",
-            "Num Of Indiv Votes Semi",
-        ]),
-        # ('num', SimpleImputer(), ["Points Semi", "Place Semi", "Running Semi", "Average"]),
-        ('cat', OneHotEncoder(handle_unknown='ignore'), ["Running Final"]),
-        ('cat2', OneHotEncoder(handle_unknown='ignore'), ["HOD"]),
-        ('cat3', OneHotEncoder(handle_unknown='ignore'), ["Country"])
+        # ('num', StandardScaler(), ["Points Semi", "Place Semi", "Running Semi",
+            # "Previous Place Semi",
+            # "Next Place Semi",
+            # "Previous Points Semi",
+            # "Next Points Semi",
+            # "Num Of Indiv Votes Semi",
+        # ]),
+        ('num', StandardScaler(), ["Points Semi", "Place Semi", "Running Semi"]),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), ["Running Final", "Country"])
+        # ('cat2', OneHotEncoder(handle_unknown='ignore'), ["HOD"]),
+        # ('cat3', OneHotEncoder(handle_unknown='ignore'), ["Country"])
     ],
     remainder='passthrough'
 )
@@ -92,9 +92,9 @@ preprocessor = ColumnTransformer(
 # Define the pipeline with preprocessing and model
 pipeline = Pipeline([
     ('preprocessor', preprocessor),
-    # 'model', LinearRegression()
+    ('model', LinearRegression())
     #  NuSVC(kernel = 'linear',gamma = 'scale', shrinking = False,)
-    svm.SVC(kernel='linear', C=1)
+    # svm.SVC(kernel='linear', C=1)
 ])
 
 # Split the data into training and testing sets
@@ -107,8 +107,9 @@ pipeline.fit(X_train, y_train)
 mse = pipeline.score(X_test, y_test)
 print("Mean Squared Error:", mse)
 
-predictions = pipeline.predict(X)
-
+filenameOther = "UNSC 34 summary.xlsx"
+data = pd.read_excel(filenameOther)
+predictions = pipeline.predict(data) # X
 # Adding the predictions to the DataFrame
 data["Predicted Place Final"] = predictions
 data["Predicted Rank"] = data.groupby("Edition")["Predicted Place Final"].rank()
@@ -128,8 +129,6 @@ shortData.to_excel("predictions.xlsx")
 
 joblib.dump(pipeline, 'trained_model1.pkl')
 
-plt.scatter(data["Place Final"], data["Predicted Rank"], color="black")
-# plt.plot(diabetes_X_test, diabetes_y_pred, color="blue", linewidth=3)
 
 # This model is trying to predict how a song would score in the final based on the scores in the semifinal, how can I improve the model
 
