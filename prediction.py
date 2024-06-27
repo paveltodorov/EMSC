@@ -107,7 +107,7 @@ pipeline.fit(X_train, y_train)
 mse = pipeline.score(X_test, y_test)
 print("Mean Squared Error:", mse)
 
-filenameOther = "UNSC 34 summary.xlsx"
+filenameOther = "Emsc2403Semis.xlsx"
 data = pd.read_excel(filenameOther)
 predictions = pipeline.predict(data) # X
 # Adding the predictions to the DataFrame

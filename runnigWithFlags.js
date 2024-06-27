@@ -1,39 +1,33 @@
 import {flagNew} from "./countryStats.js";
 
 let running = [
-   { country: "Germany", scoreziwEntry: "Daniel Schuhmacher (GER) - Skin I'm in" }, // 1
-   { country: "Croatia ", scoreziwEntry: "MARCELA () - Nismo Isti Svijet" },
-   { country: "Australia", scoreziwEntry: "Sam Fischer (AUS) - All My Loving" }, // 1
-   { country: "Tunisia", scoreziwEntry: "Elyanna & Balti (TUN) - Ghareeb Alay" },
-   { country: "Ukraine", scoreziwEntry: "MONATIK (UKR) - Вічно танцююча людина" },
-   { country: "Italy", scoreziwEntry: "Alessandra (ITA) - Pretty Devil" }, // 1
-   { country: "Norway", scoreziwEntry: "Ruben (NOR) - Burn Down This Room" }, // 1
-   { country: "Slovenia", scoreziwEntry: "Raiven (SLO) - Ofelija" }, // 1
-   { country: "Jordan", scoreziwEntry: "Aziz x Adonis(JOR) - Nater" }, // 1
-   { country: "Belgium", scoreziwEntry: "Mentissa : Mamma Mia (clip officiel) (B EL) - Mentissa Musique" },
-   { country: "Finland", scoreziwEntry: "Elias Kaskinen (FIN) - Pelkään rakastaa sua" },
-   { country: "Luxembourg", scoreziwEntry: "LINH (LUX) - Alors alors" }, // slow
-   { country: "Sweden", scoreziwEntry: "Arwin (SWE) - More Than Just A Feeling" },
-   { country: "France", scoreziwEntry: "Jeck () - Parapluie" },
-   { country: "Romania", scoreziwEntry: "Carla's Dreams x EMAA (ROU) - N" },
-   { country: "Estonia", scoreziwEntry: "STEFAN (EST) - Kiri külmkapi peal" }, // 2
-   { country: "San Marino", scoreziwEntry: "Mahmood, Angèle (SMR) - SEMPRE / JAMAIS" },
-   { country: "Armenia", scoreziwEntry: "Iveta Mukuchyan (ARM) - Tur Patjar" },
-   { country: "Portugal", scoreziwEntry: "NUNO RIBEIRO (POR) - Rosa feat. CONAN OSIRIS" },
-   { country: "Switzerland", scoreziwEntry: "Heaven Or Hell (SUI) - Remo Forrer" },
-   { country: "United Kingdom", scoreziwEntry: "Becky Hill (UK) - Outside Of Love" }, // 2
-   { country: "Czechia", scoreziwEntry: "The Silver Spoons (CZE) - Brain Issues" },
-   { country: "Spain", scoreziwEntry: "Melody (ESP) - Mujer Loba" },
-   { country: "Ireland", scoreziwEntry: "Niall Horan (IRL) - Heaven" },
-   { country: "Monaco", scoreziwEntry: "Dépendance Affective (MON) - Gwennili - Topic" },
- ]
+   { country: "Spain", scoreziwEntry: "Agoney (ESP) - Tormenta"},
+   { country: "Italy", scoreziwEntry: "Mara Sattei (ITA) - Mare Aperto"}, // 2
+   { country: "Australia", scoreziwEntry: "Dami Im (AUS) - Collide"}, // 1
+   { country: "Austria", scoreziwEntry: "HUNGER (AUT) - HONEY"}, // 1st
+   { country: "France", scoreziwEntry: "SARA'H (FRA) - TU PARLES"}, // 1
+   { country: "Israel", scoreziwEntry: "ים רפאלי ואור עמרמי ברוקמן (ISR) - טירוף"},
+   { country: "Belgium", scoreziwEntry: "Luka (BEL) - FOMO"},
+   { country: "Ukraine", scoreziwEntry: "TVORCHI (UKR) - Shine"},
+   { country: "Azerbaijan", scoreziwEntry: "AISEL (AZE) - Game of Chess"},
+   { country: "North Macedonia", scoreziwEntry: "Tamara Todevska (MKD) - Monsters"}, // p2
+   { country: "Latvia", scoreziwEntry: "MADARA (LAT) - Es Esmu Viss"},
+   { country: "Albania", scoreziwEntry: "Yll Limani (ALB) - Buzet e kuqe"}, // 2
+
+   // { country: "Finland", scoreziwEntry: "Käärijä x Erika Vikman (FIN) - Ruoska"},
+   // { country: "Cyprus", scoreziwEntry: "Ήβη Αδάμου (CYP) - Είπες"},
+   // { country: "Monaco", scoreziwEntry: "St Graal (MON) - Drag"},
+   // { country: "Georgia", scoreziwEntry: "Nutsa Buzaladze (GEO) - A Mother’s Love"},
+   // { country: "Serbia", scoreziwEntry: "BRESKVICA (SRB) - LEPTIR"}, //2
+]
 
 // Please make sure….1st half for Finland, Spain & Albania
 // 2nd half for Armenia, Switzerland & Bulgaria
 
 running.forEach((entry, idx) => {
    entry.flag = flagNew(entry.country);
-   console.log(`${idx + 1}. ${entry.flag} ${entry.country}`)
+   console.log(`${idx + 1}.${entry.flag} ${entry.country}`)
+   // console.log(`${idx + 1}.${entry.country}`)
 })
 
 
@@ -56,9 +50,6 @@ let countries = [
 //    let flag = flagNew(entry);
 //    console.log(`${flag} ${entry}`)
 // })
-
-
-// {
 //    sid: 692246,
 //    pass: "4ubK8uhF",
 //    flag1: "is",

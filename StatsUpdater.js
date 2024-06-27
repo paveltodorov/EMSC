@@ -345,8 +345,8 @@ async function calculateEditionStats(edition) {
     // const semi2ServerData = await getServerData(links.semi2Link);
     const serverData = undefined
     const teleServerData = undefined
-    const semi1ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/721726/unsc-34-semi-final-1");
-    const semi2ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/721729/unsc-34-semi-final-2");
+    const semi1ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/729554/emsc-2403---semi-final-1/VQ52nFkY");
+    const semi2ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/729833/emsc-2403---semi-final-2/GEXdjjgD");
 
     let stats = new Map();
     let editionName = "EMSC " + numberToEditionName(edition);
@@ -661,7 +661,7 @@ async function main() {
         // EMSC Stats Test 6 - 14
         // fileName: "EmscFullStats",
         // fileName: "EMSC2402 Summary",
-        fileName: "UNSC 34 summary",
+        fileName: "Emsc2403Semis",
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
