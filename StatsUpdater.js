@@ -279,7 +279,7 @@ let getHods = () => {
 
     let hods = [];
     hodStats.forEach(row => {
-        if (row.__EMPTY_5) hods.push(row.__EMPTY_5);
+        if (row.HOD) hods.push(row.HOD);
     });
 
     return hods;
@@ -307,7 +307,7 @@ let getHodFullName = (shortName, hods) => {
     if (shortName == "Sven") return "Sven van der Lelie";
     if (shortName == "Sve") return "Sven Biwald";
     if (shortName == "joseph cruz") return "Joseph Cruz";
-    if (shortName == "Freddie aka Rich C.") return "Richard Cox";
+    if (shortName == "Freddie aka Rich C." || shortName == "Richie Cox") return "Richard Cox";
     if (shortName == "john blue") return "John Blue";
     if (shortName == "Chris S.") return "Christian Sandmann";
     if (shortName == "Fabio Cuau Boukentar") return "Fábio Cuau-Boukentar";
@@ -339,14 +339,14 @@ async function calculateEditionStats(edition) {
     const hods = getHods();
     const links = getLinks(edition);
 
-    // const serverData = await getServerData(links.finalLink);
-    // const teleServerData = links.teleLink && await getServerData(links.teleLink);
-    // const semi1ServerData = await getServerData(links.semi1Link);
-    // const semi2ServerData = await getServerData(links.semi2Link);
-    const serverData = undefined
-    const teleServerData = undefined
-    const semi1ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/729554/emsc-2403---semi-final-1/VQ52nFkY");
-    const semi2ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/729833/emsc-2403---semi-final-2/GEXdjjgD");
+    const serverData = await getServerData(links.finalLink);
+    const teleServerData = links.teleLink && await getServerData(links.teleLink);
+    const semi1ServerData = await getServerData(links.semi1Link);
+    const semi2ServerData = await getServerData(links.semi2Link);
+    // const serverData = await getServerData("https://scorewiz.eu/scoreboard/sheet/732605/emsc-2403---grand-final/Mx8VNwek")
+    // const teleServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/732607/emsc-2403---grand-final---televote/LSG3cubR")
+    // const semi1ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/729554/emsc-2403---semi-final-1/VQ52nFkY");
+    // const semi2ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/729833/emsc-2403---semi-final-2/GEXdjjgD");
 
     let stats = new Map();
     let editionName = "EMSC " + numberToEditionName(edition);
@@ -564,7 +564,7 @@ let caculateHodPointExchangeStats = (edData) => {
             entry.finalPointsFrom.forEach(pointsFrom => {
                 const giverHod = getHodFullName(pointsFrom.hodShortName, hods);
                 if (entry.HOD === giverHod) {
-            console.log(`The Hod has voted for themselves, hod: ${giverHod}`)
+                    console.log(`The Hod has voted for themselves, hod: ${giverHod}`)
                     return;
                 }
                 if (!hodExchangeStats.has(entry.HOD)) {
@@ -636,7 +636,7 @@ let caculateFavoriteCountries = (edData) => {
 async function main() {
     let allEditionsData = [];
 
-    let editionsToCalculate = [/*1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,*/ 17];
+    let editionsToCalculate = [/*1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,*/ 18];
     for (let i = 0; i < editionsToCalculate.length; i++) {
         let edData = await calculateEditionStats(editionsToCalculate[i]);
         allEditionsData.push(...edData);
@@ -659,17 +659,17 @@ async function main() {
     let settings = {
         // fileName: "Summary of edition 15", // Name of the resulting spreadsheet
         // EMSC Stats Test 6 - 14
-        // fileName: "EmscFullStats",
-        // fileName: "EMSC2402 Summary",
-        fileName: "Emsc2403Semis",
+        fileName: "EmscFullStats",
+        // fileName: "EMSC2404 Summary",
+        // fileName: "Emsc2403Semis",
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
         RTL: false, // Display the columns from right-to-left (the default value is false)
     }
 
-    xlsx(data, settings)
-    return 0;
+    // xlsx(data, settings)
+    // return 0;
 
     let hodPointExchangeStats = caculateHodPointExchangeStats(allEditionsData);
     let getHodPointExchangeKeys = f => {

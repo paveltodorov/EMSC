@@ -1,25 +1,32 @@
 import {flagNew} from "./countryStats.js";
 
 let running = [
-   { country: "Spain", scoreziwEntry: "Agoney (ESP) - Tormenta"},
-   { country: "Italy", scoreziwEntry: "Mara Sattei (ITA) - Mare Aperto"}, // 2
-   { country: "Australia", scoreziwEntry: "Dami Im (AUS) - Collide"}, // 1
-   { country: "Austria", scoreziwEntry: "HUNGER (AUT) - HONEY"}, // 1st
-   { country: "France", scoreziwEntry: "SARA'H (FRA) - TU PARLES"}, // 1
-   { country: "Israel", scoreziwEntry: "ים רפאלי ואור עמרמי ברוקמן (ISR) - טירוף"},
-   { country: "Belgium", scoreziwEntry: "Luka (BEL) - FOMO"},
-   { country: "Ukraine", scoreziwEntry: "TVORCHI (UKR) - Shine"},
-   { country: "Azerbaijan", scoreziwEntry: "AISEL (AZE) - Game of Chess"},
-   { country: "North Macedonia", scoreziwEntry: "Tamara Todevska (MKD) - Monsters"}, // p2
+   { country: "United Kingdom", scoreziwEntry: "Artemas (UK) - i like the way you kiss me"},
+   { country: "North Macedonia", scoreziwEntry: "Tamara Todevska (MKD) - Monsters"},
+   { country: "Sweden", scoreziwEntry: "Darin (SWE) - Electric"},
    { country: "Latvia", scoreziwEntry: "MADARA (LAT) - Es Esmu Viss"},
-   { country: "Albania", scoreziwEntry: "Yll Limani (ALB) - Buzet e kuqe"}, // 2
-
-   // { country: "Finland", scoreziwEntry: "Käärijä x Erika Vikman (FIN) - Ruoska"},
-   // { country: "Cyprus", scoreziwEntry: "Ήβη Αδάμου (CYP) - Είπες"},
-   // { country: "Monaco", scoreziwEntry: "St Graal (MON) - Drag"},
-   // { country: "Georgia", scoreziwEntry: "Nutsa Buzaladze (GEO) - A Mother’s Love"},
-   // { country: "Serbia", scoreziwEntry: "BRESKVICA (SRB) - LEPTIR"}, //2
-]
+   { country: "Iceland", scoreziwEntry: "Thorsteinn Einarsson (ISL) - Hotel Heartache"}, // 1
+   { country: "Romania", scoreziwEntry: "MIRA (ROU) - Bad Booty"},
+   { country: "Albania", scoreziwEntry: "Yll Limani (ALB) - Buzet e kuqe"},
+   { country: "Italy", scoreziwEntry: "Mara Sattei (ITA) - Mare Aperto"},
+   { country: "Austria", scoreziwEntry: "HUNGER (AUT) - HONEY"},
+   { country: "Bulgaria", scoreziwEntry: "ALMA x Kristian Kostov (BUL) - So High"},
+   { country: "Andorra", scoreziwEntry: "Ana Mena, GALE (AND) - La Razón"}, // 1
+   { country: "Australia", scoreziwEntry: "Dami Im (AUS) - Collide"},
+   { country: "Croatia", scoreziwEntry: "Top of the Pop ft. Mario 5reković (CRO) - Putovanje"},
+   { country: "Israel", scoreziwEntry: "ים רפאלי ואור עמרמי ברוקמן (ISR) - טירוף"},
+   { country: "Norway", scoreziwEntry: "Red Moon (NOR) - Dreamer"},
+   { country: "San Marino", scoreziwEntry: "ALFA (SMR) - Vai!"},
+   { country: "Denmark", scoreziwEntry: "I Was Gonna Marry Him (DEN) - EYJAA - Topic"},
+   { country: "Spain", scoreziwEntry: "Agoney (ESP) - Tormenta"},
+   { country: "Belgium", scoreziwEntry: "Luka (BEL) - FOMO"},
+   { country: "Azerbaijan", scoreziwEntry: "AISEL (AZE) - Game of Chess"},
+   { country: "Portugal", scoreziwEntry: "Fernando Daniel (POR) - casa"},
+   { country: "Netherlands", scoreziwEntry: "SERA (NED) - Head Held High"},
+   { country: "Ireland", scoreziwEntry: "Hozier (IRL) - Too Sweet"}, // 2
+   { country: "France", scoreziwEntry: "SARA'H (FRA) - TU PARLES"},
+   { country: "Ukraine", scoreziwEntry: "TVORCHI (UKR) - Shine"}, // 2
+ ]
 
 // Please make sure….1st half for Finland, Spain & Albania
 // 2nd half for Armenia, Switzerland & Bulgaria
@@ -46,10 +53,10 @@ let countries = [
 "Armenia",
 ]
 
-// countries.forEach((entry, idx) => {
-//    let flag = flagNew(entry);
-//    console.log(`${flag} ${entry}`)
-// })
+countries.forEach((entry, idx) => {
+   let flag = flagNew(entry);
+   console.log(`${flag} ${entry}`)
+})
 //    sid: 692246,
 //    pass: "4ubK8uhF",
 //    flag1: "is",

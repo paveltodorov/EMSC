@@ -22,7 +22,7 @@ export const scoreGridData = [
                                 "edit": "https://scorewiz.eu/menu/494892/a57gUevW"
                             },
                             "details": [
-                                "9 November 2021, 128 views",
+                                "9 November 2021, 129 views",
                                 "ID: 494892"
                             ],
                             "operations": [
@@ -49,7 +49,7 @@ export const scoreGridData = [
                                 "edit": "https://scorewiz.eu/menu/493252/qbgnTnCV"
                             },
                             "details": [
-                                "3 November 2021, 106 views",
+                                "3 November 2021, 107 views",
                                 "ID: 493252"
                             ],
                             "operations": [
@@ -76,7 +76,7 @@ export const scoreGridData = [
                                 "edit": "https://scorewiz.eu/menu/556405/F6ecqYZX"
                             },
                             "details": [
-                                "26 June 2022, 124 views",
+                                "26 June 2022, 129 views",
                                 "ID: 556405"
                             ],
                             "operations": [
@@ -105,7 +105,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/709688/RnKG9MFL"
                     },
                     "details": [
-                        "16 April 2024, 72 views",
+                        "16 April 2024, 90 views",
                         "ID: 709688"
                     ],
                     "operations": [
@@ -159,7 +159,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/512031/7ZZqhvEZ"
                     },
                     "details": [
-                        "3 February 2022, 361 views",
+                        "3 February 2022, 362 views",
                         "ID: 512031"
                     ],
                     "operations": [
@@ -186,7 +186,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/512277/9FfhMYqB"
                     },
                     "details": [
-                        "5 February 2022, 262 views",
+                        "5 February 2022, 263 views",
                         "ID: 512277"
                     ],
                     "operations": [
@@ -213,7 +213,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/522988/Y3NdV2wV"
                     },
                     "details": [
-                        "20 March 2022, 143 views",
+                        "20 March 2022, 144 views",
                         "ID: 522988"
                     ],
                     "operations": [
@@ -240,7 +240,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/560315/Sp95NWqe"
                     },
                     "details": [
-                        "10 July 2022, 197 views",
+                        "10 July 2022, 198 views",
                         "ID: 560315"
                     ],
                     "operations": [
@@ -267,7 +267,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/572870/nKsKa5ZS"
                     },
                     "details": [
-                        "9 September 2022, 169 views",
+                        "9 September 2022, 170 views",
                         "ID: 572870"
                     ],
                     "operations": [
@@ -294,7 +294,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/580661/EvsLpM42"
                     },
                     "details": [
-                        "3 November 2022, 199 views",
+                        "3 November 2022, 200 views",
                         "ID: 580661"
                     ],
                     "operations": [
@@ -321,7 +321,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/664031/PsSWRDPW"
                     },
                     "details": [
-                        "20 September 2023, 487 views",
+                        "20 September 2023, 488 views",
                         "ID: 664031"
                     ],
                     "operations": [
@@ -348,7 +348,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/664032/DF2MBQ8n"
                     },
                     "details": [
-                        "20 September 2023, 232 views",
+                        "20 September 2023, 233 views",
                         "ID: 664032"
                     ],
                     "operations": [
@@ -375,7 +375,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/676019/a6C2zZYh"
                     },
                     "details": [
-                        "28 November 2023, 304 views",
+                        "28 November 2023, 305 views",
                         "ID: 676019"
                     ],
                     "operations": [
@@ -398,11 +398,11 @@ export const scoreGridData = [
                 "title": "EMSC 2305 - GRAND FINAL - TELEVOTE",
                 "data": {
                     "menu": {
-                        "view": "https://scorewiz.eu/scoreboard/view/676018/emsc-2305---grand-final---televote/pCZ9zn7S",
+                        "view": "https://scorewiz.eu/scoreboard/view/676018/emsc-2305---grand-final---televote",
                         "edit": "https://scorewiz.eu/menu/676018/pCZ9zn7S"
                     },
                     "details": [
-                        "28 November 2023, 271 views",
+                        "28 November 2023, 272 views",
                         "ID: 676018"
                     ],
                     "operations": [
@@ -415,7 +415,7 @@ export const scoreGridData = [
                         ]
                     ],
                     "meta": {
-                        "visible": "no",
+                        "visible": "yes",
                         "protected": "no"
                     }
                 }
@@ -429,7 +429,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/692246/4ubK8uhF"
                     },
                     "details": [
-                        "15 February 2024, 159 views",
+                        "15 February 2024, 160 views",
                         "ID: 692246"
                     ],
                     "operations": [
@@ -456,7 +456,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/692247/ce82cLhA"
                     },
                     "details": [
-                        "15 February 2024, 143 views",
+                        "15 February 2024, 144 views",
                         "ID: 692247"
                     ],
                     "operations": [
@@ -483,7 +483,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/689467/CWSFU88p"
                     },
                     "details": [
-                        "5 February 2024, 185 views",
+                        "5 February 2024, 186 views",
                         "ID: 689467"
                     ],
                     "operations": [
@@ -506,11 +506,11 @@ export const scoreGridData = [
                 "title": "EMSC 2401 - SEMI FINAL 2",
                 "data": {
                     "menu": {
-                        "view": "https://scorewiz.eu/scoreboard/view/689470/emsc-2401---semi-final-2/9RsQMTx9",
+                        "view": "https://scorewiz.eu/scoreboard/view/689470/emsc-2401---semi-final-2",
                         "edit": "https://scorewiz.eu/menu/689470/9RsQMTx9"
                     },
                     "details": [
-                        "5 February 2024, 215 views",
+                        "5 February 2024, 216 views",
                         "ID: 689470"
                     ],
                     "operations": [
@@ -523,7 +523,7 @@ export const scoreGridData = [
                         ]
                     ],
                     "meta": {
-                        "visible": "no",
+                        "visible": "yes",
                         "protected": "no"
                     }
                 }
@@ -533,11 +533,11 @@ export const scoreGridData = [
                 "title": "EMSC 2402 - GRAND FINAL ",
                 "data": {
                     "menu": {
-                        "view": "https://scorewiz.eu/scoreboard/view/711818/emsc-2402---grand-final/HhMDN5Dq",
+                        "view": "https://scorewiz.eu/scoreboard/view/711818/emsc-2402---grand-final",
                         "edit": "https://scorewiz.eu/menu/711818/HhMDN5Dq"
                     },
                     "details": [
-                        "26 April 2024, 62 views",
+                        "26 April 2024, 140 views",
                         "ID: 711818"
                     ],
                     "operations": [
@@ -550,7 +550,7 @@ export const scoreGridData = [
                         ]
                     ],
                     "meta": {
-                        "visible": "no",
+                        "visible": "yes",
                         "protected": "no"
                     }
                 }
@@ -560,12 +560,93 @@ export const scoreGridData = [
                 "title": "EMSC 2402 - GRAND FINAL - TELEVOTE",
                 "data": {
                     "menu": {
-                        "view": "https://scorewiz.eu/scoreboard/view/711819/emsc-2402---grand-final---televote/W28Ua7tt",
+                        "view": "https://scorewiz.eu/scoreboard/view/711819/emsc-2402---grand-final---televote",
                         "edit": "https://scorewiz.eu/menu/711819/W28Ua7tt"
                     },
                     "details": [
-                        "26 April 2024, 34 views",
+                        "26 April 2024, 89 views",
                         "ID: 711819"
+                    ],
+                    "operations": [
+                        [
+                            "move"
+                        ],
+                        [
+                            "delete",
+                            true
+                        ]
+                    ],
+                    "meta": {
+                        "visible": "yes",
+                        "protected": "no"
+                    }
+                }
+            },
+            {
+                "uniqId": "1:709449",
+                "title": "EMSC 2402 - SEMI FINAL 1",
+                "data": {
+                    "menu": {
+                        "view": "https://scorewiz.eu/scoreboard/view/709449/emsc-2402---semi-final-1",
+                        "edit": "https://scorewiz.eu/menu/709449/ztAPqW39"
+                    },
+                    "details": [
+                        "14 April 2024, 122 views",
+                        "ID: 709449"
+                    ],
+                    "operations": [
+                        [
+                            "move"
+                        ],
+                        [
+                            "delete",
+                            true
+                        ]
+                    ],
+                    "meta": {
+                        "visible": "yes",
+                        "protected": "no"
+                    }
+                }
+            },
+            {
+                "uniqId": "1:732605",
+                "title": "EMSC 2403 - GRAND FINAL",
+                "data": {
+                    "menu": {
+                        "view": "https://scorewiz.eu/scoreboard/view/732605/emsc-2403---grand-final",
+                        "edit": "https://scorewiz.eu/menu/732605/Mx8VNwek"
+                    },
+                    "details": [
+                        "28 June 2024, 150 views",
+                        "ID: 732605"
+                    ],
+                    "operations": [
+                        [
+                            "move"
+                        ],
+                        [
+                            "delete",
+                            true
+                        ]
+                    ],
+                    "meta": {
+                        "visible": "yes",
+                        "protected": "no"
+                    }
+                }
+            },
+            {
+                "uniqId": "1:732607",
+                "title": "EMSC 2403 - GRAND FINAL - TELEVOTE",
+                "data": {
+                    "menu": {
+                        "view": "https://scorewiz.eu/scoreboard/view/732607/emsc-2403---grand-final---televote/LSG3cubR",
+                        "edit": "https://scorewiz.eu/menu/732607/LSG3cubR"
+                    },
+                    "details": [
+                        "28 June 2024, 70 views",
+                        "ID: 732607"
                     ],
                     "operations": [
                         [
@@ -583,16 +664,43 @@ export const scoreGridData = [
                 }
             },
             {
-                "uniqId": "1:709449",
-                "title": "EMSC 2402 - SEMI FINAL 1",
+                "uniqId": "1:729554",
+                "title": "EMSC 2403 - SEMI FINAL 1",
                 "data": {
                     "menu": {
-                        "view": "https://scorewiz.eu/scoreboard/view/709449/emsc-2402---semi-final-1/ztAPqW39",
-                        "edit": "https://scorewiz.eu/menu/709449/ztAPqW39"
+                        "view": "https://scorewiz.eu/scoreboard/view/729554/emsc-2403---semi-final-1/VQ52nFkY",
+                        "edit": "https://scorewiz.eu/menu/729554/VQ52nFkY"
                     },
                     "details": [
-                        "14 April 2024, 108 views",
-                        "ID: 709449"
+                        "16 June 2024, 104 views",
+                        "ID: 729554"
+                    ],
+                    "operations": [
+                        [
+                            "move"
+                        ],
+                        [
+                            "delete",
+                            true
+                        ]
+                    ],
+                    "meta": {
+                        "visible": "no",
+                        "protected": "no"
+                    }
+                }
+            },
+            {
+                "uniqId": "1:729833",
+                "title": "EMSC 2403 - SEMI FINAL 2",
+                "data": {
+                    "menu": {
+                        "view": "https://scorewiz.eu/scoreboard/view/729833/emsc-2403---semi-final-2/GEXdjjgD",
+                        "edit": "https://scorewiz.eu/menu/729833/GEXdjjgD"
+                    },
+                    "details": [
+                        "16 June 2024, 90 views",
+                        "ID: 729833"
                     ],
                     "operations": [
                         [
@@ -618,7 +726,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/448520/zZYdpTrE"
                     },
                     "details": [
-                        "11 July 2021, 209 views",
+                        "11 July 2021, 210 views",
                         "ID: 448520"
                     ],
                     "operations": [
@@ -645,7 +753,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/438781/GKdH4swM"
                     },
                     "details": [
-                        "29 June 2021, 161 views",
+                        "29 June 2021, 162 views",
                         "ID: 438781"
                     ],
                     "operations": [
@@ -672,7 +780,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/462999/S7VAqU4S"
                     },
                     "details": [
-                        "7 August 2021, 163 views",
+                        "7 August 2021, 164 views",
                         "ID: 462999"
                     ],
                     "operations": [
@@ -699,7 +807,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/464107/uBUyEELZ"
                     },
                     "details": [
-                        "9 August 2021, 103 views",
+                        "9 August 2021, 104 views",
                         "ID: 464107"
                     ],
                     "operations": [
@@ -726,7 +834,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/480656/TK2bJgw4"
                     },
                     "details": [
-                        "23 September 2021, 133 views",
+                        "23 September 2021, 134 views",
                         "ID: 480656"
                     ],
                     "operations": [
@@ -753,7 +861,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/510232/Bpw4YrvT"
                     },
                     "details": [
-                        "23 January 2022, 235 views",
+                        "23 January 2022, 236 views",
                         "ID: 510232"
                     ],
                     "operations": [
@@ -780,7 +888,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/509936/2jSb55C9"
                     },
                     "details": [
-                        "22 January 2022, 295 views",
+                        "22 January 2022, 296 views",
                         "ID: 509936"
                     ],
                     "operations": [
@@ -807,7 +915,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/522087/gCchsJX2"
                     },
                     "details": [
-                        "17 March 2022, 254 views",
+                        "17 March 2022, 255 views",
                         "ID: 522087"
                     ],
                     "operations": [
@@ -834,7 +942,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/518628/jLVmvfcS"
                     },
                     "details": [
-                        "6 March 2022, 181 views",
+                        "6 March 2022, 182 views",
                         "ID: 518628"
                     ],
                     "operations": [
@@ -861,7 +969,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/520021/AWnxX3pW"
                     },
                     "details": [
-                        "11 March 2022, 179 views",
+                        "11 March 2022, 180 views",
                         "ID: 520021"
                     ],
                     "operations": [
@@ -888,7 +996,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/560314/2KgCrR4R"
                     },
                     "details": [
-                        "10 July 2022, 210 views",
+                        "10 July 2022, 211 views",
                         "ID: 560314"
                     ],
                     "operations": [
@@ -915,7 +1023,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/558160/ttXxWFQm"
                     },
                     "details": [
-                        "2 July 2022, 193 views",
+                        "2 July 2022, 194 views",
                         "ID: 558160"
                     ],
                     "operations": [
@@ -942,7 +1050,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/572881/bpb34Pgz"
                     },
                     "details": [
-                        "9 September 2022, 173 views",
+                        "9 September 2022, 174 views",
                         "ID: 572881"
                     ],
                     "operations": [
@@ -969,7 +1077,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/571003/WmC6K53M"
                     },
                     "details": [
-                        "28 August 2022, 151 views",
+                        "28 August 2022, 152 views",
                         "ID: 571003"
                     ],
                     "operations": [
@@ -996,7 +1104,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/571874/2x9N75sm"
                     },
                     "details": [
-                        "2 September 2022, 174 views",
+                        "2 September 2022, 176 views",
                         "ID: 571874"
                     ],
                     "operations": [
@@ -1023,7 +1131,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/581471/6KTdgQwE"
                     },
                     "details": [
-                        "9 November 2022, 192 views",
+                        "9 November 2022, 193 views",
                         "ID: 581471"
                     ],
                     "operations": [
@@ -1050,7 +1158,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/581470/9mvjfJ6h"
                     },
                     "details": [
-                        "9 November 2022, 182 views",
+                        "9 November 2022, 183 views",
                         "ID: 581470"
                     ],
                     "operations": [
@@ -1077,7 +1185,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/579580/gsFYqPfN"
                     },
                     "details": [
-                        "28 October 2022, 190 views",
+                        "28 October 2022, 191 views",
                         "ID: 579580"
                     ],
                     "operations": [
@@ -1104,7 +1212,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/594780/pFveRSsj"
                     },
                     "details": [
-                        "1 February 2023, 235 views",
+                        "1 February 2023, 236 views",
                         "ID: 594780"
                     ],
                     "operations": [
@@ -1131,7 +1239,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/594798/PtBaaCTC"
                     },
                     "details": [
-                        "1 February 2023, 218 views",
+                        "1 February 2023, 219 views",
                         "ID: 594798"
                     ],
                     "operations": [
@@ -1158,7 +1266,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/592777/NnAPqTmB"
                     },
                     "details": [
-                        "22 January 2023, 226 views",
+                        "22 January 2023, 227 views",
                         "ID: 592777"
                     ],
                     "operations": [
@@ -1185,7 +1293,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/593433/JYhJeXJB"
                     },
                     "details": [
-                        "26 January 2023, 195 views",
+                        "26 January 2023, 196 views",
                         "ID: 593433"
                     ],
                     "operations": [
@@ -1212,7 +1320,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/605796/w3B7xCyL"
                     },
                     "details": [
-                        "17 March 2023, 247 views",
+                        "17 March 2023, 248 views",
                         "ID: 605796"
                     ],
                     "operations": [
@@ -1239,7 +1347,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/605803/BXkXvmQH"
                     },
                     "details": [
-                        "17 March 2023, 181 views",
+                        "17 March 2023, 182 views",
                         "ID: 605803"
                     ],
                     "operations": [
@@ -1266,7 +1374,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/602341/8FESmJhe"
                     },
                     "details": [
-                        "6 March 2023, 170 views",
+                        "6 March 2023, 171 views",
                         "ID: 602341"
                     ],
                     "operations": [
@@ -1293,7 +1401,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/603384/M5k7EGqQ"
                     },
                     "details": [
-                        "10 March 2023, 184 views",
+                        "10 March 2023, 185 views",
                         "ID: 603384"
                     ],
                     "operations": [
@@ -1320,7 +1428,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/643483/rSzf9KqN"
                     },
                     "details": [
-                        "27 June 2023, 223 views",
+                        "27 June 2023, 224 views",
                         "ID: 643483"
                     ],
                     "operations": [
@@ -1347,7 +1455,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/643484/xWwTxFkg"
                     },
                     "details": [
-                        "27 June 2023, 194 views",
+                        "27 June 2023, 195 views",
                         "ID: 643484"
                     ],
                     "operations": [
@@ -1374,7 +1482,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/639858/BGYAFG4C"
                     },
                     "details": [
-                        "18 June 2023, 189 views",
+                        "18 June 2023, 190 views",
                         "ID: 639858"
                     ],
                     "operations": [
@@ -1401,7 +1509,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/640742/ChQpNfEE"
                     },
                     "details": [
-                        "20 June 2023, 243 views",
+                        "20 June 2023, 244 views",
                         "ID: 640742"
                     ],
                     "operations": [
@@ -1428,7 +1536,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/662125/Kw5HMKqG"
                     },
                     "details": [
-                        "9 September 2023, 229 views",
+                        "9 September 2023, 230 views",
                         "ID: 662125"
                     ],
                     "operations": [
@@ -1455,7 +1563,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/662782/GAE2qc8g"
                     },
                     "details": [
-                        "12 September 2023, 237 views",
+                        "12 September 2023, 238 views",
                         "ID: 662782"
                     ],
                     "operations": [
@@ -1478,11 +1586,11 @@ export const scoreGridData = [
                 "title": "EMSC2305 - SEMI FINAL 1",
                 "data": {
                     "menu": {
-                        "view": "https://scorewiz.eu/scoreboard/view/673625/emsc2305---semi-final-1/kSVdqhFA",
+                        "view": "https://scorewiz.eu/scoreboard/view/673625/emsc2305---semi-final-1",
                         "edit": "https://scorewiz.eu/menu/673625/kSVdqhFA"
                     },
                     "details": [
-                        "15 November 2023, 302 views",
+                        "15 November 2023, 303 views",
                         "ID: 673625"
                     ],
                     "operations": [
@@ -1495,7 +1603,7 @@ export const scoreGridData = [
                         ]
                     ],
                     "meta": {
-                        "visible": "no",
+                        "visible": "yes",
                         "protected": "no"
                     }
                 }
@@ -1509,7 +1617,7 @@ export const scoreGridData = [
                         "edit": "https://scorewiz.eu/menu/674114/5tVfF5BC"
                     },
                     "details": [
-                        "18 November 2023, 296 views",
+                        "18 November 2023, 297 views",
                         "ID: 674114"
                     ],
                     "operations": [

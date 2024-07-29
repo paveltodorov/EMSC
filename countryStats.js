@@ -222,7 +222,10 @@ export let calculateCountryRanking = (stats, from, to, qualCount, compareToPrev,
         countryRanking = new Map([...countryRanking.entries()]
             .sort((x, y) => countryStatsSorter(x, y, sortCriteria))
             .map((x, pos) => {
-                if (!x[1].editions[edition]) x[1].editions[edition] =  { rank : undefined, expPoints : undefined,  accAvgExpPoints : 0, accExpPoints : 0, rankAfterEdition : 0, rankMov: "-", bestRank: "", bestRankMov : ""};
+                if (!x[1].editions[edition]) x[1].editions[edition] = {
+                  rank : undefined, expPoints : undefined,  accAvgExpPoints : 0,
+                  accExpPoints : 0, rankAfterEdition : 0, rankMov: "-", bestRank: "", bestRankMov : ""
+                };
                 x[1].editions[edition].accAvgExpPoints = x[1].averageExpPoints;
                 x[1].editions[edition].accExpPoints = x[1].expPoints;
 
@@ -459,84 +462,179 @@ function calculatePotRanking(countryStats) {
     return {ranking: potRankingList, keys: potTableKeys};
 }
 
-// console.log(potRanking);
-const countryStats = calculateCountryRanking(stats, 1, 17, 12, true);
-const countryStats2021 = calculateCountryRanking(stats, 1, 5, 12, true);
-const countryStats2022 = calculateCountryRanking(stats, 6, 10, 12, true);
-const countryStats2023 = calculateCountryRanking(stats, 11, 15, 12, true);
-const countryStats2024 = calculateCountryRanking(stats, 16, 17, 12, true);
-// console.log(countryStats)
+let calculateArtistParticipations = (editionsData, currentEdition) => {
+    let artistEntries = new Map()
 
-const potStats = calculatePotRanking(countryStats.ranking);
-let data = [
-  {
-    sheet: "CountryRanking",
-    columns: countryStats.keys,
-    content: countryStats.ranking,
-  },
-  {
-    sheet: "CountryRanking2021",
-    columns: countryStats2021.keys,
-    content: countryStats2021.ranking,
-  },
-  {
-    sheet: "CountryRanking2022",
-    columns: countryStats2022.keys,
-    content: countryStats2022.ranking,
-  },
-  {
-    sheet: "CountryRanking2023",
-    columns: countryStats2023.keys,
-    content: countryStats2023.ranking,
-  },
-  {
-    sheet: "CountryRanking2024",
-    columns: countryStats2024.keys,
-    content: countryStats2024.ranking,
-  },
-  {
-    sheet: "PotRanking",
-    columns: potStats.keys,
-    content: potStats.ranking,
-  },
-  {
-    sheet: "CountryPositions",
-    columns: countryStats.positionsKeys,
-    content: countryStats.positionsStats,
-  },
-  {
-    sheet: "CountryPositionsSemi",
-    columns: countryStats.positionsSemiKeys,
-    content: countryStats.positionsSemiStats,
-  },
-  // {
-  //   sheet: "Children",
-  //   columns: [
-  //     { label: "Ed.User", value: "user" }, // Top level data
-  //     { label: "Age", value: "age", format: '# "years"' }, // Column format
-  //     { label: "Phone", value: "more.phone", format: "(###) ###-####" }, // Deep props and column format
-  //   ],
-  //   content: [
-  //     { user: "Manuel", age: 16, more: { phone: 9999999900 } },
-  //     { user: "Ana", age: 17, more: { phone: 8765432135 } },
-  //   ],
-  // },
-];
-// console.log(data);
+    editionsData.forEach(x => {
+        const delimiters = /(?<!\S)(?:x|X|%|&|ft\.|\+|feat\.|,)(?!\S)/g // Regex to match delimiters
+        const artists = x.Artist.replace(" $1").split(delimiters)
+            .map(word => word.trim())
+            .filter(word => word !== "");
 
-let settings = {
-  fileName: "CountryRankingAfterE17", // Name of the resulting spreadsheet
-  extraLength: 1, // A bigger number means that columns will be wider
-  writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
-  writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
-  RTL: false, // Display the columns from right-to-left (the default value is false)
+        artists.forEach(artist => {
+
+           let artistLowerCase = artist.toLowerCase()
+            if (artistEntries.has(artistLowerCase)) {
+                artistEntries.get(artistLowerCase).participations.push(x.Edition)
+            }
+            else {
+                let artistEntry = {};
+                artistEntry.artist = artist
+                artistEntry.participations = []
+                artistEntry.participations.push(x.Edition)
+                // entry.canReturnInEdition = ""
+
+                artistEntries.set(artistLowerCase, artistEntry)
+            }
+        })
+    })
+
+    artistEntries.forEach((entry, artistName) => {
+        console.log(`${entry}: ${artistName}`);
+        entry.partipationsCount = entry.participations.length
+        entry.canParticipate = entry.partipationsCount % 3 != 0
+        if (entry.partipationsCount % 3 != 0) {
+            entry.canParticipate = true
+            entry.canReturnInEdition = 0
+        } else {
+            entry.canReturnInEdition = entry.participations[entry.partipationsCount - 1] + 11
+            entry.canParticipate = currentEdition >= entry.canReturnInEdition
+        }
+    })
+
+    return artistEntries
 }
 
-xlsx(data, settings) // uncomment to save to file
+// console.log(potRanking);
+let calculateAndWriteCountryRanking = () => {
+  const countryStats = calculateCountryRanking(stats, 1, 18, 12, true);
+  const countryStats2021 = calculateCountryRanking(stats, 1, 5, 12, true);
+  const countryStats2022 = calculateCountryRanking(stats, 6, 10, 12, true);
+  const countryStats2023 = calculateCountryRanking(stats, 11, 15, 12, true);
+  const countryStats2024 = calculateCountryRanking(stats, 16, 18, 12, true);
+  // console.log(countryStats)
 
-let shortMedalStats = countryStats.positionsStats.map((entry, idx) => {
-    return {flag: entry.flag, country: entry.country, positions: entry.positions}
-});
+  const potStats = calculatePotRanking(countryStats.ranking);
+  let data = [
+    {
+      sheet: "CountryRanking",
+      columns: countryStats.keys,
+      content: countryStats.ranking,
+    },
+    {
+      sheet: "CountryRanking2021",
+      columns: countryStats2021.keys,
+      content: countryStats2021.ranking,
+    },
+    {
+      sheet: "CountryRanking2022",
+      columns: countryStats2022.keys,
+      content: countryStats2022.ranking,
+    },
+    {
+      sheet: "CountryRanking2023",
+      columns: countryStats2023.keys,
+      content: countryStats2023.ranking,
+    },
+    {
+      sheet: "CountryRanking2024",
+      columns: countryStats2024.keys,
+      content: countryStats2024.ranking,
+    },
+    {
+      sheet: "PotRanking",
+      columns: potStats.keys,
+      content: potStats.ranking,
+    },
+    {
+      sheet: "CountryPositions",
+      columns: countryStats.positionsKeys,
+      content: countryStats.positionsStats,
+    },
+    {
+      sheet: "CountryPositionsSemi",
+      columns: countryStats.positionsSemiKeys,
+      content: countryStats.positionsSemiStats,
+    },
+    // {
+    //   sheet: "Children",
+    //   columns: [
+    //     { label: "Ed.User", value: "user" }, // Top level data
+    //     { label: "Age", value: "age", format: '# "years"' }, // Column format
+    //     { label: "Phone", value: "more.phone", format: "(###) ###-####" }, // Deep props and column format
+    //   ],
+    //   content: [
+    //     { user: "Manuel", age: 16, more: { phone: 9999999900 } },
+    //     { user: "Ana", age: 17, more: { phone: 8765432135 } },
+    //   ],
+    // },
+  ];
+  // console.log(data);
+
+  let settings = {
+    fileName: "CountryRankingAfterE18", // Name of the resulting spreadsheet
+    extraLength: 1, // A bigger number means that columns will be wider
+    writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
+    writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
+    RTL: false, // Display the columns from right-to-left (the default value is false)
+  }
+
+  xlsx(data, settings) // uncomment to save to file
+
+  // let shortMedalStats = countryStats.positionsStats.map((entry, idx) => {
+  //     return {flag: entry.flag, country: entry.country, positions: entry.positions}
+  // });
+}
+
+let calculateAndWriteArtistStats = (currentEdition) => {
+    let artistsStats = calculateArtistParticipations(stats, currentEdition)
+
+    let artistsStatsForExcel = [...artistsStats.values()].sort((x,y) => {
+        if (y.canReturnInEdition == 0 && x.canReturnInEdition == 0) {
+           return y.partipationsCount - x.partipationsCount
+        }
+
+        return y.canReturnInEdition - x.canReturnInEdition
+    })
+    let keys = [
+        { label: 'Artist', value: 'artist' },
+        { label: 'Can Participate', value: row => row.canParticipate ? "Yes" : "No" },
+        { label: 'Can Return In Edition', value: row => row.canReturnInEdition ? row.canReturnInEdition : "" },
+        { label: 'Participations', value: 'partipationsCount' }
+    ]
+
+    for (let i = 0; i < 6; i++) {
+        keys.push({
+            label : `Participation ${i + 1} in edition`,
+            value : row => {
+                if (row.participations[i]) return row.participations[i]
+                return ""
+            }
+        })
+    }
+
+    let data = [
+      {
+        sheet: "ArtistStats",
+        columns: keys,
+        content: artistsStatsForExcel,
+      },
+    ]
+
+    let settings = {
+      fileName: "ArtistStats", // Name of the resulting spreadsheet
+      extraLength: 1, // A bigger number means that columns will be wider
+      writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
+      writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
+      RTL: false, // Display the columns from right-to-left (the default value is false)
+    }
+
+    xlsx(data, settings) // uncomment to save to file
+}
+
+// calculateAndWriteCountryRanking()
+
+calculateAndWriteArtistStats(stats, 19)
 
 // console.log(countryRanking);
 

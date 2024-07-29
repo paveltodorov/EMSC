@@ -1,0 +1,1229 @@
+<html><head>
+		<title>EMSC 2403 - GRAND FINAL :: ScoreWIZ</title>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<link href="/images/favicon.png" rel="icon" type="image/png">
+<script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script><script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/js?id=G-HGGEH7V61S&amp;l=dataLayer&amp;cx=c"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-110571612-1"></script>
+<script>
+  // new
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-110571612-1');
+</script>
+
+		<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500,700&amp;subset=latin-ext,latin" rel="stylesheet" type="text/css">
+		<meta charset="utf-8">
+			<style id="style">
+				body {
+					background-color:black;
+					background-image:none;
+					margin:0;
+				}
+
+				* {
+					font-family:Ubuntu, Arial, Helvetica, sans-serif;
+                    box-sizing: border-box;
+				}
+
+				#messages, #status {
+					display:none;
+				}
+
+				.participant span {
+					color:black;
+				}
+
+				a {
+					color:inherit;
+				}
+
+				#back {
+					position:absolute;
+					left:0;
+					height:100%;
+					top:0;
+					background-size:cover;
+					width:100%;
+					opacity:0.1;
+				}
+
+				#scoreboard {
+					position:absolute;
+					top:120px;
+					left:10px;
+				}
+
+				#pause.paused {
+					color:red;
+				}
+
+				#info, #sheet-container, #start-screen {
+					position:absolute;
+					left:100px;
+					top:20px;
+                    background:black;
+					color:white;
+					display:none;
+					font-size:13px;
+					padding:20px;
+				}
+
+				#start-screen {
+                    background-color:black;
+					color:white;
+					width:800px;
+					height:500px;
+				}
+
+				#start-screen td {
+					color:white;
+					font-size:11px;
+					padding:5px;
+					vertical-align:top;
+				}
+
+				#sheet-container {
+					margin: 0 auto;
+					overflow:scroll;
+					max-width:90%;
+					min-height:800px;
+				}
+
+				#sheet {
+					border-collapse:collapse;
+					margin: 0 auto;
+				}
+
+				#sheet td, #sheet th {
+					text-align:left;
+					vertical-align:top;
+					color:white;
+					font-size:12px;
+					padding:2px;
+					border:1px dotted white;
+					font-weight:normal
+				}
+
+                #sheet th.sheet-jury span {
+                    display:block;
+                    margin-top:2px;
+                    font-size:8px;
+
+                }
+
+				#sheet td.pts {
+                    background:#0c0000;
+					text-align:center;
+				}
+
+				#sheet td.pts.pts-0 {
+					background:none;
+				}
+
+				#sheet td.pts.pts-minus {
+
+                    background:black;
+					color:red;
+				}
+
+				#sheet td.pts.pts-third {
+
+                    background:#310;
+				}
+
+				#sheet td.pts.pts-second {
+
+                    background:#620;
+				}
+
+				#sheet td.pts.pts-first {
+                    background:#ff8923;
+                    font-weigth:bold;
+                    color:black;
+				}
+
+				#sheet td.sheet-jury-score,	#sheet td.sheet-televote-score, #sheet td.sheet-indiv {
+					background:#black;
+                    color:#ff8923;
+				}
+
+				#sheet td.sheet-total-score {
+					background:linear-gradient(135deg, rgba(255,255,255,0.4), #7d7, #5a9, #88e, rgba(255,255,255,0.4));
+                    background:#222;
+                    color:#ff8923;
+                    font-weight:bold;
+				}
+
+				.sheet-flag {
+					width:16px;
+					height:10px;
+					display:inline-block;
+				}
+
+				.sheet-participant .sheet-flag {
+					position:relative;
+					top:1px;
+					margin-left:2px;
+				}
+
+				#sheet th.sheet-score, th.sheet-jury {
+					vertical-align:bottom;
+				}
+
+				#info {
+					width:600px;
+					height:400px;
+				}
+
+				#info h2 {
+					font-size:16px;
+				}
+
+				#info span {
+					font-weight:bold;
+					color:#99a6d8;
+				}
+
+				#info p.empty {
+					height:20px;
+				}
+
+				.participant {
+					position:absolute;
+					width:500px;
+				}
+
+				#top {
+					height:150px;
+					position:relative;
+				}
+
+				#tools
+				{
+					opacity:0.2;
+					position:absolute;
+					display:inline-block;
+					border-radius: 5px;
+					background-color:#ccc;
+					height: 30px;
+					top: 5px;
+					left: 849px;
+					padding:5px;
+					z-index:2;
+				}
+
+				#tools:hover {
+					opacity:0.5;
+				}
+
+				#tools div {
+					display:inline-block;
+					margin:0 8px;
+					text-align:center;
+				}
+
+				#tools div {
+					margin-bottom:5px;
+				}
+
+				#tools div a {
+					font-size:15px;
+					display:inline-block;
+					padding:0 2px;
+					text-decoration:none;
+				}
+
+				#tools div.help a {
+					font-weight:bold;
+				}
+
+				#messages {
+					position:absolute;
+					left:180px;
+					top:60px;
+					font-size:16px;
+					width:800px;
+					height:50px;
+					z-index:2;
+				}
+
+				#status {
+					position:absolute;
+					top:18px;
+					height:40px;
+					font-size:18px;
+					left:180px;
+					width:800px;
+					text-transform:uppercase;
+					font-weight:bold;
+					z-index:2;
+				}
+
+
+				#info p {
+					margin:0 0 5px;
+				}
+
+				#top figure
+				{
+					position:absolute;
+					top:0;
+					left:0;
+					width:120px;
+					height:130px;
+					opacity:0;
+					background-size:contain;
+					background-repeat:no-repeat;
+					background-position:center center top;
+				}
+
+				.progress, .sheet-msg {
+					font-weight:normal;
+					font-size:10px;
+					opacity:0.6;
+					display:inline-block;
+				}
+
+				.sheet-msg {
+					margin-top:10px;
+					font-style:italic;
+					margin-left:20px;
+				}
+
+				.progress {
+					margin-left:10px;
+				}
+
+				#sheet-link {
+					text-decoration:none;
+					font-weight:bold;
+				}
+
+				.participant span {
+					display:inline-block;
+					margin:0;
+					color:#aaa;
+				}
+
+				.participant {
+					background:linear-gradient(135deg, black, #555, black);
+                    transition:top 1s ease-in-out, left 1s ease-in-out;
+				}
+
+				.participant span.sponsor {
+					position: relative;
+					top: 4px;
+					font-style: italic;
+					font-size: 10px  !important;
+					text-transform:none;
+				}
+
+				.sheet-sponsor {
+					font-style: italic;
+					font-size: 10px;
+				}
+
+				.participant span.sponsor:before,
+				.sheet-sponsor:before {
+					content:'(';
+					margin-left:2px;
+					display:inline-block;
+				}
+
+				.participant span.sponsor:after,
+				.sheet-sponsor:after {
+					content:')';
+				}
+
+				.participant span.score {
+					width:40px;
+					position: relative;
+					top: 0px;
+                    text-align:right;
+				}
+
+				.participant span.points {
+					width:20px;
+					font-size:11px !important;
+					margin-right:20px;
+				}
+
+				.participant .name {
+					width:350px;
+					position: relative;
+					top: 0px;
+				}
+
+				.flag img {
+					width:25px;
+					height:20px;
+					border-radius:5px;
+				}
+
+				.sheet-participant .sheet-flag {
+					position:relative;
+					top:1px;
+					margin-left:2px;
+				}
+
+				#full-ranking {
+					margin-top:20px;
+					text-align:center;
+				}
+
+				#full-ranking h2 {
+					margin:0;
+					font-size:1em;
+				}
+
+				#sheet-header {
+					margin-bottom:20px;
+					text-align:center;
+					font-style:italic;
+					font-size:11px;
+					opacity:0.7;
+				}
+
+				#messages .before-start {
+					text-transform:none;
+					font-size:13px;
+					font-style:italic;
+					font-weight:normal;
+					display:inline-block;
+					margin-left:20px;
+				}
+
+				#messages .before-start a {
+					font-weight:bold;
+					text-decoration:none;
+					color:inherit;
+				}
+
+				#messages .before-start span {
+					display:inline-block;
+					margin-left:40px;
+				}
+
+				#info span.about {
+					font-style:italic;
+					color:#555;
+					font-size:10px;
+					font-weight:normal;
+					display:inline-block;
+					margin-top:30px;
+				}
+
+                .body {
+                    background-size: cover;
+                }
+
+                .participant {
+                    max-height: 31px;
+                    overflow:hidden;
+                    border-radius:0;
+                }
+
+                .participant {
+                    z-index:1;
+                }
+
+                .participant.received, .participant.voted.received {
+                    opacity:1;
+                    z-index:5;
+                }
+
+                .participant {
+                    padding:0 5px;
+                    height:31px;
+                    overflow:hidden;
+                }
+
+                .participant span {
+                    display:inline-block;
+                    border-radius:0;
+                    font-size:16px;
+                    padding:5px 0;
+                    max-height:none;
+                    top:0px !important;
+                }
+
+                .participant span.flag {
+                    width:24px;
+                    padding:0;
+                }
+
+                .participant span.flag img {
+                    border-radius:0;
+                    width:24px;
+                    height:16px;
+                    position:relative;
+                    top:2px;
+                }
+
+                .participant .name {
+                    padding-left:8px;
+                    width:396px;
+                }
+
+                .participant span.points {
+                    width:22px;
+                    margin-right:0;
+                    height:20px;
+                    font-size:10px;
+                    background-color:rgba(0, 0, 0, 0.8);
+                    font-weight:bold;
+                    text-align:center;
+                    transition: opacity 0.1s;
+                }
+
+                #scoreboard.negative .participant span.points {
+                    /*background-color:rgba(255, 255,255, 0.8);*/
+                    color:white;
+                }
+
+                .participant:not(.received) .points {
+                    opacity:0;
+                }
+
+
+			</style>
+
+			<style id="theme" title="theme">
+.participant.normal span, .participant.normal span.score, .participant.normal span.points{
+
+color: black;
+text-transform: uppercase;
+}
+
+.participant.voted:not(.received) span, .participant.voted:not(.received) span.score, .participant.voted:not(.received) span.points{
+
+color: rgb(0, 0, 0);
+text-transform: uppercase;
+}
+
+.participant.voting span, participant.voting span.score, participant.voting span.points{
+
+color: rgb(0, 0, 0);
+text-transform: uppercase;
+}
+
+.participant.received span, .participant.voted.received span, .participant.received span.score, .participant.voted.received span.score, .participant.received span.points, .participant.voted.received span.points{
+
+color: black;
+text-transform: uppercase;
+}
+
+#messages{
+
+color: rgb(0, 0, 0);
+text-transform: none;
+}
+
+#status{
+
+color: black;
+text-transform: uppercase;
+font-size: 20px;
+font-weight: bold;
+}
+
+.body{
+
+background-image: linear-gradient(135deg,rgb(0, 0, 64),rgb(0, 0, 64),rgb(49, 30, 124),rgb(0, 0, 64),rgb(0, 0, 64));
+}
+
+#back{
+
+}
+
+#top{
+
+background-image: linear-gradient(to bottom,#F1FF75,rgba(0, 0, 0, 0));
+}
+
+.participant.normal{
+
+background-image: linear-gradient(135deg,rgb(241, 255, 117),rgb(241, 255, 117),rgb(241, 255, 117));
+}
+
+.participant.voted:not(.received){
+
+background-image: linear-gradient(135deg,rgb(108, 108, 212),rgb(108, 108, 212),rgb(108, 108, 212));
+}
+
+.participant.voting{
+
+background-image: linear-gradient(135deg,rgb(0, 0, 0),rgb(0, 0, 0),rgb(0, 0, 0));
+}
+
+.participant.received, .participant.voted.received{
+
+background-image: linear-gradient(135deg,rgb(23, 240, 255),rgb(23, 240, 255),rgb(23, 240, 255));
+}
+</style>
+
+
+			<script> var PUBLIC_PATH = 'https://scorewiz.eu';</script>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+			<script type="text/javascript" src="/sw2018/js/asyncdata.js?d=20200502"></script>
+			<script type="text/javascript" src="/sw2018/js/ajax.js?d=20200502"></script>
+			<script src="/sw2018/js/scorewiz.js?d=20200502"></script>
+			<script src="/sw2018/js/voting.js?d=20200502"></script>
+			<script src="/sw2018/js/jury.js?d=20200502"></script>
+			<script src="/sw2018/js/color.js?d=20200502"></script>
+			<script src="/sw2018/js/participant.js?d=20200502"></script>
+			<script src="/sw2018/js/lightbox.js?d=20200502"></script>
+			<script src="/sw2018/js/theme.js?d=20200502"></script>
+			<script src="/sw2018/js/scorewiz-theme.js?d=20200502"></script>
+			<script src="/sw2018/js/timer.js?d=20200502"></script>
+			<script src="/sw2018/js/table.js?d=20200502"></script>
+
+
+			<script>
+
+				let decreaseTextSize = false;
+
+				const originalStyle = $('#style').text();
+
+			</script>
+		</head>
+		<body class="body" style="position: relative;"><div style="opacity: 0.9; background: rgb(0, 0, 0); width: 100%; height: 100%; z-index: 1000; top: 0px; left: 0px; position: fixed; text-align: center;" id="lightboxOverlay"></div><div id="start-screen" style="position: absolute; inset: 0px; z-index: 1001; margin: 100px auto;" class="lightbox">
+			</div><div id="sheet-container" style="position: absolute; inset: 0px; z-index: 1001; margin: 100px auto; display: block;" class="lightbox">
+			<div id="sheet-header">You can sort the results by clicking on the top cell in each column. Scroll down to below the grid for a copy-pasteable full ranking.</div><table id="sheet"><tr><th></th><th class="sheet-jury sheet-sortable" data-col="1"><img class="sheet-flag" src="/sw2018/flags/au.png"><br><span title="Martin Carlshollt Unger">Mar</span><br></th><th class="sheet-jury sheet-sortable" data-col="2"><img class="sheet-flag" src="/sw2018/flags/at.png"><br><span title="Buraga Alexandru">Bur</span><br></th><th class="sheet-jury sheet-sortable" data-col="3"><img class="sheet-flag" src="/sw2018/flags/al.png"><br><span title="Mile">Mil</span><br></th><th class="sheet-jury sheet-sortable" data-col="4"><img class="sheet-flag" src="/sw2018/flags/is.png"><br><span title="Richard T">Ric</span><br></th><th class="sheet-jury sheet-sortable" data-col="5"><img class="sheet-flag" src="/sw2018/flags/ad.png"><br><span title="Edu Padrós Creus">Edu</span><br></th><th class="sheet-jury sheet-sortable" data-col="6"><img class="sheet-flag" src="/sw2018/flags/be.png"><br><span title="Giovanni">Gio</span><br></th><th class="sheet-jury sheet-sortable" data-col="7"><img class="sheet-flag" src="/sw2018/flags/ua.png"><br><span title="Lutz">Lut</span><br></th><th class="sheet-jury sheet-sortable" data-col="8"><img class="sheet-flag" src="/sw2018/flags/it.png"><br><span title="FabioMassimo">Fab</span><br></th><th class="sheet-jury sheet-sortable" data-col="9"><img class="sheet-flag" src="/sw2018/flags/il.png"><br><span title="Luis Coelho">Lui</span><br></th><th class="sheet-jury sheet-sortable" data-col="10"><img class="sheet-flag" src="/sw2018/flags/fr.png"><br><span title="Argiris">Arg</span><br></th><th class="sheet-jury sheet-sortable" data-col="11"><img class="sheet-flag" src="/sw2018/flags/se.png"><br><span title="Paolo Bortoli">Pao</span><br></th><th class="sheet-jury sheet-sortable" data-col="12"><img class="sheet-flag" src="/sw2018/flags/nn.png"><br><span title="Sven">Sve</span><br></th><th class="sheet-jury sheet-sortable" data-col="13"><img class="sheet-flag" src="/sw2018/flags/uk.png"><br><span title="Mauro Correia">Mau</span><br></th><th class="sheet-jury sheet-sortable" data-col="14"><img class="sheet-flag" src="/sw2018/flags/es.png"><br><span title="Stefan">Ste</span><br></th><th class="sheet-jury sheet-sortable" data-col="15"><img class="sheet-flag" src="/sw2018/flags/dk.png"><br><span title="Santi Balderas Blanco">San</span><br></th><th class="sheet-jury sheet-sortable" data-col="16"><img class="sheet-flag" src="/sw2018/flags/hr.png"><br><span title="Ricardo Gomes">Ric</span><br></th><th class="sheet-jury sheet-sortable" data-col="17"><img class="sheet-flag" src="/sw2018/flags/pt.png"><br><span title="Toni Nikolov">Ton</span><br></th><th class="sheet-jury sheet-sortable" data-col="18"><img class="sheet-flag" src="/sw2018/flags/lv.png"><br><span title="Sedat Can">Sed</span><br></th><th class="sheet-jury sheet-sortable" data-col="19"><img class="sheet-flag" src="/sw2018/flags/sm.png"><br><span title="Pavel Todorov">Pav</span><br></th><th class="sheet-jury sheet-sortable" data-col="20"><img class="sheet-flag" src="/sw2018/flags/no.png"><br><span title="Valentin Durchev">Val</span><br></th><th class="sheet-jury sheet-sortable" data-col="21"><img class="sheet-flag" src="/sw2018/flags/ro.png"><br><span title="Jesus Santamaria Rodriguez">Jes</span><br></th><th class="sheet-jury sheet-sortable" data-col="22"><img class="sheet-flag" src="/sw2018/flags/bg.png"><br><span title="Rui Reis">Rui</span><br></th><th class="sheet-jury sheet-sortable" data-col="23"><img class="sheet-flag" src="/sw2018/flags/ie.png"><br><span title="Tom">Tom</span><br></th><th class="sheet-jury sheet-sortable" data-col="24"><img class="sheet-flag" src="/sw2018/flags/nl.png"><br><span title="Joeri">Joe</span><br></th><th class="sheet-jury sheet-sortable" data-col="25"><img class="sheet-flag" src="/sw2018/flags/az.png"><br><span title="Nijat">Nij</span><br></th><th></th><th class="sheet-jury-score sheet-score sheet-sortable" data-col="27">JURY<br>SCORE</th><th class="sheet-televote-score sheet-score sheet-sortable" data-col="28">TELE-<br>VOTE</th>
+<th class="sheet-televote-score sheet-score sheet-sortable" data-col="32
+                                                                  ">INDIV.<br>VOTES</th><th class="sheet-total-score sheet-score sheet-sortable" data-col="">TOTAL<br>SCORE</th></tr><tr><th class="sheet-participant" style="min-width: 200px;">01 <img class="sheet-flag" src="/sw2018/flags/uk.png" style="margin-right:5px"><span>Artemas (UK) - i like the way you kiss me</span></th><td class="pts pts-0"></td><td class="pts pts-second">10</td><td class="pts pts-third">8</td><td class="pts pts-regular">3</td><td class="pts pts-second">10</td><td class="pts pts-regular">1</td><td class="pts pts-regular">2</td><td class="pts pts-first">12</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td class="pts pts-regular">7</td><td class="pts pts-first">12</td><td class="pts pts-regular">5</td><td class="pts pts-regular">1</td><td class="pts pts-regular">7</td><td class="pts pts-regular">6</td><td class="pts pts-regular">3</td><td class="pts pts-regular">4</td><td class="pts pts-regular">5</td><td class="pts pts-regular">7</td><td class="pts pts-second">10</td><td></td><td class="sheet-jury-score sheet-score pts">128</td><td class="sheet-televote-score sheet-score pts">45</td><td class="sheet-indiv sheet-score pts">27</td>td><td class="sheet-total-score sheet-score pts">173</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">02 <img class="sheet-flag" src="/sw2018/flags/is.png" style="margin-right:5px"><span>Thorsteinn Einarsson (ISL) - Hotel Heartache</span></th><td class="pts pts-first">12</td><td class="pts pts-regular">1</td><td class="pts pts-first">12</td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-second">10</td><td class="pts pts-third">8</td><td class="pts pts-first">12</td><td class="pts pts-regular">3</td><td class="pts pts-second">10</td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td class="pts pts-first">12</td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">119</td><td class="sheet-televote-score sheet-score pts">54</td><td class="sheet-indiv sheet-score pts">25</td>td><td class="sheet-total-score sheet-score pts">173</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">03 <img class="sheet-flag" src="/sw2018/flags/se.png" style="margin-right:5px"><span>Darin (SWE) - Electric</span></th><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-second">10</td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-first">12</td><td class="pts pts-0"></td><td class="pts pts-first">12</td><td class="pts pts-regular">2</td><td class="pts pts-regular">2</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td class="pts pts-first">12</td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-third">8</td><td></td><td class="sheet-jury-score sheet-score pts">94</td><td class="sheet-televote-score sheet-score pts">66</td><td class="sheet-indiv sheet-score pts">21</td>td><td class="sheet-total-score sheet-score pts">160</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">04 <img class="sheet-flag" src="/sw2018/flags/al.png" style="margin-right:5px"><span>Yll Limani (ALB) - Buzet e kuqe</span></th><td class="pts pts-regular">2</td><td class="pts pts-regular">7</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-first">12</td><td class="pts pts-first">12</td><td class="pts pts-third">8</td><td class="pts pts-first">12</td><td class="pts pts-regular">2</td><td class="pts pts-regular">7</td><td class="pts pts-regular">4</td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">88</td><td class="sheet-televote-score sheet-score pts">35</td><td class="sheet-indiv sheet-score pts">19</td>td><td class="sheet-total-score sheet-score pts">123</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">05 <img class="sheet-flag" src="/sw2018/flags/es.png" style="margin-right:5px"><span>Agoney (ESP) - Tormenta</span></th><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">5</td><td class="pts pts-regular">6</td><td class="pts pts-first">12</td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td class="pts pts-first">12</td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-first">12</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-first">12</td><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-regular">1</td><td></td><td class="sheet-jury-score sheet-score pts">89</td><td class="sheet-televote-score sheet-score pts">34</td><td class="sheet-indiv sheet-score pts">17</td>td><td class="sheet-total-score sheet-score pts">123</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">06 <img class="sheet-flag" src="/sw2018/flags/au.png" style="margin-right:5px"><span>Dami Im (AUS) - Collide</span></th><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-first">12</td><td class="pts pts-regular">5</td><td class="pts pts-regular">7</td><td class="pts pts-regular">7</td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-regular">1</td><td class="pts pts-regular">1</td><td class="pts pts-regular">6</td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-first">12</td><td class="pts pts-regular">5</td><td></td><td class="sheet-jury-score sheet-score pts">84</td><td class="sheet-televote-score sheet-score pts">22</td><td class="sheet-indiv sheet-score pts">19</td>td><td class="sheet-total-score sheet-score pts">106</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">07 <img class="sheet-flag" src="/sw2018/flags/nl.png" style="margin-right:5px"><span>SERA (NED) - Head Held High</span></th><td class="pts pts-regular">5</td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-regular">1</td><td class="pts pts-second">10</td><td class="pts pts-regular">7</td><td class="pts pts-regular">3</td><td class="pts pts-regular">1</td><td class="pts pts-regular">5</td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">72</td><td class="sheet-televote-score sheet-score pts">32</td><td class="sheet-indiv sheet-score pts">20</td>td><td class="sheet-total-score sheet-score pts">104</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">08 <img class="sheet-flag" src="/sw2018/flags/ie.png" style="margin-right:5px"><span>Hozier (IRL) - Too Sweet</span></th><td class="pts pts-regular">4</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-second">10</td><td class="pts pts-regular">4</td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-first">12</td><td></td><td class="sheet-jury-score sheet-score pts">54</td><td class="sheet-televote-score sheet-score pts">48</td><td class="sheet-indiv sheet-score pts">16</td>td><td class="sheet-total-score sheet-score pts">102</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">09 <img class="sheet-flag" src="/sw2018/flags/nn.png" style="margin-right:5px"><span>Tamara Todevska (MKD) - Monsters</span></th><td class="pts pts-second">10</td><td class="pts pts-regular">4</td><td class="pts pts-regular">3</td><td class="pts pts-regular">7</td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td class="pts pts-first">12</td><td class="pts pts-regular">6</td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">66</td><td class="sheet-televote-score sheet-score pts">33</td><td class="sheet-indiv sheet-score pts">15</td>td><td class="sheet-total-score sheet-score pts">99</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">10 <img class="sheet-flag" src="/sw2018/flags/pt.png" style="margin-right:5px"><span>Fernando Daniel (POR) - casa</span></th><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-third">8</td><td class="pts pts-regular">2</td><td class="pts pts-regular">2</td><td class="pts pts-regular">4</td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">59</td><td class="sheet-televote-score sheet-score pts">33</td><td class="sheet-indiv sheet-score pts">17</td>td><td class="sheet-total-score sheet-score pts">92</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">11 <img class="sheet-flag" src="/sw2018/flags/it.png" style="margin-right:5px"><span>Mara Sattei (ITA) - Mare Aperto</span></th><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-second">10</td><td class="pts pts-regular">3</td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-regular">3</td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-first">12</td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td></td><td class="sheet-jury-score sheet-score pts">74</td><td class="sheet-televote-score sheet-score pts">11</td><td class="sheet-indiv sheet-score pts">17</td>td><td class="sheet-total-score sheet-score pts">85</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">12 <img class="sheet-flag" src="/sw2018/flags/bg.png" style="margin-right:5px"><span>ALMA x Kristian Kostov (BUL) - So High</span></th><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">5</td><td class="pts pts-regular">2</td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-first">12</td><td class="pts pts-regular">5</td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td class="pts pts-second">10</td><td class="pts pts-regular">2</td><td></td><td class="sheet-jury-score sheet-score pts">64</td><td class="sheet-televote-score sheet-score pts">20</td><td class="sheet-indiv sheet-score pts">18</td>td><td class="sheet-total-score sheet-score pts">84</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">13 <img class="sheet-flag" src="/sw2018/flags/no.png" style="margin-right:5px"><span>SKAAR (NOR) - Five Times</span></th><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-regular">3</td><td class="pts pts-regular">4</td><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-second">10</td><td class="pts pts-first">12</td><td class="pts pts-first">12</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td></td><td class="sheet-jury-score sheet-score pts">70</td><td class="sheet-televote-score sheet-score pts">11</td><td class="sheet-indiv sheet-score pts">13</td>td><td class="sheet-total-score sheet-score pts">81</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">14 <img class="sheet-flag" src="/sw2018/flags/at.png" style="margin-right:5px"><span>HUNGER (AUT) - HONEY</span></th><td class="pts pts-regular">3</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td class="pts pts-regular">4</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">5</td><td class="pts pts-regular">6</td><td class="pts pts-regular">4</td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td></td><td class="sheet-jury-score sheet-score pts">49</td><td class="sheet-televote-score sheet-score pts">19</td><td class="sheet-indiv sheet-score pts">13</td>td><td class="sheet-total-score sheet-score pts">68</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">15 <img class="sheet-flag" src="/sw2018/flags/fr.png" style="margin-right:5px"><span>SARA'H (FRA) - TU PARLES</span></th><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-regular">6</td><td class="pts pts-regular">4</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">46</td><td class="sheet-televote-score sheet-score pts">20</td><td class="sheet-indiv sheet-score pts">15</td>td><td class="sheet-total-score sheet-score pts">66</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">16 <img class="sheet-flag" src="/sw2018/flags/ua.png" style="margin-right:5px"><span>TVORCHI (UKR) - Shine</span></th><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">54</td><td class="sheet-televote-score sheet-score pts">12</td><td class="sheet-indiv sheet-score pts">14</td>td><td class="sheet-total-score sheet-score pts">66</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">17 <img class="sheet-flag" src="/sw2018/flags/az.png" style="margin-right:5px"><span>AISEL (AZE) - Game of Chess</span></th><td class="pts pts-0"></td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-third">8</td><td class="pts pts-regular">5</td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">41</td><td class="sheet-televote-score sheet-score pts">16</td><td class="sheet-indiv sheet-score pts">11</td>td><td class="sheet-total-score sheet-score pts">57</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">18 <img class="sheet-flag" src="/sw2018/flags/dk.png" style="margin-right:5px"><span>I Was Gonna Marry Him (DEN) - EYJAA - Topic</span></th><td class="pts pts-regular">7</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">34</td><td class="sheet-televote-score sheet-score pts">20</td><td class="sheet-indiv sheet-score pts">8</td>td><td class="sheet-total-score sheet-score pts">54</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">19 <img class="sheet-flag" src="/sw2018/flags/sm.png" style="margin-right:5px"><span>ALFA (SMR) - Vai!</span></th><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-regular">3</td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-regular">7</td><td class="pts pts-regular">2</td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td></td><td class="sheet-jury-score sheet-score pts">46</td><td class="sheet-televote-score sheet-score pts">7</td><td class="sheet-indiv sheet-score pts">11</td>td><td class="sheet-total-score sheet-score pts">53</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">20 <img class="sheet-flag" src="/sw2018/flags/ad.png" style="margin-right:5px"><span>Ana Mena, GALE (AND) - La Razón</span></th><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">4</td><td class="pts pts-regular">7</td><td class="pts pts-regular">4</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">29</td><td class="sheet-televote-score sheet-score pts">21</td><td class="sheet-indiv sheet-score pts">9</td>td><td class="sheet-total-score sheet-score pts">50</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">21 <img class="sheet-flag" src="/sw2018/flags/ro.png" style="margin-right:5px"><span>MIRA (ROU) - Bad Booty</span></th><td class="pts pts-0"></td><td class="pts pts-first">12</td><td class="pts pts-0"></td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">18</td><td class="sheet-televote-score sheet-score pts">25</td><td class="sheet-indiv sheet-score pts">9</td>td><td class="sheet-total-score sheet-score pts">43</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">22 <img class="sheet-flag" src="/sw2018/flags/lv.png" style="margin-right:5px"><span>MADARA (LAT) - Es Esmu Viss</span></th><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-second">10</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">29</td><td class="sheet-televote-score sheet-score pts">8</td><td class="sheet-indiv sheet-score pts">8</td>td><td class="sheet-total-score sheet-score pts">37</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">23 <img class="sheet-flag" src="/sw2018/flags/il.png" style="margin-right:5px"><span>Yam Rafaeli ft. Orr Amrami Brockman (ISR) - Teruf</span></th><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">7</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-regular">6</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">21</td><td class="sheet-televote-score sheet-score pts">14</td><td class="sheet-indiv sheet-score pts">6</td>td><td class="sheet-total-score sheet-score pts">35</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">24 <img class="sheet-flag" src="/sw2018/flags/be.png" style="margin-right:5px"><span>Luka (BEL) - FOMO</span></th><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">5</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">3</td><td class="pts pts-third">8</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">19</td><td class="sheet-televote-score sheet-score pts">15</td><td class="sheet-indiv sheet-score pts">8</td>td><td class="sheet-total-score sheet-score pts">34</td></tr><tr><th class="sheet-participant" style="min-width: 200px;">25 <img class="sheet-flag" src="/sw2018/flags/hr.png" style="margin-right:5px"><span>Top of the Pop ft. Mario 5reković (CRO) - Putovanje</span></th><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">2</td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-0"></td><td class="pts pts-regular">1</td><td class="pts pts-0"></td><td></td><td class="sheet-jury-score sheet-score pts">3</td><td class="sheet-televote-score sheet-score pts">17</td><td class="sheet-indiv sheet-score pts">4</td>td><td class="sheet-total-score sheet-score pts">20</td></tr></table><div id="full-ranking"><h2>FULL RANKING</h2><br><br>01 Artemas (UK) - i like the way you kiss me (128 + 45 =) 173<br>02 Thorsteinn Einarsson (ISL) - Hotel Heartache (119 + 54 =) 173<br>03 Darin (SWE) - Electric (94 + 66 =) 160<br>04 Yll Limani (ALB) - Buzet e kuqe (88 + 35 =) 123<br>05 Agoney (ESP) - Tormenta (89 + 34 =) 123<br>06 Dami Im (AUS) - Collide (84 + 22 =) 106<br>07 SERA (NED) - Head Held High (72 + 32 =) 104<br>08 Hozier (IRL) - Too Sweet (54 + 48 =) 102<br>09 Tamara Todevska (MKD) - Monsters (66 + 33 =) 99<br>10 Fernando Daniel (POR) - casa (59 + 33 =) 92<br>11 Mara Sattei (ITA) - Mare Aperto (74 + 11 =) 85<br>12 ALMA x Kristian Kostov (BUL) - So High (64 + 20 =) 84<br>13 SKAAR (NOR) - Five Times (70 + 11 =) 81<br>14 HUNGER (AUT) - HONEY (49 + 19 =) 68<br>15 SARA'H (FRA) - TU PARLES (46 + 20 =) 66<br>16 TVORCHI (UKR) - Shine (54 + 12 =) 66<br>17 AISEL (AZE) - Game of Chess (41 + 16 =) 57<br>18 I Was Gonna Marry Him (DEN) - EYJAA - Topic (34 + 20 =) 54<br>19 ALFA (SMR) - Vai! (46 + 7 =) 53<br>20 Ana Mena, GALE (AND) - La Razón (29 + 21 =) 50<br>21 MIRA (ROU) - Bad Booty (18 + 25 =) 43<br>22 MADARA (LAT) - Es Esmu Viss (29 + 8 =) 37<br>23 Yam Rafaeli ft. Orr Amrami Brockman (ISR) - Teruf (21 + 14 =) 35<br>24 Luka (BEL) - FOMO (19 + 15 =) 34<br>25 Top of the Pop ft. Mario 5reković (CRO) - Putovanje (3 + 17 =) 20<br></div></div><div id="info" style="position: absolute; inset: 0px; z-index: 1001; margin: 100px auto;" class="lightbox">
+				<h2>ScoreWiz Help &amp;amp; About</h2>
+				<p>You can use the keyboard as well as the buttons in the right corner to control the voting presentation.</p>
+				<p class="empty"></p>
+
+				<p>• use the <span>◀</span> button or the <span>left arrow key</span> to rewind one step.</p>
+				<p>• use the <span>▶</span> button or the <span>right arrow key</span> to go forward one step.</p>
+				<p>• use the <span>↺</span> button or the <span>home key</span> to restart from the beginning.</p>
+
+				<p class="empty"></p>
+				<p>• use the <span>▴</span> button or the <span>arrow up key</span> to speed up the the voting.</p>
+				<p>• use the <span>▾</span> button or the <span>arrow down key</span> to slow down the voting.</p>
+				<p>• use the <span>▮▮</span> button or the <span>space bar</span> to pause (or recontinue) the voting.</p>
+
+				<p class="empty"></p>
+				<p>Just click or tap <span>anywhere outside this popup</span>, or hit <span title="Really, doesn't matter which one.">any key</span> to get rid of this info screen.</p>
+
+				<p><span class="about">ScoreWiz version 3.2.1 - latest major update March 2020, minor update March 2024<br>
+				ScoreWiz is a Javascript-based scoreboard tool which has existed since 2005<br>
+				Optimized for desktop or tablet view with resolutions above 1000px x 1000px.<br><br>
+				Created by Ben Tumminaro, the Netherlands</span></p>
+			</div>
+			<div id="top">
+				<figure style="opacity: 0;"><img alt=""></figure>
+				<div id="messages" style="display: block;"><span class="before-start">Click <a href="#" id="start">here</a> or press the space bar to start the voting.<br><span>Click <a href="#" id="info-start">here</a> for more info on how to control the scoreboard presentation.</span></span></div>
+				<div id="status" style="display: block;">EMSC 2403 - GRAND FINAL</div>
+				<div id="tools">
+					<div id="flow">
+						<a href="#" title="Rewind" id="rewind">◀</a>
+						<a href="#" title="Forward" id="forward">▶</a>
+					</div>
+					<div class="speed">
+						<a href="#" title="Slow down" id="slower">▾</a>
+						<a href="#" title="Speed up" id="faster">▴</a>
+					</div>
+					<div class="pause">
+						<a href="#" title="Continue" id="pause" class="paused">▮▮</a>
+					</div>
+					<div class="help">
+						<a href="#" title="Restart" id="restart">↺</a>
+						<a href="#" title="Help and about" id="help">?</a>
+					</div>
+				</div>
+			</div>
+
+			<div id="back">
+			</div>
+
+
+
+
+
+
+
+			<div id="scoreboard" class="negative"><div style="top: 52px; left: 20px;" class="participant normal" data-score="0" data-draw="1" data-order="1" data-position="1"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/uk.png"></span><span class="name" style="visibility: visible;">Artemas (UK) - i like the way you kiss me</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 84px; left: 20px;" class="participant normal" data-score="0" data-draw="2" data-order="2" data-position="2"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/nn.png"></span><span class="name" style="visibility: visible;">Tamara Todevska (MKD) - Monsters</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 116px; left: 20px;" class="participant normal" data-score="0" data-draw="3" data-order="3" data-position="3"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/se.png"></span><span class="name" style="visibility: visible;">Darin (SWE) - Electric</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 148px; left: 20px;" class="participant normal" data-score="0" data-draw="4" data-order="4" data-position="4"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/lv.png"></span><span class="name" style="visibility: visible;">MADARA (LAT) - Es Esmu Viss</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 180px; left: 20px;" class="participant normal" data-score="0" data-draw="5" data-order="5" data-position="5"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/is.png"></span><span class="name" style="visibility: visible;">Thorsteinn Einarsson (ISL) - Hotel Heartache</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 212px; left: 20px;" class="participant normal" data-score="0" data-draw="6" data-order="6" data-position="6"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/ro.png"></span><span class="name" style="visibility: visible;">MIRA (ROU) - Bad Booty</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 244px; left: 20px;" class="participant normal" data-score="0" data-draw="7" data-order="7" data-position="7"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/al.png"></span><span class="name" style="visibility: visible;">Yll Limani (ALB) - Buzet e kuqe</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 276px; left: 20px;" class="participant normal" data-score="0" data-draw="8" data-order="8" data-position="8"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/it.png"></span><span class="name" style="visibility: visible;">Mara Sattei (ITA) - Mare Aperto</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 308px; left: 20px;" class="participant normal" data-score="0" data-draw="9" data-order="9" data-position="9"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/at.png"></span><span class="name" style="visibility: visible;">HUNGER (AUT) - HONEY</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 340px; left: 20px;" class="participant normal" data-score="0" data-draw="10" data-order="10" data-position="10"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/bg.png"></span><span class="name" style="visibility: visible;">ALMA x Kristian Kostov (BUL) - So High</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 372px; left: 20px;" class="participant normal" data-score="0" data-draw="11" data-order="11" data-position="11"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/ad.png"></span><span class="name" style="visibility: visible;">Ana Mena, GALE (AND) - La Razón</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 404px; left: 20px;" class="participant normal" data-score="0" data-draw="12" data-order="12" data-position="12"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/au.png"></span><span class="name" style="visibility: visible;">Dami Im (AUS) - Collide</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 436px; left: 20px;" class="participant normal" data-score="0" data-draw="13" data-order="13" data-position="13"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/hr.png"></span><span class="name" style="visibility: visible;">Top of the Pop ft. Mario 5reković (CRO) - Putovanje</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 52px; left: 540px;" class="participant normal" data-score="0" data-draw="14" data-order="14" data-position="14"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/il.png"></span><span class="name" style="visibility: visible;">Yam Rafaeli ft. Orr Amrami Brockman (ISR) - Teruf</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 84px; left: 540px;" class="participant normal" data-score="0" data-draw="15" data-order="15" data-position="15"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/no.png"></span><span class="name" style="visibility: visible;">SKAAR (NOR) - Five Times</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 116px; left: 540px;" class="participant normal" data-score="0" data-draw="16" data-order="16" data-position="16"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/sm.png"></span><span class="name" style="visibility: visible;">ALFA (SMR) - Vai!</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 148px; left: 540px;" class="participant normal" data-score="0" data-draw="17" data-order="17" data-position="17"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/dk.png"></span><span class="name" style="visibility: visible;">I Was Gonna Marry Him (DEN) - EYJAA - Topic</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 180px; left: 540px;" class="participant normal" data-score="0" data-draw="18" data-order="18" data-position="18"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/es.png"></span><span class="name" style="visibility: visible;">Agoney (ESP) - Tormenta</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 212px; left: 540px;" class="participant normal" data-score="0" data-draw="19" data-order="19" data-position="19"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/be.png"></span><span class="name" style="visibility: visible;">Luka (BEL) - FOMO</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 244px; left: 540px;" class="participant normal" data-score="0" data-draw="20" data-order="20" data-position="20"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/az.png"></span><span class="name" style="visibility: visible;">AISEL (AZE) - Game of Chess</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 276px; left: 540px;" class="participant normal" data-score="0" data-draw="21" data-order="21" data-position="21"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/pt.png"></span><span class="name" style="visibility: visible;">Fernando Daniel (POR) - casa</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 308px; left: 540px;" class="participant normal" data-score="0" data-draw="22" data-order="22" data-position="22"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/nl.png"></span><span class="name" style="visibility: visible;">SERA (NED) - Head Held High</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 340px; left: 540px;" class="participant normal" data-score="0" data-draw="23" data-order="23" data-position="23"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/ie.png"></span><span class="name" style="visibility: visible;">Hozier (IRL) - Too Sweet</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 372px; left: 540px;" class="participant normal" data-score="0" data-draw="24" data-order="24" data-position="24"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/fr.png"></span><span class="name" style="visibility: visible;">SARA'H (FRA) - TU PARLES</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div><div style="top: 404px; left: 540px;" class="participant normal" data-score="0" data-draw="25" data-order="25" data-position="25"><span class="flag" style="visibility: visible;"><img src="/sw2018/flags/ua.png"></span><span class="name" style="visibility: visible;">TVORCHI (UKR) - Shine</span><span class="points" style="visibility: visible;"></span><span class="score" style="visibility: visible;"></span></div></div>
+
+
+
+			<script>
+
+            let startingPoint = 0;
+			let testTheme = false; //true && typeof Theme != 'undefined';
+
+			let sw, result, themeLog;
+			const t = new Timer;
+			let started = false;
+			let ok = false;
+
+			const flagPath = '/sw2018/flags/';
+
+			const info = new Lightbox('#info');
+			const sheetContainer = new Lightbox('#sheet-container');
+			const startScreen = new Lightbox('#start-screen');
+
+			const serverJson = `{"wiz":{"options":{"random":false,"shuffle":false,"autoPlay":false,"autoSheet":true,"mf":false,"votingStyle":null,"startAt":0,"startScreen":null,"frozen":"frozen","rsvpNumber":"50","rsvp":"v8ELuTtypKG","juryOption":"different","votingMethod":"rsvp","negative":"1","upperCase":"1","system":"[1,2,3,4,5,6,7,8,10,12]","colors":{"b":"13005E","o":"17F0FF","s":"000000","m":null,"n":"F1FF75","v":"6C6CD4"},"televote":"{\\"1\\":\\"45\\",\\"2\\":\\"33\\",\\"3\\":\\"66\\",\\"4\\":\\"8\\",\\"5\\":\\"54\\",\\"6\\":\\"25\\",\\"7\\":\\"35\\",\\"8\\":\\"11\\",\\"9\\":\\"19\\",\\"10\\":\\"20\\",\\"11\\":\\"21\\",\\"12\\":\\"22\\",\\"13\\":\\"17\\",\\"14\\":\\"14\\",\\"15\\":\\"11\\",\\"16\\":\\"7\\",\\"17\\":\\"20\\",\\"18\\":\\"34\\",\\"19\\":\\"15\\",\\"20\\":\\"16\\",\\"21\\":\\"33\\",\\"22\\":\\"32\\",\\"23\\":\\"48\\",\\"24\\":\\"20\\",\\"25\\":\\"12\\"}","fastMode":"1","fakeTelevote":false,"transform":null},"sid":"732605","title":"EMSC 2403 - GRAND FINAL"},"juries":{"1":{"name":"Martin Carlshollt Unger","flag":"au","order":1,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,5],[10,2],[8,25],[7,17],[6,21],[5,22],[4,23],[3,9],[2,7],[1,10]]},"2":{"name":"Buraga Alexandru","flag":"at","order":2,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,6],[10,1],[8,22],[7,7],[6,15],[5,20],[4,2],[3,3],[2,4],[1,5]]},"3":{"name":"Mile","flag":"al","order":3,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,5],[10,3],[8,1],[7,14],[6,11],[5,18],[4,10],[3,2],[2,25],[1,15]]},"4":{"name":"Richard T","flag":"is","order":4,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,12],[10,25],[8,8],[7,2],[6,18],[5,11],[4,22],[3,1],[2,24],[1,6]]},"5":{"name":"Edu Padr\\u00f3s Creus","flag":"ad","order":5,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,18],[10,1],[8,22],[7,9],[6,3],[5,12],[4,16],[3,5],[2,19],[1,24]]},"6":{"name":"Giovanni","flag":"be","order":6,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,7],[10,8],[8,20],[7,12],[6,18],[5,25],[4,9],[3,16],[2,2],[1,1]]},"7":{"name":"Lutz","flag":"ua","order":7,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,7],[10,3],[8,15],[7,12],[6,23],[5,20],[4,5],[3,8],[2,1],[1,16]]},"8":{"name":"FabioMassimo","flag":"it","order":8,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,1],[10,20],[8,7],[7,24],[6,5],[5,12],[4,25],[3,15],[2,18],[1,3]]},"9":{"name":"Luis Coelho","flag":"il","order":9,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,7],[10,4],[8,21],[7,17],[6,24],[5,19],[4,15],[3,8],[2,9],[1,22]]},"10":{"name":"Argiris","flag":"fr","order":10,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,3],[10,23],[8,21],[7,18],[6,10],[5,6],[4,25],[3,8],[2,7],[1,12]]},"11":{"name":"Paolo Bortoli","flag":"se","order":11,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,18],[10,5],[8,1],[7,7],[6,15],[5,8],[4,23],[3,22],[2,21],[1,12]]},"12":{"name":"Sven","flag":"nn","order":12,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,3],[10,23],[8,5],[7,16],[6,12],[5,14],[4,7],[3,10],[2,21],[1,22]]},"13":{"name":"Mauro Correia","flag":"uk","order":13,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,5],[10,15],[8,18],[7,4],[6,25],[5,12],[4,21],[3,19],[2,3],[1,7]]},"14":{"name":"Stefan","flag":"es","order":14,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,15],[10,22],[8,19],[7,1],[6,14],[5,9],[4,8],[3,5],[2,3],[1,21]]},"15":{"name":"Santi Balderas Blanco","flag":"dk","order":15,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,15],[10,5],[8,8],[7,1],[6,9],[5,10],[4,16],[3,20],[2,24],[1,25]]},"16":{"name":"Ricardo Gomes","flag":"hr","order":16,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,1],[10,5],[8,21],[7,2],[6,24],[5,17],[4,9],[3,11],[2,10],[1,22]]},"17":{"name":"Toni Nikolov","flag":"pt","order":17,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,2],[10,22],[8,12],[7,3],[6,10],[5,1],[4,24],[3,14],[2,20],[1,4]]},"18":{"name":"Sedat Can","flag":"lv","order":18,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,18],[10,17],[8,7],[7,22],[6,2],[5,20],[4,9],[3,25],[2,5],[1,1]]},"19":{"name":"Pavel Todorov","flag":"sm","order":19,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,10],[10,7],[8,9],[7,1],[6,23],[5,15],[4,21],[3,22],[2,13],[1,2]]},"20":{"name":"Valentin Durchev","flag":"no","order":20,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,8],[10,24],[8,21],[7,4],[6,1],[5,10],[4,16],[3,25],[2,5],[1,22]]},"21":{"name":"Jesus Santamaria Rodriguez","flag":"ro","order":21,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,18],[10,8],[8,12],[7,16],[6,3],[5,22],[4,11],[3,1],[2,23],[1,10]]},"22":{"name":"Rui Reis","flag":"bg","order":22,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,3],[10,2],[8,24],[7,11],[6,5],[5,22],[4,1],[3,7],[2,16],[1,19]]},"23":{"name":"Tom","flag":"ie","order":23,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,5],[10,16],[8,21],[7,10],[6,18],[5,1],[4,11],[3,20],[2,12],[1,8]]},"24":{"name":"Joeri","flag":"nl","order":24,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,12],[10,10],[8,25],[7,1],[6,5],[5,17],[4,2],[3,3],[2,4],[1,13]]},"25":{"name":"Nijat","flag":"az","order":25,"hasVotes":true,"isCountry":false,"buddy":"0","votes":[[12,23],[10,1],[8,3],[7,8],[6,9],[5,12],[4,16],[3,15],[2,10],[1,18]]}},"participants":{"1":{"name":"Artemas (UK) - i like the way you kiss me","flag":"uk","order":"1","isCountry":false,"sponsor":null},"2":{"name":"Tamara Todevska (MKD) - Monsters","flag":"nn","order":"2","isCountry":false,"sponsor":""},"3":{"name":"Darin (SWE) - Electric","flag":"se","order":"3","isCountry":false,"sponsor":null},"4":{"name":"MADARA (LAT) - Es Esmu Viss","flag":"lv","order":"4","isCountry":false,"sponsor":null},"5":{"name":"Thorsteinn Einarsson (ISL) - Hotel Heartache","flag":"is","order":"5","isCountry":false,"sponsor":null},"6":{"name":"MIRA (ROU) - Bad Booty","flag":"ro","order":"6","isCountry":false,"sponsor":null},"7":{"name":"Yll Limani (ALB) - Buzet e kuqe","flag":"al","order":"7","isCountry":false,"sponsor":null},"8":{"name":"Mara Sattei (ITA) - Mare Aperto","flag":"it","order":"8","isCountry":false,"sponsor":null},"9":{"name":"HUNGER (AUT) - HONEY","flag":"at","order":"9","isCountry":false,"sponsor":null},"10":{"name":"ALMA x Kristian Kostov (BUL) - So High","flag":"bg","order":"10","isCountry":false,"sponsor":null},"11":{"name":"Ana Mena, GALE (AND) - La Raz\\u00f3n","flag":"ad","order":"11","isCountry":false,"sponsor":null},"12":{"name":"Dami Im (AUS) - Collide","flag":"au","order":"12","isCountry":false,"sponsor":null},"13":{"name":"Top of the Pop ft. Mario 5rekovi\\u0107 (CRO) - Putovanje","flag":"hr","order":"13","isCountry":false,"sponsor":null},"14":{"name":"Yam Rafaeli ft. Orr Amrami Brockman (ISR) - Teruf","flag":"il","order":"14","isCountry":false,"sponsor":""},"15":{"name":"SKAAR (NOR) - Five Times","flag":"no","order":"15","isCountry":false,"sponsor":null},"16":{"name":"ALFA (SMR) - Vai!","flag":"sm","order":"16","isCountry":false,"sponsor":null},"17":{"name":"I Was Gonna Marry Him (DEN) - EYJAA - Topic","flag":"dk","order":"17","isCountry":false,"sponsor":null},"18":{"name":"Agoney (ESP) - Tormenta","flag":"es","order":"18","isCountry":false,"sponsor":null},"19":{"name":"Luka (BEL) - FOMO","flag":"be","order":"19","isCountry":false,"sponsor":null},"20":{"name":"AISEL (AZE) - Game of Chess","flag":"az","order":"20","isCountry":false,"sponsor":null},"21":{"name":"Fernando Daniel (POR) - casa","flag":"pt","order":"21","isCountry":false,"sponsor":null},"22":{"name":"SERA (NED) - Head Held High","flag":"nl","order":"22","isCountry":false,"sponsor":null},"23":{"name":"Hozier (IRL) - Too Sweet","flag":"ie","order":"23","isCountry":false,"sponsor":null},"24":{"name":"SARA'H (FRA) - TU PARLES","flag":"fr","order":"24","isCountry":false,"sponsor":null},"25":{"name":"TVORCHI (UKR) - Shine","flag":"ua","order":"25","isCountry":false,"sponsor":null}},"televote":[[7,16],[8,4],[11,15],[11,8],[12,25],[14,14],[15,19],[16,20],[17,13],[19,9],[20,24],[20,17],[20,10],[21,11],[22,12],[25,6],[32,22],[33,2],[33,21],[34,18],[35,7],[45,1],[48,23],[54,5],[66,3]]}`;
+			const serverData = JSON.parse(serverJson);
+
+            let custom = {};
+
+			t.onPause = function (state) {
+				$('#pause').attr('title', state ? 'Continue' : 'Pause');
+				var func = (state ? 'add' : 'remove') + 'Class';
+				$('#pause')[func].call($('#pause'), 'paused');
+			}
+
+			Lightbox.prototype.onHide = () => {
+				t.pause(true);
+			}
+
+            function pad(str) {
+				var pad = '00';
+				str = str + '';
+				return pad.substring(0, pad.length - str.length) + str;
+			}
+
+			function showInfo() {
+				t.paused = true;
+				if (gtag) { gtag('event', 'info.shown') }
+				info.show();
+			}
+
+			function showSheet() {
+				if (gtag) { gtag('event', 'sheet.shown') }
+				t.paused = true;
+				t.onPause(t.paused);
+				sheetContainer.show();
+			}
+
+			function showStartScreen() {
+				if (gtag) { gtag('event', 'start.shown') }
+				t.paused = true;
+				t.onPause(t.paused);
+				startScreen.show();
+			}
+
+			function start() {
+				sw.tell('');
+				sw.status('');
+				setTimeout(function() {	t.pause(false); }, 1000);
+				started = true;
+			}
+
+			function makeScoreboard(json) {
+
+				try {
+					data = JSON.parse(json);
+				} catch(err) {
+					$(document).ready(function(){
+						sw.status(sw.title);
+						sw.tell('<span class="before-start">Sorry, something unexpected occur. Could not load the voting.</span>');
+					});
+					return;
+				}
+
+                let custom = {};
+
+				const v = new Voting();
+
+                if (data.wiz.options.votingStyle && VOTINGSTYLES[data.wiz.options.votingStyle]) {
+					v.options.style = VOTINGSTYLES[data.wiz.options.votingStyle];
+				}
+
+				if (custom.afterStyleSet) {
+					custom.afterStyleSet(v);
+				}
+
+				if (parseInt(data.wiz.options.qlv)) {
+					v.options.style.quick = (data.wiz.options.qlv > 1 && data.wiz.options.qlv < 12) ? data.wiz.options.qlv : 7;
+				}
+				else if (data.wiz.options.fastMode && data.wiz.options.fastMode != '0') {
+					let qlv = 7;
+					let sys = data.wiz.options.system ? JSON.parse(data.wiz.options.system) : [8,10,12];
+					if (sys && sys.length > 2) {
+						if (sys.length > 3 && sys[sys.length - 3] == sys[sys.length - 4]) {
+							qlv = sys[sys.length - 3]
+						} else {
+							qlv = sys[sys.length - 3] - 1;
+						}
+					}
+					v.options.style.quick = qlv;
+				}
+
+
+				Object.keys(data.juries).forEach(k => {
+					const j = data.juries[k];
+					const x = new Jury(j.order, j.name, j.flag, j.isCountry, v);
+					x.votes = j.votes;
+					if (j.buddy !== 0) {
+                        x.buddy = j.buddy;
+                    }
+					v.addJury(x);
+				});
+
+				let customSystem = data.wiz.options.transform;
+				if (data.wiz.options.mf) {
+					customSystem = [1,2,4,6,8,10,12];
+				}
+				if (customSystem) {
+					v.transform(customSystem);
+					data.wiz.options.system = JSON.stringify(customSystem);
+				}
+
+				Object.keys(data.participants).forEach(function(k) {
+					const p = data.participants[k];
+					const x = new Participant(p.order, p.name, p.flag, p.isCountry, v);
+					if (p.sponsor) {
+                        x.sponsor = p.sponsor;
+                    }
+					v.addParticipant(x);
+				})
+
+				if (custom.afterJandPset) {
+					custom.afterJandPset(v);
+				}
+
+				style.normal = '#' + data.wiz.options.colors.n;
+				style.bg = '#' + data.wiz.options.colors.b;
+
+				let bg = new Color(style.bg);
+				const norm = new Color(style.normal);
+
+				if (bg.getDifference(norm) < 80) {
+					bg = new Color(style.bg).darken(50);
+				}
+
+				if (bg.getDifference(norm) < 80) {
+					bg = new Color(style.bg).lighten(50);
+				}
+
+				if (data.wiz.theme) {
+					themeLog = JSON.parse(data.wiz.theme);
+				} else {
+
+					if (data.wiz.options.negative === undefined && data.wiz.options.colors.b === '234540' && data.wiz.options.colors.n === '205040') {
+						 data.wiz.options.negative = false;
+					}
+					/*style.bg = 'black';
+					style.received = '#' + data.wiz.options.colors.o;
+					style.voted = '#' + data.wiz.options.colors.v;
+					style.voting = '#' + data.wiz.options.colors.s;
+					style.row = (data.wiz.options.negative == '0') ? 'black' : 'white';
+					style.text = style.rowText = style.tools = style.receivedText = style.votingText = (data.wiz.options.negative == '0') ? 'white' : 'black';
+
+					// Fix for old scoreboards with unchanged default colour scheme
+					if (typeof data.wiz.options.negative == 'undefined' && data.wiz.options.colors.b == '234540' && data.wiz.options.colors.n == '205040'){
+						 data.wiz.options.negative = false;
+						 style.text = style.receivedText = style.votedText = style.votingText = style.rowText= style.tools = 'white';
+						 style.row='#010'
+					}
+
+					updateStyle();*/
+				}
+
+				if (data.televote) {
+					v.televote = data.televote;
+				}
+
+				sw = new ScoreWiz(v);
+				sw.title = data.wiz.title;
+				sw.theme = data.wiz.theme;
+				sw.sid = data.wiz.sid;
+
+				$('title').html(fix(sw.title) + ' :: ScoreWIZ');
+
+				if (!v.juries.length || !v.participants.length) {
+					$(document).ready(function(){
+						sw.status(sw.title);
+						sw.tell('<span class="before-start">Sorry, there are no votes yet.</span>');
+					});
+					return;
+				}
+
+				Object.keys(data.wiz.options).forEach(function(k) {
+					sw.options[k] = data.wiz.options[k];
+				});
+
+				let maxP = 0;
+				v.participants.forEach(function (p) {
+					maxP = Math.max(p.name.length, maxP);
+				});
+
+				if (maxP > 30) {
+					decreaseTextSize = true;
+				}
+
+				ok = true;
+				gtag('event', 'view');
+
+				var man = man || []; // @TODO: global variable
+
+				if (custom.beforeScoreboardInit) {
+					custom.beforeScoreboardInit();
+				}
+
+                if (v.options.style.order === 'scoreboard') {
+                    sw.options.order = sw.orderByScore;
+                }
+
+				sw.init(man);
+
+				sw.start();
+
+				if (sw.options.startAt > 0 && sw.options.startAt <= sw.voting.juries.length) {
+					//sw.goto(sw.options.startAt);
+                    startingPoint = sw.options.startAt;
+				}
+
+				if (sw.options.startScreen) {
+					$('#start-screen').html(sw.options.startScreen);
+					showStartScreen();
+					t.pause(true);
+				}
+
+				/*if (sw.options.autoPlay) {
+					t.pause();
+					t.onPause(t.paused);
+					started = true;
+				}
+				else {
+					t.onPause(t.paused);
+					$(document).ready(function(){
+						sw.status(sw.title);
+						sw.tell('<span class="before-start">Click <a href="#" id="start">here</a> or press the space bar to start the voting.<br />' +
+						'<span>Click <a href="#" id="info-start">here</a> for more info on how to control the scoreboard presentation.</span></span>');
+					});
+				}*/
+
+				t.onNext = (job) => {
+					//if (job.label) { console.log(job.label); }
+				}
+			}
+
+			makeScoreboard(serverJson);
+
+            const abbr = {
+                'United Kingdom' : 'UK',
+                'North Macedonia' : 'NMa',
+                'Czech Republic' : 'CzR',
+                'FYR Macedonia' : 'FyRM',
+                'United States of America' : 'USA',
+                'Rest of the World' : 'R/W',
+                Belarus : 'Brs',
+                Slovakia : 'Svk',
+                Slovenia : 'Svn',
+                Belgium : 'Belg',
+                Austria : 'Aut',
+                Netherlands : 'Ned',
+                Spain : 'Esp',
+            }
+
+			if (ok) {
+
+				const sheet = new Table('sheet');
+
+				sheet.getCol = function(elem, row, col) {
+					if (row === 0) {
+						elem = $('<th></th>');
+						if (col === 0) return elem;
+
+						let j = sw.voting.getJury(col);
+
+						if (!j) {
+							if (col === sw.voting.juries.length + 1) {
+								return elem.html('');
+							}
+							if (col === sw.voting.juries.length + 2) {
+								return elem.html(sw.voting.televote.length ? 'JURY<br />SCORE' : 'TOTAL<br />SCORE').addClass('sheet-jury-score sheet-score sheet-sortable').attr('data-col', col);
+							}
+							if(sw.voting.televote.length) {
+								if (col === sw.voting.juries.length + 3) {
+									return elem.html('TELE-<br />VOTE').addClass('sheet-televote-score sheet-score sheet-sortable').attr('data-col', col);
+								} else if (col === sw.voting.juries.length + 4) {
+									return elem.html('TOTAL<br />SCORE').addClass('sheet-total-score sheet-score sheet-sortable').attr('data-col', col);
+								}
+								else {
+									return null;
+								}
+							} else {
+								return null;
+							}
+						}
+
+						j.flag = j.flag || '__';
+                        let juryName = typeof custom.getAbbr === 'function' ? custom.getAbbr(j.name) : abbr[j.name] || j.name.substr(0, 3);
+						elem.html('<img class="sheet-flag" src="' + flagPath + j.flag + '.png"><br /><span title="'
+							+ fix(j.name.replace(/"/g, "'")) + '">' + juryName + '</span><br />').addClass('sheet-jury sheet-sortable').attr('data-col', col);
+					}
+					else {
+						const p = result.participants[row-1];
+
+						if (!p) return null;
+
+						if (col === 0) {
+							p.flag = p.flag || '__';
+							elem = $('<th class="sheet-participant"></th>');
+							var sponsor = p.sponsor && p.sponsor.trim().length ? '<span class="sheet-sponsor">' + p.sponsor.trim() + '</span>' : '';
+							elem.html(pad(row) + ' <img class="sheet-flag" src="' + flagPath + p.flag + '.png" style="margin-right:5px"><span>' + p.name + sponsor + '</span>').addClass('sheet-participant');
+							elem.css({minWidth : '200px'});
+						}
+						else {
+							const j = result.juries[col-1];
+
+							if (!j) {
+								if (col === sw.voting.juries.length + 1) {
+									return elem.html('');
+								}
+								if (col === sw.voting.juries.length + 2) {
+									return elem.html(p.juryScore).addClass('sheet-jury-score sheet-score pts');
+								}
+								if (sw.voting.televote.length) {
+									if (col === sw.voting.juries.length + 3) {
+										return elem.html(p.televotes ? p.televotes : '0').addClass('sheet-televote-score sheet-score pts');
+									} else if (col === sw.voting.juries.length + 4) {
+										return elem.html(p.score).addClass('sheet-total-score sheet-score pts');
+									}
+									return;
+								} else {
+									return;
+								}
+							}
+
+							let pts = 0;
+
+							j.votes.forEach(v => {
+								if (v[1].toString() === p.order.toString()) {
+									pts = v[0];
+								}
+							})
+
+							elem.html(pts !== 0 ? pts : '').addClass('pts').addClass('pts-' + sw.getSheetClassForPoints(pts));
+						}
+					}
+
+					return elem;
+				}
+
+				sheet.orderRowsOnCol = function (col) {
+					if (!col) return;
+
+					const rows = [];
+					let firstRow = null;
+
+					let i = 0;
+					this.table.find('tr').each(function() {
+						if (!i) {
+							firstRow = this;
+							i++;
+							return;
+						}
+						rows.push(this);
+						i++;
+					});
+
+					rows.sort((a, b) => {
+						a = $(a).find('td:eq(' + (col-1) + ')').get(0).innerHTML || '0';
+						b = $(b).find('td:eq(' + (col-1) + ')').get(0).innerHTML || '0';
+						return parseInt(b, 10) - parseInt(a, 10);
+					});
+
+					this.table.empty();
+					this.table.append(firstRow);
+
+                    for (const row of rows) {
+                        this.table.append(row);
+                    }
+				}
+
+				result = sw.calculateResult(true);
+				$('#sheet-container').append(sw.getSheetHeader());
+				$('#sheet-container').append(sheet.render());
+				$('#sheet-container').append('<div id="full-ranking">' + sw.getAsHtml() +'</div>');
+				t.paused = false;
+
+				if (sw.options.autoSheet) {
+					showSheet();
+				}
+
+				$('body').keydown(e => {
+					if (e.which === 32 && !started) {
+						start(); return;
+					}
+
+					const infoVisible = info.isVisible();
+
+					if (infoVisible) {
+						info.hide();
+					} else if (sheetContainer.isVisible() && ![17, 44, 45, 57, 67, 70].includes(e.which)) {
+						sheetContainer.hide();
+					} else {
+						switch(e.which) {
+							case 8 : sw.rewind(); break; // backspace
+							case 37 : sw.rewind(2); break; // <-
+							case 39 : sw.forward(); break; // ->
+							case 38 : t.delay-=200; if (t.delay < 400) { t.delay = 400; }; break; // up
+							case 40 : t.delay+=200; if (t.delay > 3000) { t.delay = 3000; }; break; // down
+							case 36 : sw.goto(0); break; // home
+							case 35 : sw.goto(sw.voting.juries.length - 2); break; // end
+							case 51 : sw.goto(0 - sw.voting.televote.length); break; // #/3
+							case 52 : sw.goto(-1); sw.forward(); break; // $/4
+							case 32 : t.pause();  break; // space
+							case 191: showInfo(); break; // slash
+							case 120: sw.voting.createTelevote(); break; // F9
+							case 121: sw.voting.televote = []; sw.goto(sw.voting.juries.length); break; // F10
+
+							case 81: showSheet(); break; // Q
+						}
+					}
+				});
+
+				$('#tools a').click(function(e) {
+					e.preventDefault();
+					const action = $(this).attr('id');
+					switch(action) {
+						case 'rewind': sw.rewind(2); break;
+						case 'forward': sw.forward(); break;
+						case 'pause': t.pause(); break;
+						case 'restart': sw.goto(0); break;
+						case 'slower': t.delay+=200; if (t.delay > 3000) { t.delay = 3000; }; break;
+						case 'faster': t.delay-=200; if (t.delay < 400) { t.delay = 400; }; break;
+						case 'help': showInfo(); break;
+					}
+				});
+
+				$('body').on('click', '#sheet-link', e => {
+					e.preventDefault();
+					showSheet();
+				});
+
+				$('body').on('click', '#info-start', e => {
+					e.preventDefault();
+					showInfo();
+				});
+
+				$('body').on('click', '#start', e => {
+					e.preventDefault();
+					if (!started) start();
+				});
+
+				$('body').on('click', 'th.sheet-sortable', function() {
+					sheet.orderRowsOnCol(parseInt($(this).attr('data-col'), 10));
+				});
+
+				if (sw.options.fakeTelevote) {
+					sw.voting.createTelevote();
+				}
+
+			}
+
+			function demoTheme() {
+					sw.start();
+					sw.goto(3);
+					t.pause(true);
+					sw.voting.juries[2].start();
+					sw.voting.juries[2].vote(1, 4, true);
+					sw.voting.juries[2].vote(2, 5, true);
+					sw.reorder(false);
+					sw.tell(' ');
+					sw.status('theme demo');
+			}
+
+			$(() => {
+
+                 if (!sw.voting.juries.length) {
+                     alert('It looks like no jury points were set yet / nobody has voted yet. Therefore the scoreboard cannot be shown.'
+                     + ' It will work as soon as you will have added one or more votes / as soon as at least one person has voted.');
+                 }
+
+                 sw.goto(sw.voting.juries.length + 1);
+
+                 let od = [];
+
+                 if (!sw.options.oldStyleTelevote) {
+                     $('.participant').each(function() {
+                         od.push([$(this).data('position'), $(this).data('draw')]);
+                     })
+                     od.sort((a, b) => { return a[0] - b[0] })
+                     od.forEach(t => {
+                         sw.voting.televoteOrder.push(t[1]);
+                     });
+                }
+
+
+                sw.goto(startingPoint);
+
+                sw.status(sw.title);
+				sw.tell('<span class="before-start">Click <a href="#" id="start">here</a> or press the space bar to start the voting.<br />' +
+						'<span>Click <a href="#" id="info-start">here</a> for more info on how to control the scoreboard presentation.</span></span>');
+
+				var bodyBg = '#' + sw.options.colors.b;
+				var body1 = (new Color(bodyBg)).darken(30).toHex();
+				var body2 = (new Color(bodyBg)).lighten(30).toHex();
+				var textColor = sw.options.negative == '1' ? 'black' : 'white';
+
+                if (sw.options.negative === '1') {
+                    $('#scoreboard').addClass('negative');
+                }
+
+				function getGrad(colorCode) {
+					const a = new Color(colorCode);
+					const b = new Color(colorCode);
+					a.darken(80);
+
+					return [b.toCss(), b.toCss()]
+				}
+
+				const colors = {
+					normal : getGrad('#' + sw.options.colors.n),
+					received : getGrad('#' + sw.options.colors.o),
+					voted : getGrad('#' + sw.options.colors.v),
+					voting : getGrad('#' + sw.options.colors.s),
+					top : ['#' + (sw.options.colors.n || sw.options.colors.m)]
+				}
+
+				themeLog = themeLog || [
+					['body', [body1, body2]],
+					['text', [textColor, { textTransform : sw.options.upperCase == '1' ? 'uppercase' : 'none' }]],
+					['messagesTxt', [textColor, {textTransform:'none'}]],
+					['statusTxt', [textColor, {fontSize:'20px', fontWeight:'bold', textTransform:'uppercase'}]],
+					['depVot', [false]],
+					['depTop', [false]],
+					['received', colors.received],
+					['voting', colors.voting],
+					['top', colors.top],
+					['voted', colors.voted],
+					['normal', colors.normal],
+				]
+
+				if (decreaseTextSize) {
+					themeLog.push(['text', textColor, {fontWeight: 'medium'}]);
+					themeLog.push(['statusTxt', [textColor, {fontSize:'20px', fontWeight:'bold', textTransform:'uppercase'}]]),
+					themeLog.push(['receivedTxt', textColor, {fontSize: '13px'}]);
+					themeLog.push(['normalTxt', textColor, {fontSize: '13px'}]);
+					themeLog.push(['votededTxt', textColor, {fontSize: '13px'}]);
+					themeLog.push(['votingTxt', textColor, {fontSize: '13px'}]);
+
+                    let correction = $(document.createElement('style'));
+                    correction.text('.participant span.name { font-size:12px; }');
+                    $('body').append(correction);
+
+				}
+
+				th.init();
+				th._log = themeLog;
+
+				th.replayNoApply();
+
+				$('#messages, #status').show();
+				$('.participant span').css({visibility:'visible'});
+			});
+
+
+
+			</script>
+
+
+<style>.participant span.name { font-size:12px; }</style></body></html>

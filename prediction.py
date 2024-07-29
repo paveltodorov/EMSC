@@ -57,7 +57,7 @@ X = data[[
     "Running Semi",
     # "Avg Position",
     "Country",
-    # # "HOD",
+    # "HOD",
     # "Previous Place Semi",
     # "Next Place Semi",
     # "Previous Points Semi",
@@ -122,9 +122,18 @@ print("Average Absolute Difference:", average_difference)
 data_sorted = data.sort_values(by=["Edition", "Predicted Rank"])
 data = data.sort_values(by=["Edition","Predicted Place Final"])
 
-print(data[["Country", "Name", "Place Semi", "Running Final", "Place Final", "Predicted Place Final", "Predicted Rank"]])
+print(data[["Country",
+            "Name", "Place Semi", "Running Final", "Place Final",
+            "Predicted Place Final",
+            "Predicted Rank"
+            ]])
 
-shortData = data[["Country", "Artist", "Song", "Name", "Place Semi", "Running Final", "Place Final", "Predicted Place Final", "Predicted Rank", "Difference"]]
+shortData = data[
+    ["Country",
+     "Artist", "Song", "Name", "Place Semi", "Running Final", "Place Final",
+     "Predicted Place Final",
+     "Predicted Rank", "Difference"
+     ]]
 shortData.to_excel("predictions.xlsx")
 
 joblib.dump(pipeline, 'trained_model1.pkl')
