@@ -48,7 +48,7 @@ const sortCriteria_t = {
   expAverage : "expAverage",
 }
 
-
+// TODO: move to utis
 const pots = [];
 pots[1] = new Set(["France" , "Germany" , "Italy" , "Russia" , "Spain" , "Sweden" , "United Kingdom"]);
 pots[2] = new Set(["Australia", "Belgium", "Denmark", "Finland", "Iceland", "Ireland", "Israel", "The Netherlands", "Norway", "Turkey", /*..*/ "Türkiye", "Netherlands"]);
@@ -468,14 +468,18 @@ let calculateArtistParticipations = (editionsData, currentEdition) => {
     let artistEntries = new Map()
 
     editionsData.forEach(x => {
-        const delimiters = /\s*(?: x | X |%|&|ft\.|\+|feat\.|,|f\.)\s*/g
+        const delimiters = /\s*(?: x | X |%| &|ft\.|\+|feat\.|,|f\.)\s*/g
         const artists = x.Artist.replace(" $1").split(delimiters)
             .map(word => word.trim())
             .filter(word => word !== "");
 
         artists.forEach(artist => {
 
-           let artistLowerCase = artist.toLowerCase()
+            let artistLowerCase = artist.toLowerCase()
+            if (atristsWithSameName.has(artistLowerCase)) {
+                artistLowerCase = `${artistLowerCase} (${x.Country})`
+            }
+
             if (artistEntries.has(artistLowerCase)) {
                 let entry = artistEntries.get(artistLowerCase)
                 entry.participations.push(x.Edition)
@@ -590,20 +594,25 @@ let calculateAndWriteCountryRanking = () => {
   //     return {flag: entry.flag, country: entry.country, positions: entry.positions}
   // });
 }
-
+let atristsWithSameName = new Set(["alma"])
 let calculateAndWriteArtistStats = (stats, currentEdition) => {
     let artistsStats = calculateArtistParticipations(stats, currentEdition)
 
     let artistsStatsForExcel = [...artistsStats.values()].sort((x,y) => {
-        if (y.canReturnInEdition == 0 && x.canReturnInEdition == 0) {
-           return y.partipationsCount - x.partipationsCount
+        if (y.canParticipate == x.canParticipate) {
+            if (y.partipationsCount != x.partipationsCount) {
+                return y.partipationsCount - x.partipationsCount
+            }
+            else {
+                return x.artist.localeCompare(y.artist)
+            }
         }
 
         return y.canReturnInEdition - x.canReturnInEdition
     })
     let keys = [
         { label: 'Artist', value: 'artist' },
-        { label: 'Countries Represented', value: row => Array.from(row.countries).join(',') },
+        { label: 'Countries Represented', value: row => Array.from(row.countries).join(', ') },
         { label: 'Can Participate', value: row => row.canParticipate ? "Yes" : "No" },
         { label: 'Can Return In Edition', value: row => row.canReturnInEdition ? row.canReturnInEdition : "" },
         { label: 'Participations', value: 'partipationsCount' }
