@@ -35,6 +35,8 @@ const multiplier = 100;
 const Positions_Count = 38;
 const Positions_Semi_Count = 24;
 
+const Artist_Rest_Editions_Count = 12
+
 let exponentRankPoints = rank => multiplier * Math.pow(base, rank - 1);
 // for (i = 1; i < 50; i++) {
 //   console.log(exponentRankPoints(i));
@@ -466,7 +468,7 @@ let calculateArtistParticipations = (editionsData, currentEdition) => {
     let artistEntries = new Map()
 
     editionsData.forEach(x => {
-        const delimiters = /(?<!\S)(?:x|X|%|&|ft\.|\+|feat\.|,)(?!\S)/g // Regex to match delimiters
+        const delimiters = /\s*(?: x | X |%|&|ft\.|\+|feat\.|,|f\.)\s*/g
         const artists = x.Artist.replace(" $1").split(delimiters)
             .map(word => word.trim())
             .filter(word => word !== "");
@@ -475,14 +477,17 @@ let calculateArtistParticipations = (editionsData, currentEdition) => {
 
            let artistLowerCase = artist.toLowerCase()
             if (artistEntries.has(artistLowerCase)) {
-                artistEntries.get(artistLowerCase).participations.push(x.Edition)
+                let entry = artistEntries.get(artistLowerCase)
+                entry.participations.push(x.Edition)
+                entry.countries.add(x.Country)
             }
             else {
                 let artistEntry = {};
                 artistEntry.artist = artist
                 artistEntry.participations = []
                 artistEntry.participations.push(x.Edition)
-                // entry.canReturnInEdition = ""
+                artistEntry.countries = new Set()
+                artistEntry.countries.add(x.Country)
 
                 artistEntries.set(artistLowerCase, artistEntry)
             }
@@ -497,7 +502,7 @@ let calculateArtistParticipations = (editionsData, currentEdition) => {
             entry.canParticipate = true
             entry.canReturnInEdition = 0
         } else {
-            entry.canReturnInEdition = entry.participations[entry.partipationsCount - 1] + 11
+            entry.canReturnInEdition = entry.participations[entry.partipationsCount - 1] + Artist_Rest_Editions_Count + 1
             entry.canParticipate = currentEdition >= entry.canReturnInEdition
         }
     })
@@ -586,7 +591,7 @@ let calculateAndWriteCountryRanking = () => {
   // });
 }
 
-let calculateAndWriteArtistStats = (currentEdition) => {
+let calculateAndWriteArtistStats = (stats, currentEdition) => {
     let artistsStats = calculateArtistParticipations(stats, currentEdition)
 
     let artistsStatsForExcel = [...artistsStats.values()].sort((x,y) => {
@@ -598,6 +603,7 @@ let calculateAndWriteArtistStats = (currentEdition) => {
     })
     let keys = [
         { label: 'Artist', value: 'artist' },
+        { label: 'Countries Represented', value: row => Array.from(row.countries).join(',') },
         { label: 'Can Participate', value: row => row.canParticipate ? "Yes" : "No" },
         { label: 'Can Return In Edition', value: row => row.canReturnInEdition ? row.canReturnInEdition : "" },
         { label: 'Participations', value: 'partipationsCount' }
