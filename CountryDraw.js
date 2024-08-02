@@ -27,7 +27,7 @@ let takenCountriesByPot = [
     {firstDrawnSemi: 0, taken : new Set()},
     {firstDrawnSemi: 0, taken : new Set()}
 ]
-let potsWithAtLeastOneTakenCountry = 0 // excluding not pretaken
+let potsWithAtLeastOneTakenCountry = 0 // excluding pretaken
 
 let parseCountryAndPot = (countryAndPot) => {
     const breakpoint = / - /
@@ -52,9 +52,10 @@ let parseCountryAndPot = (countryAndPot) => {
     return {country, pot}
 }
 
-let takeCountry = (data, priority) => {
+let takeCountry = (data, priority, drawnPriority = 0) => {
     data.drawnCountry = priority.country
     data.drawnCountryPot = priority.pot
+    data.drawnPriority = drawnPriority
     drawnPlayers.add(data.participant)
 
     takenCountries.add(priority.country)
@@ -126,7 +127,25 @@ let writeOutputDrawData = (drawData) => {
     xlsx(dataForExcel, settings)
 }
 
-function makeDraw() {
+function drawRandomly(notDrawnPlayers) {
+    if (notDrawnPlayers.length == 0) return "end"
+
+    const randomIndex = Math.floor(Math.random() * notDrawnPlayers.length)
+    const randomPlayer = notDrawnPlayers[randomIndex]
+    notDrawnPlayers.splice(randomIndex, 1)
+
+    return randomPlayer
+}
+
+function makeDraw(useUserInput = true) {
+    drawnPlayers.clear()
+    takenCountries.clear()
+    for(let i = 0; i <= 6; i++) {
+        takenCountriesByPot[i].firstDrawnSemi = 0
+        takenCountriesByPot[i].taken.clear()
+    }
+    potsWithAtLeastOneTakenCountry = 0
+
     const workbook = readFile(fileName);
     let workbook_sheet = workbook.SheetNames;
     let excelStats = utils.sheet_to_json(
@@ -145,14 +164,15 @@ function makeDraw() {
         obj.drawnSemi = undefined
         obj.drawnCountry = undefined
         obj.drawnCountryPot = undefined
+        obj.drawnPriority = 0
         obj.isAq = undefined
         obj.votesAsAqInSemi = undefined
         obj.priorities = []
 
         let hasPreChosen = false
 
-        if (entry["EMSC2403 - Oslo / Norway"] && entry["EMSC2403 - Oslo / Norway"].includes("-")) {
-            const drawnData = parseCountryAndPot(entry["EMSC2403 - Oslo / Norway"])
+        if (entry["EMSC2404 - Manchester / UK"] && entry["EMSC2404 - Manchester / UK"].includes("-")) {
+            const drawnData = parseCountryAndPot(entry["EMSC2404 - Manchester / UK"])
             obj.drawnCountry = drawnData.country
             obj.drawnCountryPot = drawnData.pot
             hasPreChosen = true
@@ -187,7 +207,8 @@ function makeDraw() {
         drawData.set(entry["__EMPTY_1"], obj)
     }
 
-    let players = Array.from( drawData.keys() )
+    let players = Array.from(drawData.keys())
+    let notDrawnPlayers = Array.from(drawData.keys())
 
     let getPlayer = (shortname) => {
         return players.filter(x => x.toLowerCase().startsWith(shortname.toLowerCase()))
@@ -197,14 +218,20 @@ function makeDraw() {
 
     console.log(drawData)
 
-    let drawPretaken = false
+    let pretakenMode = false
     let drawnOrder = 0
 
     for (let i = 0; ; i++) { // drawData.length
-        const drawnPlayerShortName = question('Player? ');
+        let drawnPlayerShortName 
+        if (useUserInput) {
+            drawnPlayerShortName = question('Player? ');
+        } else {
+            drawnPlayerShortName = drawRandomly(notDrawnPlayers)
+        }
+
         if (drawnPlayerShortName == "end") break
         if (drawnPlayerShortName == "pretaken") {
-            drawPretaken = true
+            pretakenMode = true
             continue
         }
 
@@ -232,7 +259,7 @@ function makeDraw() {
         }
         let data = drawData.get(drawnPlayer)
 
-        if (drawPretaken) {
+        if (pretakenMode) {
             const cntryAndPot = {country: data.drawnCountry, pot: data.drawnCountryPot}
             console.log(cntryAndPot)
             drawnOrder++
@@ -241,20 +268,20 @@ function makeDraw() {
             continue;
         }
 
-        for (let i = 0; i < 6; i++) {
-            let priority = data.priorities[i]
+        for (let j = 0; j < 6; j++) {
+            let priority = data.priorities[j]
             if (!priority) {
                 console.log(`Can't get priority list, likely the player has pre-chosen`);
                 break
             }
-            console.log(`${i + 1}. ${priority.country}`);
+            console.log(`${j + 1}. ${priority.country}`);
             console.log("");
 
             const countryIsFree = !takenCountries.has(priority.country)
             if (countryIsFree) {
                 drawnOrder++
                 data.drawnOrder = drawnOrder
-                takeCountry(data, priority)
+                takeCountry(data, priority, j)
                 break;
             }
         }
@@ -278,8 +305,59 @@ function makeDraw() {
 
     console.log(`Countries in semi 1 ${semi1Count}`)
     console.log(`Countries in semi 2 ${semi2Count}`)
-    writeOutputDrawData(drawData)
+    if (useUserInput) writeOutputDrawData(drawData)
+
+    return drawData
 }
 
-makeDraw()
+let drawSimulationCount = 10
+let accumulatedDrawData = new Map()
+let accumulatedTakeCountries = new Map()
+
+let firstDrawData = makeDraw(0)
+firstDrawData.forEach(data => {
+    let accData = {}
+    accData.drawnOrders = [data.drawnOrder]
+    accData.participant = data.participant
+    accData.homeCountry = data.homeCountry
+    accData.drawnSemi = data.drawnSemi
+    accData.homeCountry = [data.drawnCountry]
+    accData.drawnCountryPot = [data.drawnCountryPot]
+    // accData.isAq = undefined
+    // accData.votesAsAqInSemi = undefined
+    accData.priorities = data.priorities  
+
+    accData.accDrawnPriorities = [0, 0, 0, 0, 0, 0, 0]
+    accData.accDrawnPriorities[data.drawnPriority]++
+
+    accumulatedDrawData.set(data.participant, accData)
+})
+// accumulatedDrawData
+
+for (let i = 1; i < drawSimulationCount; i++) {
+    let drawnData = makeDraw(0)
+    drawnData.forEach(data => {
+        // let accData = {}
+        // accData.drawnOrders [data.drawnOrder]
+        // accData.participant = data.participant
+        // accData.homeCountry = data.homeCountry
+        // accData.drawnSemi = data.drawnSemi
+        // accData.homeCountry = [data.drawnCountry]
+        // accData.drawnCountryPot = [data.drawnCountryPot]
+        // accData.isAq = undefined
+        // accData.votesAsAqInSemi = undefined
+        // accData.priorities = data.priorities  
+    
+        // accData.accDrawnPriorities = [0, 0, 0, 0, 0, 0, 0]
+        accumulatedDrawData.get(data.participant).accDrawnPriorities[data.drawnPriority]++
+    })
+
+    // combine accumulated datas
+}
+
+console.log(accumulatedDrawData)
+
+// user input
+// makeDraw(1)
+
 
