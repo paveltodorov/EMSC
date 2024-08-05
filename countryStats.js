@@ -612,7 +612,11 @@ let calculateAndWriteArtistStats = (stats, currentEdition) => {
     })
     let keys = [
         { label: 'Artist', value: 'artist' },
-        { label: 'Countries Represented', value: row => Array.from(row.countries).join(', ') },
+        { label: 'Countries Represented',
+            value: row => Array.from(row.countries)
+                .map(country => `${country} ${flagNew(country)}`)
+                .join(', ')
+        },
         { label: 'Can Participate', value: row => row.canParticipate ? "Yes" : "No" },
         { label: 'Can Return In Edition', value: row => row.canReturnInEdition ? row.canReturnInEdition : "" },
         { label: 'Participations', value: 'partipationsCount' }
@@ -643,6 +647,14 @@ let calculateAndWriteArtistStats = (stats, currentEdition) => {
       writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
       RTL: false, // Display the columns from right-to-left (the default value is false)
     }
+
+    // log blocked artists
+    artistsStatsForExcel.filter(x => !x.canParticipate).forEach(x => {
+        let countriesWithflags = Array.from(x.countries)
+                .map(country => `${country} ${flagNew(country)}`)
+                .join(', ')
+        console.log(`${x.artist} - ${countriesWithflags}`)
+    })
 
     xlsx(data, settings) // uncomment to save to file
 }

@@ -30,8 +30,10 @@ let takenCountriesByPot = [
 let potsWithAtLeastOneTakenCountry = 0 // excluding pretaken
 
 let parseCountryAndPot = (countryAndPot) => {
-    const breakpoint = / - /
+    console.log(countryAndPot)
+    const breakpoint = / [-–] /
     const split = countryAndPot.split(breakpoint)
+    // const match = input.match(regex);
 
     if (split.length < 2 || !split[0] || !split[1]) {
         console.log(`Failed to parse country and pot data: ${countryAndPot}`)
@@ -52,13 +54,14 @@ let parseCountryAndPot = (countryAndPot) => {
     return {country, pot}
 }
 
-let takeCountry = (data, priority, drawnPriority = 0) => {
+let takeCountry = (data, priority, drawnPriority = 0, printInfo = true) => {
     data.drawnCountry = priority.country
     data.drawnCountryPot = priority.pot
     data.drawnPriority = drawnPriority
     drawnPlayers.add(data.participant)
 
     takenCountries.add(priority.country)
+    if (!takenCountriesByPot[priority.pot]) return;
     takenCountriesByPot[priority.pot].taken.add(priority.country)
 
     const countriesAlreadyDrawnFromPot = takenCountriesByPot[priority.pot].taken.size
@@ -71,10 +74,12 @@ let takeCountry = (data, priority, drawnPriority = 0) => {
         data.drawnSemi = (takenCountriesByPot[priority.pot].firstDrawnSemi + countriesAlreadyDrawnFromPot + 1) % 2 == 0 ? 2 : 1
     }
 
-    console.log(`${data.participant} gets ${priority.country}, number ${countriesAlreadyDrawnFromPot} drawn from pot ${priority.pot}`);
-    console.log(`${priority.country} will compete is semi final ${data.drawnSemi}`);
-    console.log(`${takenCountries.size} country/countries has/have already been taken`);
-    console.log(takenCountriesByPot)
+    if (printInfo) {
+        console.log(`${data.participant} gets ${priority.country}, number ${countriesAlreadyDrawnFromPot} drawn from pot ${priority.pot}`);
+        console.log(`${priority.country} will compete is semi final ${data.drawnSemi}`);
+        console.log(`${takenCountries.size} country/countries has/have already been taken`);
+        console.log(takenCountriesByPot)
+    }
 }
 
 let writeOutputDrawData = (drawData) => {
@@ -127,17 +132,56 @@ let writeOutputDrawData = (drawData) => {
     xlsx(dataForExcel, settings)
 }
 
-function drawRandomly(notDrawnPlayers) {
-    if (notDrawnPlayers.length == 0) return "end"
+function drawRandomly(drawSplit) {
+    let drawArray
+    if (drawSplit.playersFirstHalf.length > 0) drawArray = drawSplit.playersFirstHalf
+    else if (drawSplit.playersSecondHalf.length > 0) drawArray = drawSplit.playersSecondHalf
+    else if (drawSplit.top5.length > 0) drawArray = drawSplit.top5
+    else return "end"
 
-    const randomIndex = Math.floor(Math.random() * notDrawnPlayers.length)
-    const randomPlayer = notDrawnPlayers[randomIndex]
-    notDrawnPlayers.splice(randomIndex, 1)
+    const randomIndex = Math.floor(Math.random() * drawArray.length)
+    const randomPlayer = drawArray[randomIndex]
+    drawArray.splice(randomIndex, 1)
 
     return randomPlayer
 }
 
-function makeDraw(useUserInput = true) {
+const groupBy = (array, fn) => {
+    return array.reduce((result, item) => {
+      const key = fn(item);
+      if (!result[key]) {
+        result[key] = [];
+      }
+      result[key].push(item);
+      return result;
+    }, {});
+  };
+
+function readDrawSplit() {
+    const fileName = "EMSC - Split for Draw.xlsx"
+    const participantColumn = "EMSC 2404 - Draw Split "
+
+    const workbook = readFile(fileName);
+    let workbook_sheet = workbook.SheetNames;
+    let splitStats = utils.sheet_to_json(
+        workbook.Sheets[workbook_sheet[0]]
+    );
+
+    let groupedArray = groupBy(splitStats, x => x["__EMPTY"])
+    let split = {
+        playersFirstHalf : [],
+        playersSecondHalf : [],
+        top5 : []
+    }
+    split.playersFirstHalf = groupedArray["1st round"].map(x => x[participantColumn])
+    split.playersSecondHalf = groupedArray["2nd round"].map(x => x[participantColumn])
+    split.top5 = groupedArray["Top5"].map(x => x[participantColumn])
+    console.log(split)
+
+    return split
+}
+
+function makeDraw(excelstats, useUserInput = true) {
     drawnPlayers.clear()
     takenCountries.clear()
     for(let i = 0; i <= 6; i++) {
@@ -145,13 +189,6 @@ function makeDraw(useUserInput = true) {
         takenCountriesByPot[i].taken.clear()
     }
     potsWithAtLeastOneTakenCountry = 0
-
-    const workbook = readFile(fileName);
-    let workbook_sheet = workbook.SheetNames;
-    let excelStats = utils.sheet_to_json(
-        workbook.Sheets[workbook_sheet[0]]
-    );
-    excelStats = excelStats.filter(x => x.hasOwnProperty("__EMPTY_4"))
 
     // fill in draw data
     let drawData = new Map()
@@ -171,11 +208,12 @@ function makeDraw(useUserInput = true) {
 
         let hasPreChosen = false
 
-        if (entry["EMSC2404 - Manchester / UK"] && entry["EMSC2404 - Manchester / UK"].includes("-")) {
-            const drawnData = parseCountryAndPot(entry["EMSC2404 - Manchester / UK"])
+        if (entry["pretaken"] && (entry["pretaken"].includes("-") || entry["pretaken"].includes("–"))) {
+            const drawnData = parseCountryAndPot(entry["pretaken"])
             obj.drawnCountry = drawnData.country
             obj.drawnCountryPot = drawnData.pot
             hasPreChosen = true
+            takenCountries.add(drawnData.country)
             // continue
         }
 
@@ -208,25 +246,29 @@ function makeDraw(useUserInput = true) {
     }
 
     let players = Array.from(drawData.keys())
-    let notDrawnPlayers = Array.from(drawData.keys())
+    let drawSplit =  readDrawSplit()
 
     let getPlayer = (shortname) => {
+        if (!shortname) {
+            console.log("short name not found")
+            return []
+        }
         return players.filter(x => x.toLowerCase().startsWith(shortname.toLowerCase()))
     }
 
     // renameProperty(stats, "__EMPTY_1", 'Patricipant')
 
-    console.log(drawData)
+    if (useUserInput) console.log(drawData)
 
     let pretakenMode = false
     let drawnOrder = 0
 
     for (let i = 0; ; i++) { // drawData.length
-        let drawnPlayerShortName 
+        let drawnPlayerShortName
         if (useUserInput) {
             drawnPlayerShortName = question('Player? ');
         } else {
-            drawnPlayerShortName = drawRandomly(notDrawnPlayers)
+            drawnPlayerShortName = drawRandomly(drawSplit)
         }
 
         if (drawnPlayerShortName == "end") break
@@ -264,10 +306,11 @@ function makeDraw(useUserInput = true) {
             console.log(cntryAndPot)
             drawnOrder++
             data.drawnOrder = drawnOrder
-            takeCountry(data, cntryAndPot)
+            takeCountry(data, cntryAndPot, 0, useUserInput)
             continue;
         }
 
+        let countryTaken = false
         for (let j = 0; j < 6; j++) {
             let priority = data.priorities[j]
             if (!priority) {
@@ -281,14 +324,23 @@ function makeDraw(useUserInput = true) {
             if (countryIsFree) {
                 drawnOrder++
                 data.drawnOrder = drawnOrder
-                takeCountry(data, priority, j)
+                countryTaken = true
+                takeCountry(data, priority, j, useUserInput)
                 break;
             }
         }
-        console.log("");
+
+        if (!countryTaken) {
+            console.log(`Player ${drawnPlayer} is not assigned a cuntry since all of his priorities are taken`)
+            data.drawnPriority = 6
+        }
+
+        if (useUserInput) console.log("");
     }
 
-    console.log(drawData)
+    if (useUserInput) {
+        console.log(drawData)
+    }
 
     let semi1Count = 0
     let semi2Count = 0
@@ -301,63 +353,137 @@ function makeDraw(useUserInput = true) {
     });
 
 
-    drawData
-
-    console.log(`Countries in semi 1 ${semi1Count}`)
-    console.log(`Countries in semi 2 ${semi2Count}`)
-    if (useUserInput) writeOutputDrawData(drawData)
+    if (useUserInput) {
+        console.log(`Countries in semi 1 ${semi1Count}`)
+        console.log(`Countries in semi 2 ${semi2Count}`)
+        writeOutputDrawData(drawData)
+    }
 
     return drawData
 }
 
-let drawSimulationCount = 10
-let accumulatedDrawData = new Map()
-let accumulatedTakeCountries = new Map()
+let writeDrawSimulation = (drawSim) => {
+    let drawSimulationFile = "DrawSimulation.xlsx"
+    let settings = {
+        fileName: drawSimulationFile, // Name of the resulting spreadsheet
+        extraLength: 1, // A bigger number means that columns will be wider
+        writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
+        writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
+        RTL: false, // Display the columns from right-to-left (the default value is false)
+    }
 
-let firstDrawData = makeDraw(0)
-firstDrawData.forEach(data => {
-    let accData = {}
-    accData.drawnOrders = [data.drawnOrder]
-    accData.participant = data.participant
-    accData.homeCountry = data.homeCountry
-    accData.drawnSemi = data.drawnSemi
-    accData.homeCountry = [data.drawnCountry]
-    accData.drawnCountryPot = [data.drawnCountryPot]
-    // accData.isAq = undefined
-    // accData.votesAsAqInSemi = undefined
-    accData.priorities = data.priorities  
+    let drawSimList = [...drawSim.values()]
+    let statsForExcelKeys = [
+        { label: 'Participant', value: 'participant', format: "#0.00%"},
+    ]
 
-    accData.accDrawnPriorities = [0, 0, 0, 0, 0, 0, 0]
-    accData.accDrawnPriorities[data.drawnPriority]++
+    for (let i = 0; i < 6; i++) {
+        console.log(i)
+        statsForExcelKeys.push({
+            label : `Prio ${i + 1}`,
+            value : (row) => {
+                if (row.priorities[i]) {
+                    return row.priorities[i].country + " - " + row.accDrawnPercentage[i] + "%"
+                } else {
+                    return ""
+                }
+            },
+            format: "#0.00%"
+       })
+    }
 
-    accumulatedDrawData.set(data.participant, accData)
-})
-// accumulatedDrawData
-
-for (let i = 1; i < drawSimulationCount; i++) {
-    let drawnData = makeDraw(0)
-    drawnData.forEach(data => {
-        // let accData = {}
-        // accData.drawnOrders [data.drawnOrder]
-        // accData.participant = data.participant
-        // accData.homeCountry = data.homeCountry
-        // accData.drawnSemi = data.drawnSemi
-        // accData.homeCountry = [data.drawnCountry]
-        // accData.drawnCountryPot = [data.drawnCountryPot]
-        // accData.isAq = undefined
-        // accData.votesAsAqInSemi = undefined
-        // accData.priorities = data.priorities  
-    
-        // accData.accDrawnPriorities = [0, 0, 0, 0, 0, 0, 0]
-        accumulatedDrawData.get(data.participant).accDrawnPriorities[data.drawnPriority]++
+    statsForExcelKeys.push({
+        label : "No Drawn Country",
+        value : row => row.accDrawnPercentage[6] + "%"
     })
 
-    // combine accumulated datas
+    let dataForExcel = [
+        {
+            sheet: "DrawSim",
+            columns: statsForExcelKeys,
+            content: drawSimList,
+        }
+    ]
+
+    xlsx(dataForExcel, settings)
 }
 
-console.log(accumulatedDrawData)
+function makeDrawSimulation(excelStats) {
+    let drawSimulationCount = 10000
+    let accumulatedDrawData = new Map()
+    let accumulatedTakeCountries = new Map()
+
+    let firstDrawData = makeDraw(excelStats, false)
+    firstDrawData.forEach(data => {
+        let accData = {}
+        accData.drawnOrders = [data.drawnOrder]
+        accData.participant = data.participant
+        accData.homeCountry = data.homeCountry
+        accData.drawnSemi = data.drawnSemi
+        accData.homeCountry = [data.drawnCountry]
+        accData.drawnCountryPot = [data.drawnCountryPot]
+        // accData.isAq = undefined
+        // accData.votesAsAqInSemi = undefined
+        accData.priorities = data.priorities
+
+        accData.accDrawnPriorities = [0, 0, 0, 0, 0, 0, 0]
+        accData.accDrawnPriorities[data.drawnPriority] += 1
+
+        accData.accDrawnPercentage = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        accData.accDrawnPercentage[data.drawnPriority] += (1 / drawSimulationCount) * 100
+
+        accumulatedDrawData.set(data.participant, accData)
+    })
+    // accumulatedDrawData
+
+    for (let i = 1; i < drawSimulationCount; i++) {
+        let drawnData = makeDraw(excelStats, false)
+        drawnData.forEach(data => {
+            // let accData = {}
+            // accData.drawnOrders [data.drawnOrder]
+            // accData.participant = data.participant
+            // accData.homeCountry = data.homeCountry
+            // accData.drawnSemi = data.drawnSemi
+            // accData.homeCountry = [data.drawnCountry]
+            // accData.drawnCountryPot = [data.drawnCountryPot]
+            // accData.isAq = undefined
+            // accData.votesAsAqInSemi = undefined
+            // accData.priorities = data.priorities
+
+            // accData.accDrawnPriorities = [0, 0, 0, 0, 0, 0, 0]
+            accumulatedDrawData.get(data.participant).accDrawnPriorities[data.drawnPriority]++
+            accumulatedDrawData.get(data.participant).accDrawnPercentage[data.drawnPriority] += (1 / drawSimulationCount) * 100
+        })
+
+        // combine accumulated datas
+    }
+
+    // accumulatedDrawData.forEach((x, key) => {
+    //     // console.log(`${x.participant} -> ${x.priorities} - ${x.accDrawnPriorities}`)
+    //     console.log(`${x.participant}`)
+    //     console.log(x.priorities.map(y => y.country).join(','))
+    //     // console.log(x.priorities)
+    //     console.log(`${x.accDrawnPriorities}`)
+    //     console.log(`${x.accDrawnPercentage}`)
+    //     console.log("\n")
+    // })
+
+    writeDrawSimulation(accumulatedDrawData)
+}
+
+// readDrawSplit()
+    // console.log(accumulatedDrawData)
 
 // user input
-// makeDraw(1)
+const workbook = readFile(fileName);
+let workbook_sheet = workbook.SheetNames;
+let excelStats = utils.sheet_to_json(
+    workbook.Sheets[workbook_sheet[0]]
+);
+excelStats = excelStats.filter(x => x.hasOwnProperty("__EMPTY_4"))
+
+
+// makeDrawSimulation(excelStats)
+makeDraw(excelStats, true)
 
 

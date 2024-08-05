@@ -26,6 +26,7 @@
     "json-as-xlsx": "^2.5.4",
     "node-fetch": "^3.3.2",
     "readline-sync": "^1.4.10",
+    "reduce": "^1.0.3",
     "xlsx": "^0.18.5"
   },
   "type": "module"
