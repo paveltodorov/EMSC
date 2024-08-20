@@ -1,40 +1,38 @@
 import {flagNew} from "./countryStats.js";
 
-let running = [
-   { country: "United Kingdom", scoreziwEntry: "Artemas (UK) - i like the way you kiss me"},
-   { country: "North Macedonia", scoreziwEntry: "Tamara Todevska (MKD) - Monsters"},
-   { country: "Sweden", scoreziwEntry: "Darin (SWE) - Electric"},
-   { country: "Latvia", scoreziwEntry: "MADARA (LAT) - Es Esmu Viss"},
-   { country: "Iceland", scoreziwEntry: "Thorsteinn Einarsson (ISL) - Hotel Heartache"}, // 1
-   { country: "Romania", scoreziwEntry: "MIRA (ROU) - Bad Booty"},
-   { country: "Albania", scoreziwEntry: "Yll Limani (ALB) - Buzet e kuqe"},
-   { country: "Italy", scoreziwEntry: "Mara Sattei (ITA) - Mare Aperto"},
-   { country: "Austria", scoreziwEntry: "HUNGER (AUT) - HONEY"},
-   { country: "Bulgaria", scoreziwEntry: "ALMA x Kristian Kostov (BUL) - So High"},
-   { country: "Andorra", scoreziwEntry: "Ana Mena, GALE (AND) - La Razón"}, // 1
-   { country: "Australia", scoreziwEntry: "Dami Im (AUS) - Collide"},
-   { country: "Croatia", scoreziwEntry: "Top of the Pop ft. Mario 5reković (CRO) - Putovanje"},
-   { country: "Israel", scoreziwEntry: "ים רפאלי ואור עמרמי ברוקמן (ISR) - טירוף"},
-   { country: "Norway", scoreziwEntry: "Red Moon (NOR) - Dreamer"},
-   { country: "San Marino", scoreziwEntry: "ALFA (SMR) - Vai!"},
-   { country: "Denmark", scoreziwEntry: "I Was Gonna Marry Him (DEN) - EYJAA - Topic"},
-   { country: "Spain", scoreziwEntry: "Agoney (ESP) - Tormenta"},
-   { country: "Belgium", scoreziwEntry: "Luka (BEL) - FOMO"},
-   { country: "Azerbaijan", scoreziwEntry: "AISEL (AZE) - Game of Chess"},
-   { country: "Portugal", scoreziwEntry: "Fernando Daniel (POR) - casa"},
-   { country: "Netherlands", scoreziwEntry: "SERA (NED) - Head Held High"},
-   { country: "Ireland", scoreziwEntry: "Hozier (IRL) - Too Sweet"}, // 2
-   { country: "France", scoreziwEntry: "SARA'H (FRA) - TU PARLES"},
-   { country: "Ukraine", scoreziwEntry: "TVORCHI (UKR) - Shine"}, // 2
- ]
+let running = [ { country: 'Cyprus', scoreziwEntry: "Νίκος Οικονομόπουλος (CYP) - Βαλ' Το Τέρμα"},
+{ country: 'Sweden', scoreziwEntry: 'Husavik (SWE) - My Home Town'},
+{ country: 'Czechia', scoreziwEntry: 'MIKOLAS (CZE) - DELILAH'},
+{ country: 'Switzerland', scoreziwEntry: 'Stay With Me (SUI) - Luca Hänni - Topic'},
+{ country: 'Austria', scoreziwEntry: 'Melissa Naschenweng (AUT) - Legenden'},
+{ country: 'Bulgaria', scoreziwEntry: 'VIKTORIO (BUL) - Tough To Love'},
+{ country: 'Serbia', scoreziwEntry: 'Marija Serifovic feat. Matija Cvek (SRB) - POLA SUNCA'},
+{ country: 'Ukraine', scoreziwEntry: 'Maro (UKR) - HELLSTORM'},
+{ country: 'Finland', scoreziwEntry: 'ABREU (FIN) - Caliente'},
+{ country: 'Portugal', scoreziwEntry: 'Sofia Camara (POR) - Who Do I Call Now?'},
+{ country: 'Azerbaijan', scoreziwEntry: 'SEVDALIZA (AZE) - ALIBI FT. PABLLO VITTAR & YSEULT'},
+{ country: 'Norway', scoreziwEntry: 'Aden Foyer (NOR) - Galileo Galilei'},
+{ country: 'Ireland', scoreziwEntry: 'Aimée (IRL) - Daisy Chains'},
+{ country: 'France', scoreziwEntry: 'Niam (FRA) - guignols'},
+{ country: 'Netherlands', scoreziwEntry: 'Hannah Mae & Maksim (NED) - Ik Wil Dat Je Liegt'},
+{ country: 'Spain', scoreziwEntry: 'Javy Ramírez (ESP) - Tu Nombre'},
+{ country: 'Israel', scoreziwEntry: 'נרקיס (ISR) - הכל לטובה'},
+{ country: 'San Marino', scoreziwEntry: 'Madame (SMR) - IL BENE NEL MALE'},
+{ country: 'United Kingdom', scoreziwEntry: 'Tom Walker (UK) - Head Underwater'},
+{ country: 'Luxembourg', scoreziwEntry: 'Taska Black (LUX) - Comedown'},
+{ country: 'Albania', scoreziwEntry: 'Elhaida Dani (ALB) - Zemrës'},
+{ country: 'Monaco', scoreziwEntry: 'Lukas Abdul (MON) - Les Maux Bleus'},
+{ country: 'Croatia', scoreziwEntry: 'Nina Badric (CRO) - Kako si'},
+{ country: 'Germany', scoreziwEntry: 'Gregor Hägele (GER) - 1 Jahr'},
+{ country: 'Italy', scoreziwEntry: 'Coma_Cose (ITA) - MALAVITA'},
+]
 
-// Please make sure….1st half for Finland, Spain & Albania
-// 2nd half for Armenia, Switzerland & Bulgaria
+
 
 running.forEach((entry, idx) => {
    entry.flag = flagNew(entry.country);
-   console.log(`${idx + 1}.${entry.flag} ${entry.country}`)
-   // console.log(`${idx + 1}.${entry.country}`)
+   // console.log(`${idx + 1}.${entry.flag} ${entry.country}`)
+   console.log(`${idx + 1}. ${entry.country}`)
 })
 
 

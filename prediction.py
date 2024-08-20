@@ -20,6 +20,7 @@ from sklearn.svm import NuSVC
 filename = "EmscFullStats.xlsx"
 # Read the Excel file into a DataFrame
 data = pd.read_excel(filename)
+print(data.columns)
 runningOrderStats = pd.read_excel("Running Order Stats.xlsx")
 hodStats = pd.read_excel("EMSC-HoD-Country-Ranking.xlsx")
 
@@ -27,6 +28,8 @@ hodStats = pd.read_excel("EMSC-HoD-Country-Ranking.xlsx")
 data = data[pd.to_numeric(data["Place Semi"], errors='coerce').notnull()]
 data = data[pd.to_numeric(data["Running Final"], errors='coerce').notnull()]
 data = data[pd.to_numeric(data["Place Final"], errors='coerce').notnull()]
+# data = data[pd.to_numeric(data["Sum Top3 Pts Semi"], errors='coerce').notnull()]
+# data = data[pd.to_numeric(data["Sum Top5 Pts Semi"], errors='coerce').notnull()]
 
 data = data.sort_values(by=['Edition', 'SF', 'Running Semi'])
 data['Previous Place Semi'] = data.groupby(['Edition', 'SF'])['Place Semi'].shift(1)
@@ -42,8 +45,8 @@ data['Previous Points Semi'] = data['Previous Points Semi'].fillna(method='ffill
 data['Next Place Semi'] = data['Next Place Semi'].fillna(method='ffill').fillna(method='bfill')
 data['Next Points Semi'] = data['Next Points Semi'].fillna(method='ffill').fillna(method='bfill')
 
-data = pd.merge(data, runningOrderStats, on='Running Final', how='left')
-data = pd.merge(data, hodStats, on='HOD', how='left')
+# data = pd.merge(data, runningOrderStats, on='Running Final', how='left')
+# data = pd.merge(data, hodStats, on='HOD', how='left')
 
 # print(data)
 
@@ -57,6 +60,8 @@ X = data[[
     "Running Semi",
     # "Avg Position",
     "Country",
+    "Sum Top3 Pts Semi",
+    "Sum Top5 Pts Semi",
     # "HOD",
     # "Previous Place Semi",
     # "Next Place Semi",
@@ -81,7 +86,13 @@ preprocessor = ColumnTransformer(
             # "Next Points Semi",
             # "Num Of Indiv Votes Semi",
         # ]),
-        ('num', StandardScaler(), ["Points Semi", "Place Semi", "Running Semi"]),
+        ('num', StandardScaler(), [
+            "Points Semi",
+            "Place Semi",
+            "Running Semi",
+            # "Sum Top3 Pts Semi",
+            # "Sum Top5 Pts Semi",
+        ]),
         ('cat', OneHotEncoder(handle_unknown='ignore'), ["Running Final", "Country"])
         # ('cat2', OneHotEncoder(handle_unknown='ignore'), ["HOD"]),
         # ('cat3', OneHotEncoder(handle_unknown='ignore'), ["Country"])
@@ -107,7 +118,7 @@ pipeline.fit(X_train, y_train)
 mse = pipeline.score(X_test, y_test)
 print("Mean Squared Error:", mse)
 
-filenameOther = "Emsc2403Semis.xlsx"
+filenameOther = "Emsc2404Semis.xlsx"
 data = pd.read_excel(filenameOther)
 predictions = pipeline.predict(data) # X
 # Adding the predictions to the DataFrame

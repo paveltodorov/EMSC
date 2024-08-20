@@ -101,7 +101,7 @@ async function main() {
     const key = conf['GOOGLE_API_TOKEN'];
     const playlistItemsApi = "https://www.googleapis.com/youtube/v3/playlistItems";
     // const playlistId = "PL2X_tHrqOyT3pjbXvov_QPLImsqZHX2gj";
-    const playlistId = "PL2X_tHrqOyT3LfDylJohyqgpsC05icQIy"
+    const playlistId = "PL2X_tHrqOyT0F5jiHdr-P_WacqS4hIoaW"
 
     const itemsUri = `${playlistItemsApi}?key=${key}&part=snippet&playlistId=${playlistId}&maxResults=50`;
     let html = await axios.get(itemsUri);
@@ -145,7 +145,8 @@ async function main() {
     //     console.log(error);
     //   });
     // // 'PHPSESSID=91pm0e0eu38tthn022k71qoaa3; path=/'
-    updateScoregridParticpants(729833, "GEXdjjgD", songsData);
+    console.log(songsData)
+    updateScoregridParticpants(742175, "USQcU3dR", songsData);
 
     // songsData;
     // countries;

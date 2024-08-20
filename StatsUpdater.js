@@ -208,6 +208,8 @@ let fillEntryDataSemi = (stats, p, idx, sf) => {
         pointsFinal: 0,
         placeSemi : 0,
         pointsSemi: 0,
+        sumTop3PtsSemi: 0,
+        sumTop5PtsSemi: 0,
         HOD : "",
         hodShortName: "",
         juryScore : 0,
@@ -345,8 +347,10 @@ async function calculateEditionStats(edition) {
     const semi2ServerData = await getServerData(links.semi2Link);
     // const serverData = await getServerData("https://scorewiz.eu/scoreboard/sheet/732605/emsc-2403---grand-final/Mx8VNwek")
     // const teleServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/732607/emsc-2403---grand-final---televote/LSG3cubR")
-    // const semi1ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/729554/emsc-2403---semi-final-1/VQ52nFkY");
-    // const semi2ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/729833/emsc-2403---semi-final-2/GEXdjjgD");
+    // const serverData = undefined
+    // const teleServerData = undefined
+    // const semi1ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/742174/emsc-2404---semi-final-1/5fNS9GCS");
+    // const semi2ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/742175/emsc-2404---semi-final-2/USQcU3dR");
 
     let stats = new Map();
     let editionName = "EMSC " + numberToEditionName(edition);
@@ -370,7 +374,15 @@ async function calculateEditionStats(edition) {
             if (!stats.get(country)) {
                 console.log("Failed to get country stats");
             }
-            stats.get(country).pointsSemi += ptsAndSong[0];
+
+            let semiPts = ptsAndSong[0];
+            stats.get(country).pointsSemi += semiPts;
+            if (semiPts >= 6) {
+                stats.get(country).sumTop5PtsSemi += semiPts;
+            }
+            if (semiPts >= 8) {
+                stats.get(country).sumTop3PtsSemi += semiPts;
+            }
             stats.get(country).semiPointsFrom.push({points: ptsAndSong[0], hodShortName: juror[1].name, country: jurorCountry});
         });
 
@@ -636,7 +648,7 @@ let caculateFavoriteCountries = (edData) => {
 async function main() {
     let allEditionsData = [];
 
-    let editionsToCalculate = [/*1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,*/ 18];
+    let editionsToCalculate = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
     for (let i = 0; i < editionsToCalculate.length; i++) {
         let edData = await calculateEditionStats(editionsToCalculate[i]);
         allEditionsData.push(...edData);
@@ -661,15 +673,15 @@ async function main() {
         // EMSC Stats Test 6 - 14
         fileName: "EmscFullStats",
         // fileName: "EMSC2404 Summary",
-        // fileName: "Emsc2403Semis",
+        // fileName: "Emsc2404Semis",
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
         RTL: false, // Display the columns from right-to-left (the default value is false)
     }
 
-    // xlsx(data, settings)
-    // return 0;
+    xlsx(data, settings)
+    return 0;
 
     let hodPointExchangeStats = caculateHodPointExchangeStats(allEditionsData);
     let getHodPointExchangeKeys = f => {
