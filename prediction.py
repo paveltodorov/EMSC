@@ -150,21 +150,89 @@ shortData.to_excel("predictions.xlsx")
 joblib.dump(pipeline, 'trained_model1.pkl')
 
 
-# This model is trying to predict how a song would score in the final based on the scores in the semifinal, how can I improve the model
+# from sklearn.model_selection import GridSearchCV
+# from sklearn.ensemble import RandomForestRegressor
+
+# # Define the pipeline with preprocessing and model
+# pipeline = Pipeline([
+#     ('preprocessor', preprocessor),
+#     ('model', RandomForestRegressor(random_state=0))
+# ])
+
+# # Define parameter grid for hyperparameter tuning
+# param_grid = {
+#     'model__n_estimators': [50, 100, 200],
+#     'model__max_depth': [None, 10, 20, 30],
+#     'model__min_samples_split': [2, 5, 10],
+#     'model__min_samples_leaf': [1, 2, 4]
+# }
+
+# # Perform Grid Search with cross-validation
+# grid_search = GridSearchCV(pipeline, param_grid, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
+# grid_search.fit(X_train, y_train)
+
+# print("Best parameters found:", grid_search.best_params_)
+# print("Best score found:", grid_search.best_score_)
+
+# from sklearn.compose import ColumnTransformer
+# from sklearn.preprocessing import StandardScaler, OneHotEncoder
+
+# # Assuming you have your pipeline with 'preprocessor' step
+# preprocessor = best_pipeline.named_steps['preprocessor']
+
+# # Extract feature names from the transformers
+# num_features = preprocessor.transformers_[0][1].get_feature_names_out()
+# cat_features = preprocessor.transformers_[1][1].get_feature_names_out()
+
+# # Combine feature names
+# all_feature_names = num_features.tolist() + cat_features.tolist()
+
+# # Print feature names
+# print("Feature Names:")
+# print(all_feature_names)
+
+# # Extract feature importances from the model
+# importances = best_pipeline.named_steps['model'].feature_importances_
+
+# # Combine feature names with importances
+# feature_importances = sorted(zip(all_feature_names, importances), key=lambda x: x[1], reverse=True)
+
+# print("Feature Importances:")
+# for feature, importance in feature_importances:
+#     print(f"{feature}: {importance}")
+
+# y_pred = best_pipeline.predict(X_test)
+# residuals = y_test - y_pred
+
+# plt.scatter(y_pred, residuals)
+# plt.xlabel('Predicted Place Final')
+# plt.ylabel('Residuals')
+# plt.title('Residuals vs Predicted Values')
+# plt.show()
+
+# plt.hist(residuals, bins=30)
+# plt.xlabel('Residuals')
+# plt.ylabel('Frequency')
+# plt.title('Distribution of Residuals')
+# plt.show()
 
 
-# linear regression
-# Splitting the data into training and testing sets
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# # Initializing and training the linear regression model
-# model = LinearRegression()
-# model.fit(X_train, y_train)
+# # This model is trying to predict how a song would score in the final based on the scores in the semifinal, how can I improve the model
 
-# # Making predictions on the test set
-# y_pred = model.predict(X_test)
-# joblib.dump(model, 'trained_model.pkl')
 
-# # Evaluating the model
-# mse = mean_squared_error(y_test, y_pred)
-# print("Mean Squared Error:", mse)
+# # linear regression
+# # Splitting the data into training and testing sets
+# # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# # # Initializing and training the linear regression model
+# # model = LinearRegression()
+# # model.fit(X_train, y_train)
+
+# # # Making predictions on the test set
+# # y_pred = model.predict(X_test)
+# # joblib.dump(model, 'trained_model.pkl')
+
+# # # Evaluating the model
+# # mse = mean_squared_error(y_test, y_pred)
+# # print("Mean Squared Error:", mse)
