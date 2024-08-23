@@ -1,24 +1,29 @@
 import {flagNew} from "./countryStats.js";
 
-let running = [ { country: 'Cyprus', scoreziwEntry: "Νίκος Οικονομόπουλος (CYP) - Βαλ' Το Τέρμα"},
+let running = [
+{ country: 'Cyprus', scoreziwEntry: "Νίκος Οικονομόπουλος (CYP) - Βαλ' Το Τέρμα"},
 { country: 'Sweden', scoreziwEntry: 'Husavik (SWE) - My Home Town'},
 { country: 'Croatia', scoreziwEntry: 'Nina Badric (CRO) - Kako si'},
 { country: 'Switzerland', scoreziwEntry: 'Stay With Me (SUI) - Luca Hänni - Topic'},
 { country: 'Austria', scoreziwEntry: 'Melissa Naschenweng (AUT) - Legenden'},
 { country: 'Bulgaria', scoreziwEntry: 'VIKTORIO (BUL) - Tough To Love'},
+
 { country: 'Finland', scoreziwEntry: 'ABREU (FIN) - Caliente'},
 { country: 'Ukraine', scoreziwEntry: 'Maro (UKR) - HELLSTORM'},
 { country: 'San Marino', scoreziwEntry: 'Madame (SMR) - IL BENE NEL MALE'},
 { country: 'Portugal', scoreziwEntry: 'Sofia Camara (POR) - Who Do I Call Now?'},
 { country: 'Azerbaijan', scoreziwEntry: 'SEVDALIZA (AZE) - ALIBI FT. PABLLO VITTAR & YSEULT'},
 { country: 'Norway', scoreziwEntry: 'Aden Foyer (NOR) - Galileo Galilei'},
+
 { country: 'Ireland', scoreziwEntry: 'Aimée (IRL) - Daisy Chains'},
+
 { country: 'Spain', scoreziwEntry: 'Javy Ramírez (ESP) - Tu Nombre'},
 { country: 'Netherlands', scoreziwEntry: 'Hannah Mae & Maksim (NED) - Ik Wil Dat Je Liegt'},
 { country: 'France', scoreziwEntry: 'Niam (FRA) - guignols'},
 { country: 'Israel', scoreziwEntry: 'נרקיס (ISR) - הכל לטובה'},
 { country: 'United Kingdom', scoreziwEntry: 'Tom Walker (UK) - Head Underwater'},
 { country: 'Luxembourg', scoreziwEntry: 'Taska Black (LUX) - Comedown'},
+
 { country: 'Serbia', scoreziwEntry: 'Marija Serifovic feat. Matija Cvek (SRB) - POLA SUNCA'},
 { country: 'Czechia', scoreziwEntry: 'MIKOLAS (CZE) - DELILAH'},
 { country: 'Monaco', scoreziwEntry: 'Lukas Abdul (MON) - Les Maux Bleus'},
@@ -28,11 +33,10 @@ let running = [ { country: 'Cyprus', scoreziwEntry: "Νίκος Οικονομό
 ]
 
 
-
 running.forEach((entry, idx) => {
    entry.flag = flagNew(entry.country);
-   // console.log(`${idx + 1}.${entry.flag} ${entry.country}`)
-   console.log(`${idx + 1}. ${entry.country}`)
+   console.log(`${idx + 1}.${entry.flag} ${entry.country}`)
+   // console.log(`${idx + 1}. ${entry.country}`)
 })
 
 
