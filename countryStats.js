@@ -516,11 +516,11 @@ let calculateArtistParticipations = (editionsData, currentEdition) => {
 
 // console.log(potRanking);
 let calculateAndWriteCountryRanking = () => {
-  const countryStats = calculateCountryRanking(stats, 1, 18, 12, true);
+  const countryStats = calculateCountryRanking(stats, 1, 19, 12, true);
   const countryStats2021 = calculateCountryRanking(stats, 1, 5, 12, true);
   const countryStats2022 = calculateCountryRanking(stats, 6, 10, 12, true);
   const countryStats2023 = calculateCountryRanking(stats, 11, 15, 12, true);
-  const countryStats2024 = calculateCountryRanking(stats, 16, 18, 12, true);
+  const countryStats2024 = calculateCountryRanking(stats, 16, 19, 12, true);
   // console.log(countryStats)
 
   const potStats = calculatePotRanking(countryStats.ranking);
@@ -581,7 +581,7 @@ let calculateAndWriteCountryRanking = () => {
   // console.log(data);
 
   let settings = {
-    fileName: "CountryRankingAfterE18", // Name of the resulting spreadsheet
+    fileName: "CountryRankingAfterE19", // Name of the resulting spreadsheet
     extraLength: 1, // A bigger number means that columns will be wider
     writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
     writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
@@ -659,7 +659,7 @@ let calculateAndWriteArtistStats = (stats, currentEdition) => {
     xlsx(data, settings) // uncomment to save to file
 }
 
-// calculateAndWriteCountryRanking()
+calculateAndWriteCountryRanking()
 
 calculateAndWriteArtistStats(stats, 19)
 

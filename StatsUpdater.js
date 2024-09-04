@@ -208,8 +208,6 @@ let fillEntryDataSemi = (stats, p, idx, sf) => {
         pointsFinal: 0,
         placeSemi : 0,
         pointsSemi: 0,
-        sumTop3PtsSemi: 0,
-        sumTop5PtsSemi: 0,
         HOD : "",
         hodShortName: "",
         juryScore : 0,
@@ -222,6 +220,8 @@ let fillEntryDataSemi = (stats, p, idx, sf) => {
         numOfIndivVotesSemi : "",
         finalSemiPtsDifference : "",
         finalSemiPositionDifference : "",
+        sumTop3PtsSemi: 0,
+        sumTop5PtsSemi: 0,
         isDqFinal : false,
         isDqSemi : false,
         finalPointsFrom : [],
@@ -341,16 +341,16 @@ async function calculateEditionStats(edition) {
     const hods = getHods();
     const links = getLinks(edition);
 
-    // const serverData = await getServerData(links.finalLink);
-    // const teleServerData = links.teleLink && await getServerData(links.teleLink);
-    // const semi1ServerData = await getServerData(links.semi1Link);
-    // const semi2ServerData = await getServerData(links.semi2Link);
+    const serverData = await getServerData(links.finalLink);
+    const teleServerData = links.teleLink && await getServerData(links.teleLink);
+    const semi1ServerData = await getServerData(links.semi1Link);
+    const semi2ServerData = await getServerData(links.semi2Link);
     // const serverData = await getServerData("https://scorewiz.eu/scoreboard/sheet/732605/emsc-2403---grand-final/Mx8VNwek")
     // const teleServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/732607/emsc-2403---grand-final---televote/LSG3cubR")
-    const serverData = await getServerData("https://scorewiz.eu/scoreboard/sheet/743527/emsc-2404---grand-final/QdZefFH4");
-    const teleServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/743530/emsc-2404---grand-final---televote/R9VVbaTT");
-    const semi1ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/742174/emsc-2404---semi-final-1/5fNS9GCS");
-    const semi2ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/742175/emsc-2404---semi-final-2/USQcU3dR");
+    // const serverData = await getServerData("https://scorewiz.eu/scoreboard/sheet/743527/emsc-2404---grand-final/QdZefFH4");
+    // const teleServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/743530/emsc-2404---grand-final---televote/R9VVbaTT");
+    // const semi1ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/742174/emsc-2404---semi-final-1/5fNS9GCS");
+    // const semi2ServerData = await getServerData("https://scorewiz.eu/scoreboard/sheet/742175/emsc-2404---semi-final-2/USQcU3dR");
 
     let stats = new Map();
     let editionName = "EMSC " + numberToEditionName(edition);
@@ -648,7 +648,7 @@ let caculateFavoriteCountries = (edData) => {
 async function main() {
     let allEditionsData = [];
 
-    let editionsToCalculate = [/*1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,*/ 18];
+    let editionsToCalculate = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
     for (let i = 0; i < editionsToCalculate.length; i++) {
         let edData = await calculateEditionStats(editionsToCalculate[i]);
         allEditionsData.push(...edData);
@@ -671,8 +671,8 @@ async function main() {
     let settings = {
         // fileName: "Summary of edition 15", // Name of the resulting spreadsheet
         // EMSC Stats Test 6 - 14
-        // fileName: "EmscFullStats",
-        fileName: "EMSC2404-Summary",
+        fileName: "EmscFullStats",
+        // fileName: "EMSC2404-Summary",
         // fileName: "Emsc2404Semis",
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
@@ -681,7 +681,7 @@ async function main() {
     }
 
     xlsx(data, settings)
-    return 0;
+    // return 0;
 
     let hodPointExchangeStats = caculateHodPointExchangeStats(allEditionsData);
     let getHodPointExchangeKeys = f => {
