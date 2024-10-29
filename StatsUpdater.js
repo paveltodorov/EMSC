@@ -71,9 +71,15 @@ let makeTelevotePostBody = (stats) => {
 
 let countryName = (abbr) => {
     if (abbr == 'uk') return 'United Kingdom';
+    if (abbr == 'us') return 'United States';
+    if (abbr == 'ym') return 'Mauritius';
     if (abbr == 'mr') return "Morocco";
     if (abbr == 'ru') return "Russia";
     if (abbr == 'tr') return "Türkiye";
+    if (abbr == 'ja') return "Jamaica";
+    if (abbr == 'ty') return "Türkiye";
+    if (abbr == 'ko') return "South Korea";
+    if (abbr == 'mf') return "Myanmar";
     if (abbr == 'gg') return "Georgia";
     if (abbr == 'md') return "Moldova";
     if (abbr == 'nn') return "North Macedonia";
@@ -169,6 +175,7 @@ let getEntryData = p => {
     let regex = /(.+) \((\w+)\)[ ]*- (.+)/
     let m = p[1].name.match(regex);
     let country = countryName(p[1].flag);
+
 
     if (!m) {
         regex = /(\w+) \\\/[ ]*(.+) - (.+)/
@@ -337,9 +344,8 @@ let getHodFullName = (shortName, hods) => {
 }
 
 
-async function calculateEditionStats(edition) {
+export async function calculateEditionStats(links, edition, qualifiersCount) {
     const hods = getHods();
-    const links = getLinks(edition);
 
     const serverData = await getServerData(links.finalLink);
     const teleServerData = links.teleLink && await getServerData(links.teleLink);
@@ -420,7 +426,7 @@ async function calculateEditionStats(edition) {
         })
         .forEach((x,idx) => {
             x[1].placeSemi = idx + 1;
-            const isFinalist = (idx + 1 <= 12) ? true : false;
+            const isFinalist = (idx + 1 <= qualifiersCount) ? true : false;
             x[1].isFinalist = isFinalist;
             if (!isFinalist) {
                 x[1].juryScore = '';
@@ -448,7 +454,9 @@ async function calculateEditionStats(edition) {
                 const flag = participant.flag;
                 const country = countryName(flag);
 
-                // if (!stats.get(jurorCountry).isFinalist)
+                if (!stats.get(jurorCountry)) {
+                    console.log("Can't load the country of the juror");
+                }
 
                 if (stats.get(jurorCountry).isFinalist) stats.get(country).juryScore += ptsAndSong[0];
                 else stats.get(country).teleScore += ptsAndSong[0];
@@ -650,7 +658,8 @@ async function main() {
 
     let editionsToCalculate = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
     for (let i = 0; i < editionsToCalculate.length; i++) {
-        let edData = await calculateEditionStats(editionsToCalculate[i]);
+        const links = getLinks(editionsToCalculate[i]);
+        let edData = await calculateEditionStats(links, editionsToCalculate[i], 12);
         allEditionsData.push(...edData);
     }
     const statsForExcelKeys = Object.keys(allEditionsData[0]).map(x => {
@@ -747,7 +756,7 @@ async function main() {
     xlsx(dataPointExchange, settingsPointExchange)
 }
 
-main();
+// main();
 
  // $.getJSON('ScoreGrids.json', function(json) {
     //     console.log(json); // this will show the info it in firebug console

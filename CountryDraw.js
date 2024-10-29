@@ -20,14 +20,14 @@ let drawnPlayers = new Set()
 let takenCountries = new Set()
 let takenCountriesByPot = [
     {firstDrawnSemi: 0, taken : new Set()},
-    {firstDrawnSemi: 0, taken : new Set()},
-    {firstDrawnSemi: 0, taken : new Set()},
-    {firstDrawnSemi: 0, taken : new Set()},
-    {firstDrawnSemi: 0, taken : new Set()},
-    {firstDrawnSemi: 0, taken : new Set()},
-    {firstDrawnSemi: 0, taken : new Set()}
+    {firstDrawnSemi: 1, taken : new Set()},
+    {firstDrawnSemi: 2, taken : new Set()},
+    {firstDrawnSemi: 2, taken : new Set()},
+    {firstDrawnSemi: 1, taken : new Set()},
+    {firstDrawnSemi: 1, taken : new Set()},
+    {firstDrawnSemi: 2, taken : new Set()}
 ]
-let potsWithAtLeastOneTakenCountry = 0 // excluding pretaken
+// let potsWithAtLeastOneTakenCountry = 0 // excluding pretaken
 
 let parseCountryAndPot = (countryAndPot) => {
     console.log(countryAndPot)
@@ -65,14 +65,14 @@ let takeCountry = (data, priority, drawnPriority = 0, printInfo = true) => {
     takenCountriesByPot[priority.pot].taken.add(priority.country)
 
     const countriesAlreadyDrawnFromPot = takenCountriesByPot[priority.pot].taken.size
-    if (countriesAlreadyDrawnFromPot == 1) {
-        potsWithAtLeastOneTakenCountry += 1
-        const drawnSemi = (potsWithAtLeastOneTakenCountry % 2 == 0) ? 2 : 1
-        data.drawnSemi = drawnSemi
-        takenCountriesByPot[priority.pot].firstDrawnSemi = drawnSemi
-    } else {
-        data.drawnSemi = (takenCountriesByPot[priority.pot].firstDrawnSemi + countriesAlreadyDrawnFromPot + 1) % 2 == 0 ? 2 : 1
-    }
+    // if (countriesAlreadyDrawnFromPot == 1) {
+    //     potsWithAtLeastOneTakenCountry += 1
+    //     const drawnSemi = (potsWithAtLeastOneTakenCountry % 2 == 0) ? 2 : 1
+    //     data.drawnSemi = drawnSemi
+    //     takenCountriesByPot[priority.pot].firstDrawnSemi = drawnSemi
+    // } else {
+    // }
+    data.drawnSemi = (takenCountriesByPot[priority.pot].firstDrawnSemi + countriesAlreadyDrawnFromPot + 1) % 2 == 0 ? 2 : 1
 
     if (printInfo) {
         console.log(`${data.participant} gets ${priority.country}, number ${countriesAlreadyDrawnFromPot} drawn from pot ${priority.pot}`);
@@ -184,11 +184,11 @@ function readDrawSplit() {
 function makeDraw(excelstats, useUserInput = true) {
     drawnPlayers.clear()
     takenCountries.clear()
-    for(let i = 0; i <= 6; i++) {
-        takenCountriesByPot[i].firstDrawnSemi = 0
+    for (let i = 0; i <= 6; i++) {
+        // takenCountriesByPot[i].firstDrawnSemi = 0
         takenCountriesByPot[i].taken.clear()
     }
-    potsWithAtLeastOneTakenCountry = 0
+    // potsWithAtLeastOneTakenCountry = 0
 
     // fill in draw data
     let drawData = new Map()
@@ -208,8 +208,9 @@ function makeDraw(excelstats, useUserInput = true) {
 
         let hasPreChosen = false
 
-        if (entry["pretaken"] && (entry["pretaken"].includes("-") || entry["pretaken"].includes("–"))) {
-            const drawnData = parseCountryAndPot(entry["pretaken"])
+        let pretakenData = entry["EMSC2404 - Manchester / UK"] // TODO: fix column name
+        if (pretakenData && (pretakenData.includes("-") || pretakenData.includes("–"))) {
+            const drawnData = parseCountryAndPot(pretakenData)
             obj.drawnCountry = drawnData.country
             obj.drawnCountryPot = drawnData.pot
             hasPreChosen = true
@@ -331,7 +332,7 @@ function makeDraw(excelstats, useUserInput = true) {
         }
 
         if (!countryTaken) {
-            console.log(`Player ${drawnPlayer} is not assigned a cuntry since all of his priorities are taken`)
+            console.log(`Player ${drawnPlayer} is not assigned a country since all of his priorities are taken`)
             data.drawnPriority = 6
         }
 

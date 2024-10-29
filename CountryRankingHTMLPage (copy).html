@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9ff85;
+            background-color: #000000;
             padding: 20px;
         }
         h2 {
@@ -35,23 +35,29 @@
             border: 1px solid #dddddd;
             text-align: center;
             padding: 15px;
-            color: #fff; /* White text */
-        }
-        th {
-            background-color: #091769; /* Darker background */
+            color: #000000; /* text */
             font-weight: bold;
         }
+        th {
+            background-color: #A605A0; /* Darker background */
+            font-weight: bold;
+            color: #000000;
+        }
         .title-row {
-            background-color: #ff00ff; /* Purple background */
+            background-color: #ba07b4; /* Purple background */
         }
         .climbers-row {
             background-color: #00ffff; /* Cyan background */
         }
         tr:nth-child(even) {
-            background-color: #308bfb; /* Darker background */
+            background-color: #FF03FF; /* Darker background */
+            color: #000000; /* text */
+            font-weight: bold;
         }
         tr:nth-child(odd) {
-            background-color: #354ac3; /* Darker background */
+            background-color: #FB8FFF; /* Darker background */
+            color: #000000; /* text */
+            font-weight: bold;
         }
         img {
             width: 30px;
@@ -60,11 +66,9 @@
             margin-right: 5px;
         }
         .rank {
-            color: #ffffff;
             font-weight: bold;
         }
         .country {
-            color: #ffffff;
             font-weight: bold;
         }
         .improvement {
@@ -72,24 +76,33 @@
         }
         .positive {
             color: #01ff0a;
+            text-shadow:
+                -1px -1px 0 black,
+                1px -1px 0 black,
+                -1px 1px 0 black,
+                1px 1px 0 black; /* Outline color and size */
         }
         .negative {
             color: #ff0800;
+            text-shadow:
+                -1px -1px 0 black,
+                1px -1px 0 black,
+                -1px 1px 0 black,
+                1px 1px 0 black; /* Outline color and size */
         }
         .points {
             font-weight: bold;
         }
         .hod {
-            color: #ffffff;
             font-weight: bold;
         }
         .entry {
-            color: #ffffff;
             font-weight: bold;
         }
         .table-title {
             text-align: center;
             margin-bottom: 10px;
+            color: #ffffff;
         }
     </style>
 </head>
@@ -195,7 +208,14 @@
             })
 
             let top10 = allTimeStats.slice(0, 10)
-            let climbers = allTimeStats.sort((x,y) => y["Pos. Mov."] - x["Pos. Mov."]).slice(0, 3)
+            let climbers = allTimeStats
+                .sort((x,y) => {
+                    if (y["Pos. Mov."] != x["Pos. Mov."]) return y["Pos. Mov."] - x["Pos. Mov."]
+                    if (x["Country"] === "Bulgaria") return -1
+                    if (y["Country"] === "Bulgaria") return 1
+                    return 0
+                })
+                .slice(0, 5)
             let bestImprovers = allTimeStats
                 .filter(x => x["Best Rank Mov."] != "")
                 .sort((x,y) => y["Best Rank Mov."] - x["Best Rank Mov."])

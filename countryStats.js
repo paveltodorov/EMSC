@@ -468,7 +468,7 @@ let calculateArtistParticipations = (editionsData, currentEdition) => {
     let artistEntries = new Map()
 
     editionsData.forEach(x => {
-        const delimiters = /\s*(?: x | X |%| &|ft\.|\+|feat\.|,|f\.)\s*/g
+        const delimiters = /\s*(?: x | X |%| &|ft\.|FT\.|\+|feat\.|,|f\.)\s*/g
         const artists = x.Artist.replace(" $1").split(delimiters)
             .map(word => word.trim())
             .filter(word => word !== "");
@@ -501,14 +501,21 @@ let calculateArtistParticipations = (editionsData, currentEdition) => {
     artistEntries.forEach((entry, artistName) => {
         console.log(`${entry}: ${artistName}`);
         entry.partipationsCount = entry.participations.length
-        entry.canParticipate = entry.partipationsCount % 3 != 0
-        if (entry.partipationsCount % 3 != 0) {
-            entry.canParticipate = true
-            entry.canReturnInEdition = 0
-        } else {
-            entry.canReturnInEdition = entry.participations[entry.partipationsCount - 1] + Artist_Rest_Editions_Count + 1
-            entry.canParticipate = currentEdition >= entry.canReturnInEdition
-        }
+
+        entry.canParticipate =
+            !entry.participations[entry.partipationsCount - 3] ||
+            entry.participations[entry.partipationsCount - 3] + 10 < currentEdition
+
+
+        if (!entry.canParticipate) entry.canReturnInEdition = entry.participations[entry.partipationsCount - 1] + 7
+        // if (entry.partipationsCount % 3 != 0) {
+        //     entry.canParticipate = true
+        //     entry.canReturnInEdition = 0
+        // } else {
+        //     entry.canReturnInEdition = entry.participations[entry.partipationsCount - 1] + Artist_Rest_Editions_Count + 1
+        //     entry.canParticipate = currentEdition >= entry.canReturnInEdition
+        // }
+
     })
 
     return artistEntries
@@ -659,9 +666,9 @@ let calculateAndWriteArtistStats = (stats, currentEdition) => {
     xlsx(data, settings) // uncomment to save to file
 }
 
-calculateAndWriteCountryRanking()
+// calculateAndWriteCountryRanking()
 
-calculateAndWriteArtistStats(stats, 19)
+calculateAndWriteArtistStats(stats, 20)
 
 // console.log(countryRanking);
 
