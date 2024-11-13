@@ -159,7 +159,7 @@ const groupBy = (array, fn) => {
 
 function readDrawSplit() {
     const fileName = "EMSC - Split for Draw.xlsx"
-    const participantColumn = "EMSC 2404 - Draw Split "
+    const participantColumn = "EMSC 2405 - Draw Split "
 
     const workbook = readFile(fileName);
     let workbook_sheet = workbook.SheetNames;
@@ -208,7 +208,7 @@ function makeDraw(excelstats, useUserInput = true) {
 
         let hasPreChosen = false
 
-        let pretakenData = entry["EMSC2404 - Manchester / UK"] // TODO: fix column name
+        let pretakenData = entry["EMSC2405 - Bergen / Norway"] // TODO: fix column name
         if (pretakenData && (pretakenData.includes("-") || pretakenData.includes("–"))) {
             const drawnData = parseCountryAndPot(pretakenData)
             obj.drawnCountry = drawnData.country
@@ -410,7 +410,7 @@ let writeDrawSimulation = (drawSim) => {
 }
 
 function makeDrawSimulation(excelStats) {
-    let drawSimulationCount = 10000
+    let drawSimulationCount = 5000
     let accumulatedDrawData = new Map()
     let accumulatedTakeCountries = new Map()
 

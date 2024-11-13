@@ -1,64 +1,48 @@
 import {flagNew} from "./countryStats.js";
 
 let running = [
-{ country: 'Cyprus', scoreziwEntry: "Νίκος Οικονομόπουλος (CYP) - Βαλ' Το Τέρμα"},
-{ country: 'Sweden', scoreziwEntry: 'Husavik (SWE) - My Home Town'},
-{ country: 'Croatia', scoreziwEntry: 'Nina Badric (CRO) - Kako si'},
-{ country: 'Switzerland', scoreziwEntry: 'Stay With Me (SUI) - Luca Hänni - Topic'},
-{ country: 'Austria', scoreziwEntry: 'Melissa Naschenweng (AUT) - Legenden'},
-{ country: 'Bulgaria', scoreziwEntry: 'VIKTORIO (BUL) - Tough To Love'},
-
-{ country: 'Finland', scoreziwEntry: 'ABREU (FIN) - Caliente'},
-{ country: 'Ukraine', scoreziwEntry: 'Maro (UKR) - HELLSTORM'},
-{ country: 'San Marino', scoreziwEntry: 'Madame (SMR) - IL BENE NEL MALE'},
-{ country: 'Portugal', scoreziwEntry: 'Sofia Camara (POR) - Who Do I Call Now?'},
-{ country: 'Azerbaijan', scoreziwEntry: 'SEVDALIZA (AZE) - ALIBI FT. PABLLO VITTAR & YSEULT'},
-{ country: 'Norway', scoreziwEntry: 'Aden Foyer (NOR) - Galileo Galilei'},
-
-{ country: 'Ireland', scoreziwEntry: 'Aimée (IRL) - Daisy Chains'},
-
-{ country: 'Spain', scoreziwEntry: 'Javy Ramírez (ESP) - Tu Nombre'},
-{ country: 'Netherlands', scoreziwEntry: 'Hannah Mae & Maksim (NED) - Ik Wil Dat Je Liegt'},
-{ country: 'France', scoreziwEntry: 'Niam (FRA) - guignols'},
-{ country: 'Israel', scoreziwEntry: 'נרקיס (ISR) - הכל לטובה'},
-{ country: 'United Kingdom', scoreziwEntry: 'Tom Walker (UK) - Head Underwater'},
-{ country: 'Luxembourg', scoreziwEntry: 'Taska Black (LUX) - Comedown'},
-
-{ country: 'Serbia', scoreziwEntry: 'Marija Serifovic feat. Matija Cvek (SRB) - POLA SUNCA'},
-{ country: 'Czechia', scoreziwEntry: 'MIKOLAS (CZE) - DELILAH'},
-{ country: 'Monaco', scoreziwEntry: 'Lukas Abdul (MON) - Les Maux Bleus'},
-{ country: 'Albania', scoreziwEntry: 'Elhaida Dani (ALB) - Zemrës'},
-{ country: 'Germany', scoreziwEntry: 'Gregor Hägele (GER) - 1 Jahr'},
-{ country: 'Italy', scoreziwEntry: 'Coma_Cose (ITA) - MALAVITA'},
+   { country: "Switzerland", scoreziwEntry: "Luca Hänni (SUI) - Love Me Better"}, // 1
+   { country: "France", scoreziwEntry: "Seemone (FRA) - Dans Mes Rêves"},
+   { country: "Croatia", scoreziwEntry: "Colonia (CRO) - Manijak"},
+   { country: "Germany", scoreziwEntry: "Max Giesinger & Michael Schulte (GER) - More To This Life"},
+   { country: "Poland", scoreziwEntry: "Blanka (POL) - Rodeo"},
+   { country: "Italy", scoreziwEntry: "Damiano David (ITA) - Born With a Broken Heart"},
+   { country: "Romania", scoreziwEntry: "DJ Project feat. Andia (ROU) - Retrograd"},
+   { country: "Georgia", scoreziwEntry: "ТАМАРА КУТИДЗЕ () - Розы красные"},
+   { country: "Netherlands", scoreziwEntry: "FLEMMING (NED) - Onweer In M'n Hoofd"},
+   { country: "Bulgaria", scoreziwEntry: "VICTORIA (BUL) - sad girl summer"},
+   { country: "Monaco", scoreziwEntry: "Kendji Girac (MON) - Si seulement..."},
+   { country: "Australia", scoreziwEntry: "Delta Goodrem (AUS) - Hearts On The Run"},
+   { country: "Portugal", scoreziwEntry: "A garota não (POR) - Dilúvio"},
+   { country: "Iceland", scoreziwEntry: "Thorsteinn Einarsson (ISL) - Bridges Burn"}
 ]
-
 
 running.forEach((entry, idx) => {
    entry.flag = flagNew(entry.country);
-   console.log(`${idx + 1}.${entry.flag} ${entry.country}`)
-   // console.log(`${idx + 1}. ${entry.country}`)
+   // console.log(`${idx + 1}.${entry.flag} ${entry.country}`)
+   console.log(`${idx + 1}. ${entry.country}`)
 })
 
 
-let countries = [
-"Spain",
-"Australia",
-"Ireland",
-"Germany",
-"France",
-"Switzerland",
-"Romania",
-"Finland",
-"Croatia",
-"Estonia",
-"Jordan",
-"Armenia",
-]
+// let countries = [
+// "Spain",
+// "Australia",
+// "Ireland",
+// "Germany",
+// "France",
+// "Switzerland",
+// "Romania",
+// "Finland",
+// "Croatia",
+// "Estonia",
+// "Jordan",
+// "Armenia",
+// ]
 
-countries.forEach((entry, idx) => {
-   let flag = flagNew(entry);
-   console.log(`${flag} ${entry}`)
-})
+// countries.forEach((entry, idx) => {
+//    let flag = flagNew(entry);
+//    console.log(`${flag} ${entry}`)
+// })
 //    sid: 692246,
 //    pass: "4ubK8uhF",
 //    flag1: "is",

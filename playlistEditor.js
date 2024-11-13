@@ -52,20 +52,26 @@ let parseTitle = (title, videoOwner) => {
 }
 
 let parsePlaylistDescription = description => {
-    const parts = description.split("\n");
-    let regex = /\d+.[ ]*([\w\. ]+).*/;
-    const countryList = parts
-        .filter(x => x != "" && !x.includes("Running"))
-        .map(x => {
-            const m = x.match(regex);
-            if (!m) return "";
+    // const parts = description.split("\d");
+    // let regex = /\d+.[ ]*([\w\. ]+).*/;
+    // const countryList = parts
+    //     .filter(x => x != "" && !x.includes("Running"))
+    //     .map(x => {
+    //         const m = x.match(regex);
+    //         if (!m) return "";
 
-            let countryName = m[1].slice(-1) == ' ' ? m[1].slice(0, -1) : m[1];
-            if (countryName == "Utd. Kingdom") return "United Kingdom";
+    //         let countryName = m[1].slice(-1) == ' ' ? m[1].slice(0, -1) : m[1];
+    //         if (countryName == "Utd. Kingdom") return "United Kingdom";
 
-            return countryName;
-        })
-    return countryList;
+    //         return countryName;
+    //     })
+    // return countryList;
+    // Regular expression to match the country names
+    const regex = /(?<=\d\.\s?)[A-Za-z.\s]+/g;
+
+    // Extract country names
+    const countries = description.match(regex).map(country => country.trim());
+    return countries
 }
 
 let constructScorewizEntry = (songData) => {
@@ -101,7 +107,7 @@ async function main() {
     const key = conf['GOOGLE_API_TOKEN'];
     const playlistItemsApi = "https://www.googleapis.com/youtube/v3/playlistItems";
     // const playlistId = "PL2X_tHrqOyT3pjbXvov_QPLImsqZHX2gj";
-    const playlistId = "PL2X_tHrqOyT0F5jiHdr-P_WacqS4hIoaW"
+    const playlistId = "PL2X_tHrqOyT2PpNyoskm1bZAn-LWtlLDy"
 
     const itemsUri = `${playlistItemsApi}?key=${key}&part=snippet&playlistId=${playlistId}&maxResults=50`;
     let html = await axios.get(itemsUri);
@@ -146,7 +152,7 @@ async function main() {
     //   });
     // // 'PHPSESSID=91pm0e0eu38tthn022k71qoaa3; path=/'
     console.log(songsData)
-    updateScoregridParticpants(742175, "USQcU3dR", songsData);
+    updateScoregridParticpants(754591, "e7Hqmkmx", songsData);
 
     // songsData;
     // countries;
