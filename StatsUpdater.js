@@ -656,10 +656,13 @@ let caculateFavoriteCountries = (edData) => {
 async function main() {
     let allEditionsData = [];
 
-    let editionsToCalculate = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+    let editionsToCalculate = [/*1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,*/ 20];
     for (let i = 0; i < editionsToCalculate.length; i++) {
         const links = getLinks(editionsToCalculate[i]);
-        let edData = await calculateEditionStats(links, editionsToCalculate[i], 12);
+
+        let qualifCount = 12
+        if (editionsToCalculate[i] == 20) qualifCount = 10
+        let edData = await calculateEditionStats(links, editionsToCalculate[i], qualifCount);
         allEditionsData.push(...edData);
     }
     const statsForExcelKeys = Object.keys(allEditionsData[0]).map(x => {
@@ -680,9 +683,9 @@ async function main() {
     let settings = {
         // fileName: "Summary of edition 15", // Name of the resulting spreadsheet
         // EMSC Stats Test 6 - 14
-        fileName: "EmscFullStats",
+        // fileName: "EmscFullStats",
         // fileName: "EMSC2404-Summary",
-        // fileName: "Emsc2404Semis",
+        fileName: "Emsc2405",
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
@@ -690,7 +693,7 @@ async function main() {
     }
 
     xlsx(data, settings)
-    // return 0;
+    return 0;
 
     let hodPointExchangeStats = caculateHodPointExchangeStats(allEditionsData);
     let getHodPointExchangeKeys = f => {
@@ -756,7 +759,7 @@ async function main() {
     xlsx(dataPointExchange, settingsPointExchange)
 }
 
-// main();
+main();
 
  // $.getJSON('ScoreGrids.json', function(json) {
     //     console.log(json); // this will show the info it in firebug console

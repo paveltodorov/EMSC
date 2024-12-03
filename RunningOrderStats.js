@@ -206,12 +206,12 @@ let calculateRunningOrderStats = (fileName, outputFileName) => {
 }
 
 // EMSC
-// const fileName = "EmscFullStats.xlsx"
-// const outputFileName = "Running Order Stats"
-// calculateRunningOrderStats(fileName, outputFileName)
+const fileName = "EmscFullStats.xlsx"
+const outputFileName = "Running Order Stats"
+calculateRunningOrderStats(fileName, outputFileName)
 
 // UNSC
-const fileName = "UNSCFullStats.xlsx"
-const outputFileName = "UNSC Running Order Stats"
-calculateRunningOrderStats(fileName, outputFileName)
+// const fileName = "UNSCFullStats.xlsx"
+// const outputFileName = "UNSC Running Order Stats"
+// calculateRunningOrderStats(fileName, outputFileName)
 

@@ -11,7 +11,7 @@ export let flagNew = country => {
   return flag(country);
 }
 
-let pretifyPosition = (pos , qualCount) => pos <= 25 ? pos : "SF-" + (pos - 25 + qualCount);
+let pretifyPosition = (pos , qualCount, finalistsCount) => pos <= finalistsCount ? pos : "SF-" + (pos - finalistsCount + qualCount);
 // json-excel-style
 
 // import { jsonExcel } from "json-excel-style";
@@ -79,7 +79,7 @@ let stats = utils.sheet_to_json(
     workbook.Sheets[workbook_sheet[0]]
 );
 
-let countryStatsAccumulator = (acc, curr, qualCount) => {
+let countryStatsAccumulator = (acc, curr, qualCount, finalistsCount) => {
     if (!acc.has(curr.Country)) {
         acc.set(curr.Country, {
             pos : 0,
@@ -134,7 +134,7 @@ let countryStatsAccumulator = (acc, curr, qualCount) => {
     acc.get(curr.Country).editionsPlayed += 1;
     if (qualified) acc.get(curr.Country).editionsQualified += 1;
 
-    const rank = curr['Place Final'] ? curr['Place Final'] : curr['Place Semi'] - qualCount + 25;
+    const rank = curr['Place Final'] ? curr['Place Final'] : curr['Place Semi'] - qualCount + finalistsCount;
     acc.get(curr.Country).positions[rank] += 1;
     if (curr['Place Semi']) {
         acc.get(curr.Country).positionsSemi[curr['Place Semi']] += 1;
@@ -205,15 +205,22 @@ let countryStatsSorter = (x,y, sortCriteria) => {
 
 
 // country ranking
-export let calculateCountryRanking = (stats, from, to, qualCount, compareToPrev, sortCriteria) => {
+export let calculateCountryRanking = (stats, from, to, qualCount, finalistsCount, compareToPrev, sortCriteria) => {
     let countryRanking = new Map();
     for (let edition = from; edition <= to; edition++) {
+
+        // applicable only in emsc
+        if (edition == 20) {
+            qualCount = 10
+            finalistsCount = 21
+        }
+
         countryRanking = stats
-          .filter(x => x.Edition == edition)
-          .reduce((accumulator, currentValue) =>
-              countryStatsAccumulator(accumulator, currentValue, qualCount),
-              countryRanking
-          );
+            .filter(x => x.Edition == edition)
+            .reduce((accumulator, currentValue) =>
+                countryStatsAccumulator(accumulator, currentValue, qualCount, finalistsCount),
+                countryRanking
+        );
 
         countryRanking.forEach((info, coutry) => {
             info.averagePoints = info.sumPoints / info.editionsPlayed;
@@ -260,17 +267,17 @@ export let calculateCountryRanking = (stats, from, to, qualCount, compareToPrev,
           entry.posMov = lastEditionStats.rankMov;
           entry.bestRankMov = lastEditionStats.bestRankMov;
 
-          entry.bestRank = pretifyPosition(entry.bestRank, qualCount);
+          entry.bestRank = pretifyPosition(entry.bestRank, qualCount, finalistsCount);
 
           // potentially remove
           entry.editions.forEach((x,i) => {
-            entry[i + " rank"] = !Number.isInteger(x.rank) ? x.rank : pretifyPosition(x.rank, qualCount);
+            entry[i + " rank"] = !Number.isInteger(x.rank) ? x.rank : pretifyPosition(x.rank, qualCount, finalistsCount);
             entry[i + " expPoints"] = x.expPoints;
             entry[i + " accAvgExpPoints"] = x.accAvgExpPoints;
             entry[i + " accExpPoints"] = x.accExpPoints;
             entry[i + " rankAfterEdition"] = x.rankAfterEdition;
             entry[i + " rankMov"] = x.rankMov;
-            entry[i + " bestRank"] = pretifyPosition(x.bestRank, qualCount);
+            entry[i + " bestRank"] = pretifyPosition(x.bestRank, qualCount, finalistsCount);
             entry[i + " bestRankMov"] = x.bestRankMov;
           });
 
@@ -319,11 +326,18 @@ export let calculateCountryRanking = (stats, from, to, qualCount, compareToPrev,
     // set column names for positions stats
     let positionsKeys = [];
     positionsKeys.push({label: 'Medals Pos.', value: 'medalsRank'});
-    positionsKeys.push({label: 'Country', value: 'country'});
+    positionsKeys.push({label: 'Country', value: 'country'});ia bulgaria
+
     positionsKeys.push({label: 'Flag', value: 'flag'});
-    for (let i = 1; i < Positions_Count; i++) {
-        positionsKeys.push({label: " " + pretifyPosition(i, qualCount) + " ", value: row => row.positions[i] });
+    for (let i = 1; i <= 21; i++) {
+        positionsKeys.push({label: " " + pretifyPosition(i, 12, 25) + " ", value: row => row.positions[i] });
     }
+    for (let i = 22; i < Positions_Count; i++) {
+        positionsKeys.push(
+            {label: " " + pretifyPosition(i, 12, 25) + " / " + pretifyPosition(i, 10, 21) + " ", value: row => row.positions[i]
+        });
+    }
+
     positionsKeys.push({label: "AQ", value: row => row.positionsSemi[0] });
 
     // set column names for positions semi stats
@@ -523,11 +537,11 @@ let calculateArtistParticipations = (editionsData, currentEdition) => {
 
 // console.log(potRanking);
 let calculateAndWriteCountryRanking = () => {
-  const countryStats = calculateCountryRanking(stats, 1, 19, 12, true);
-  const countryStats2021 = calculateCountryRanking(stats, 1, 5, 12, true);
-  const countryStats2022 = calculateCountryRanking(stats, 6, 10, 12, true);
-  const countryStats2023 = calculateCountryRanking(stats, 11, 15, 12, true);
-  const countryStats2024 = calculateCountryRanking(stats, 16, 19, 12, true);
+  const countryStats = calculateCountryRanking(stats, 1, 20, 12, 25, true);
+//   const countryStats2021 = calculateCountryRanking(stats, 1, 5, 12, 25, true);
+//   const countryStats2022 = calculateCountryRanking(stats, 6, 10, 12, 25, true);
+//   const countryStats2023 = calculateCountryRanking(stats, 11, 15, 12, 25, true);
+  const countryStats2024 = calculateCountryRanking(stats, 16, 20, 12, 25, true);
   // console.log(countryStats)
 
   const potStats = calculatePotRanking(countryStats.ranking);
@@ -537,21 +551,21 @@ let calculateAndWriteCountryRanking = () => {
       columns: countryStats.keys,
       content: countryStats.ranking,
     },
-    {
-      sheet: "CountryRanking2021",
-      columns: countryStats2021.keys,
-      content: countryStats2021.ranking,
-    },
-    {
-      sheet: "CountryRanking2022",
-      columns: countryStats2022.keys,
-      content: countryStats2022.ranking,
-    },
-    {
-      sheet: "CountryRanking2023",
-      columns: countryStats2023.keys,
-      content: countryStats2023.ranking,
-    },
+    // {
+    //   sheet: "CountryRanking2021",
+    //   columns: countryStats2021.keys,
+    //   content: countryStats2021.ranking,
+    // },
+    // {
+    //   sheet: "CountryRanking2022",
+    //   columns: countryStats2022.keys,
+    //   content: countryStats2022.ranking,
+    // },
+    // {
+    //   sheet: "CountryRanking2023",
+    //   columns: countryStats2023.keys,
+    //   content: countryStats2023.ranking,
+    // },
     {
       sheet: "CountryRanking2024",
       columns: countryStats2024.keys,
@@ -666,9 +680,9 @@ let calculateAndWriteArtistStats = (stats, currentEdition) => {
     xlsx(data, settings) // uncomment to save to file
 }
 
-// calculateAndWriteCountryRanking()
+calculateAndWriteCountryRanking()
 
-calculateAndWriteArtistStats(stats, 20)
+calculateAndWriteArtistStats(stats, 21)
 
 // console.log(countryRanking);
 

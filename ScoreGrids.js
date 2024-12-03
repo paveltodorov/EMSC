@@ -2009,6 +2009,101 @@ let missingScoreboards = [
         },
     }
   },
+  {
+    "uniqId": "1:756196",
+    "title": "EMSC 2405 - Grand Final ",
+    "data": {
+        "menu": {
+            "view": "https://scorewiz.eu/scoreboard/view/756196/emsc-2405-grand-final/7BNYC4Gn",
+            "edit": "https://scorewiz.eu/menu/756196/7BNYC4Gn"
+        },
+        "details": [
+            "18 November 2024, 103 views",
+            "ID: 756196"
+        ],
+    }
+   },
+   {
+    "uniqId": "1:756200",
+    "title": "EMSC 2405 - GRAND FINAL - TELEVOTE",
+    "data": {
+        "menu": {
+            "view": "https://scorewiz.eu/scoreboard/view/756200/emsc-2405---grand-final---televote/jWRu6Pkj",
+            "edit": "https://scorewiz.eu/menu/756200/jWRu6Pkj"
+        },
+        "details": [
+            "18 November 2024, 58 views",
+            "ID: 756200"
+        ],
+        "operations": [
+            [
+                "move"
+            ],
+            [
+                "delete",
+                true
+            ]
+        ],
+        "meta": {
+            "visible": "no",
+            "protected": "no"
+        }
+        }
+    },
+    {
+        "uniqId": "1:754590",
+        "title": "EMSC 2405 - SEMI FINAL 1",
+        "data": {
+            "menu": {
+                "view": "https://scorewiz.eu/scoreboard/view/754590/emsc-2405---semi-final-1/aD56Ykku",
+                "edit": "https://scorewiz.eu/menu/754590/aD56Ykku"
+            },
+            "details": [
+                "6 November 2024, 84 views",
+                "ID: 754590"
+            ],
+            "operations": [
+                [
+                    "move"
+                ],
+                [
+                    "delete",
+                    true
+                ]
+            ],
+            "meta": {
+                "visible": "no",
+                "protected": "no"
+            }
+        }
+    },
+    {
+        "uniqId": "1:754591",
+        "title": "EMSC 2405 - SEMI FINAL 2",
+        "data": {
+            "menu": {
+                "view": "https://scorewiz.eu/scoreboard/view/754591/emsc-2405---semi-final-2/e7Hqmkmx",
+                "edit": "https://scorewiz.eu/menu/754591/e7Hqmkmx"
+            },
+            "details": [
+                "6 November 2024, 96 views",
+                "ID: 754591"
+            ],
+            "operations": [
+                [
+                    "move"
+                ],
+                [
+                    "delete",
+                    true
+                ]
+            ],
+            "meta": {
+                "visible": "no",
+                "protected": "no"
+            }
+        }
+    }
 ]
 
 scoreGridData[0]["contents"].push(...missingScoreboards)

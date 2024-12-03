@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #000000;
+            background-color: #ffffff;
             padding: 20px;
         }
         h2 {
@@ -24,39 +24,41 @@
             margin-bottom: 20px;
         }
         table {
-            border-collapse: collapse;
+            border-collapse: separate; /* collapse */
+            border-spacing: 10px 10px;
+
             width: 100%;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
+            background-color: #00205B;
         }
         th, td {
-            border: 1px solid #dddddd;
+            border: 5px solid #ffffff;
             text-align: center;
             padding: 15px;
-            color: #000000; /* text */
+            color: #ffffff; /* text */
             font-weight: bold;
         }
         th {
-            background-color: #A605A0; /* Darker background */
+            background-color: #BA0C2F; /* Darker background */
             font-weight: bold;
-            color: #000000;
+            color: #ffffff;
         }
         .title-row {
-            background-color: #ba07b4; /* Purple background */
+            background-color: #BA0C2F; /* Purple background */
         }
         .climbers-row {
             background-color: #00ffff; /* Cyan background */
         }
         tr:nth-child(even) {
-            background-color: #FF03FF; /* Darker background */
-            color: #000000; /* text */
+            background-color: #BA0C2F; /* Darker background */
+            color: #ffffff; /* text */
             font-weight: bold;
         }
         tr:nth-child(odd) {
-            background-color: #FB8FFF; /* Darker background */
-            color: #000000; /* text */
+            background-color: #BA0C2F; /* Darker background */
+            color: #ffffff; /* text */
             font-weight: bold;
         }
         img {
@@ -100,9 +102,10 @@
             font-weight: bold;
         }
         .table-title {
+            font-size: 1.6em;
             text-align: center;
             margin-bottom: 10px;
-            color: #ffffff;
+            color: #00205B; /* text color of titles */
         }
     </style>
 </head>
@@ -196,7 +199,7 @@
             console.log(allTimeStats);
 
             let annualStats = XLSX.utils.sheet_to_json(
-                workbook.Sheets[workbook_sheet[4]] // adjust propery if you want another year
+                workbook.Sheets[workbook_sheet[1]] // adjust propery if you want another year
             );
 
             allTimeStats.forEach(x => {
@@ -218,7 +221,11 @@
                 .slice(0, 5)
             let bestImprovers = allTimeStats
                 .filter(x => x["Best Rank Mov."] != "")
-                .sort((x,y) => y["Best Rank Mov."] - x["Best Rank Mov."])
+                .sort((x,y) => {
+                    if (x["Best Rank Mov."] == "tie") return 1;
+                    if (y["Best Rank Mov."] == "tie") return -1
+                    return y["Best Rank Mov."] - x["Best Rank Mov."]
+            })
 
             bestImprovers.forEach(x => {
                 if (x['Best Rank HoD(s)'].includes("&")) {
