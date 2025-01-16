@@ -326,7 +326,7 @@ export let calculateCountryRanking = (stats, from, to, qualCount, finalistsCount
     // set column names for positions stats
     let positionsKeys = [];
     positionsKeys.push({label: 'Medals Pos.', value: 'medalsRank'});
-    positionsKeys.push({label: 'Country', value: 'country'});ia bulgaria
+    positionsKeys.push({label: 'Country', value: 'country'});
 
     positionsKeys.push({label: 'Flag', value: 'flag'});
     for (let i = 1; i <= 21; i++) {
@@ -516,12 +516,15 @@ let calculateArtistParticipations = (editionsData, currentEdition) => {
         console.log(`${entry}: ${artistName}`);
         entry.partipationsCount = entry.participations.length
 
+        const thirdLastParticipation = entry.participations[entry.partipationsCount - 3]
+        const lastParticipation = entry.participations[entry.partipationsCount - 1]
+
+
         entry.canParticipate =
-            !entry.participations[entry.partipationsCount - 3] ||
-            entry.participations[entry.partipationsCount - 3] + 10 < currentEdition
+            !thirdLastParticipation || lastParticipation - thirdLastParticipation >= 10 ||
+            (lastParticipation - thirdLastParticipation < 10 && lastParticipation + 6 < currentEdition)
 
-
-        if (!entry.canParticipate) entry.canReturnInEdition = entry.participations[entry.partipationsCount - 1] + 7
+        if (!entry.canParticipate) entry.canReturnInEdition = lastParticipation + 7
         // if (entry.partipationsCount % 3 != 0) {
         //     entry.canParticipate = true
         //     entry.canReturnInEdition = 0
@@ -680,7 +683,7 @@ let calculateAndWriteArtistStats = (stats, currentEdition) => {
     xlsx(data, settings) // uncomment to save to file
 }
 
-calculateAndWriteCountryRanking()
+// calculateAndWriteCountryRanking()
 
 calculateAndWriteArtistStats(stats, 21)
 

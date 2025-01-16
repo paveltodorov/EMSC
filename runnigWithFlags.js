@@ -1,26 +1,28 @@
 import {flagNew} from "./countryStats.js";
 
 let running = [
-   { country: "Switzerland", scoreziwEntry: "Luca Hänni (SUI) - Love Me Better"}, // 1
+   { country: "Bulgaria", scoreziwEntry: "VICTORIA (BUL) - sad girl summer"},
    { country: "France", scoreziwEntry: "Seemone (FRA) - Dans Mes Rêves"},
    { country: "Croatia", scoreziwEntry: "Colonia (CRO) - Manijak"},
    { country: "Germany", scoreziwEntry: "Max Giesinger & Michael Schulte (GER) - More To This Life"},
+   { country: "Netherlands", scoreziwEntry: "FLEMMING (NED) - Onweer In M'n Hoofd"},
    { country: "Poland", scoreziwEntry: "Blanka (POL) - Rodeo"},
    { country: "Italy", scoreziwEntry: "Damiano David (ITA) - Born With a Broken Heart"},
    { country: "Romania", scoreziwEntry: "DJ Project feat. Andia (ROU) - Retrograd"},
+   { country: "Switzerland", scoreziwEntry: "Luca Hänni (SUI) - Love Me Better"}, // 1
    { country: "Georgia", scoreziwEntry: "ТАМАРА КУТИДЗЕ () - Розы красные"},
-   { country: "Netherlands", scoreziwEntry: "FLEMMING (NED) - Onweer In M'n Hoofd"},
-   { country: "Bulgaria", scoreziwEntry: "VICTORIA (BUL) - sad girl summer"},
    { country: "Monaco", scoreziwEntry: "Kendji Girac (MON) - Si seulement..."},
    { country: "Australia", scoreziwEntry: "Delta Goodrem (AUS) - Hearts On The Run"},
    { country: "Portugal", scoreziwEntry: "A garota não (POR) - Dilúvio"},
-   { country: "Iceland", scoreziwEntry: "Thorsteinn Einarsson (ISL) - Bridges Burn"}
+   { country: "Iceland", scoreziwEntry: "Thorsteinn Einarsson (ISL) - Bridges Burn"},
+   { country: "Spain", scoreziwEntry: "Thorsteinn Einarsson (ISL) - Bridges Burn"},
+   { country: "North Macedonia", scoreziwEntry: "Thorsteinn Einarsson (ISL) - Bridges Burn"},
 ]
 
 running.forEach((entry, idx) => {
    entry.flag = flagNew(entry.country);
-   // console.log(`${idx + 1}.${entry.flag} ${entry.country}`)
-   console.log(`${idx + 1}. ${entry.country}`)
+   console.log(`${idx + 1}.${entry.flag} ${entry.country}`)
+   // console.log(`${idx + 1}. ${entry.country}`)
 })
 
 
@@ -146,3 +148,10 @@ running.forEach((entry, idx) => {
 //    name25: "Loreen (SWE) - Is It Love",
 //    sponsor25: "",
 //  }
+
+Bulgaria 🇧🇬
+France 🇫🇷
+Croatia 🇭🇷
+Germany 🇩🇪
+Poland 🇵🇱
+N. Macedonia 🇲🇰
