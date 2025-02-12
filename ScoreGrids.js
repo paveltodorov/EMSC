@@ -2106,4 +2106,116 @@ let missingScoreboards = [
     }
 ]
 
+let scoreboards2501 = [
+    {
+        "uniqId": "1:768485",
+        "title": "EMSC 2501 - GRAND FINAL",
+        "data": {
+            "menu": {
+                "view": "https://scorewiz.eu/scoreboard/view/768485/emsc-2501---grand-final/dDhVrhKu",
+                "edit": "https://scorewiz.eu/menu/768485/dDhVrhKu"
+            },
+            "details": [
+                "7 February 2025, 0 views",
+                "ID: 768485"
+            ],
+            "operations": [
+                [
+                    "move"
+                ],
+                [
+                    "delete",
+                    true
+                ]
+            ],
+            "meta": {
+                "visible": "no",
+                "protected": "no"
+            }
+        }
+    },
+    {
+        "uniqId": "1:768486",
+        "title": "EMSC 2501 - GRAND FINAL - TELEVOTE",
+        "data": {
+            "menu": {
+                "view": "https://scorewiz.eu/scoreboard/view/768486/emsc-2501---grand-final---televote/9PYRtnS9",
+                "edit": "https://scorewiz.eu/menu/768486/9PYRtnS9"
+            },
+            "details": [
+                "7 February 2025, 0 views",
+                "ID: 768486"
+            ],
+            "operations": [
+                [
+                    "move"
+                ],
+                [
+                    "delete",
+                    true
+                ]
+            ],
+            "meta": {
+                "visible": "no",
+                "protected": "no"
+            }
+        }
+    },
+    {
+        "uniqId": "1:766545",
+        "title": "EMSC 2501 - SEMI FINAL 1",
+        "data": {
+            "menu": {
+                "view": "https://scorewiz.eu/scoreboard/view/766545/emsc-2501---semi-final-1/qd2GLKAX",
+                "edit": "https://scorewiz.eu/menu/766545/qd2GLKAX"
+            },
+            "details": [
+                "26 January 2025, 70 views",
+                "ID: 766545"
+            ],
+            "operations": [
+                [
+                    "move"
+                ],
+                [
+                    "delete",
+                    true
+                ]
+            ],
+            "meta": {
+                "visible": "no",
+                "protected": "no"
+            }
+        }
+    },
+    {
+        "uniqId": "1:766689",
+        "title": "EMSC 2501 - SEMI FINAL 2",
+        "data": {
+            "menu": {
+                "view": "https://scorewiz.eu/scoreboard/view/766689/emsc-2501---semi-final-2/jcatugDw",
+                "edit": "https://scorewiz.eu/menu/766689/jcatugDw"
+            },
+            "details": [
+                "28 January 2025, 94 views",
+                "ID: 766689"
+            ],
+            "operations": [
+                [
+                    "move"
+                ],
+                [
+                    "delete",
+                    true
+                ]
+            ],
+            "meta": {
+                "visible": "no",
+                "protected": "no"
+            }
+        }
+    }
+]
+
 scoreGridData[0]["contents"].push(...missingScoreboards)
+scoreGridData[0]["contents"].push(...scoreboards2501)
