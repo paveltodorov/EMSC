@@ -19,12 +19,53 @@ let running = [
    { country: "North Macedonia", scoreziwEntry: "Thorsteinn Einarsson (ISL) - Bridges Burn"},
 ]
 
-running.forEach((entry, idx) => {
+// running.forEach((entry, idx) => {
+//    entry.flag = flagNew(entry.country);
+//    console.log(`${idx + 1}.${entry.flag} ${entry.country}`)
+//    // console.log(`${idx + 1}. ${entry.country}`)
+// })
+
+let coutriesBySemi = [
+   {semi: 2,	country: "Norway"},
+   {semi: 0,   country: "Ukraine"},
+   {semi: 2,	country: "Ireland"},
+   {semi: 1,	country: "Romania"},
+   {semi: 1,	country: "Hungary"},
+   {semi: 2,	country: "Italy"},
+   {semi: 1,	country: "Lithuania"},
+   {semi: 2,	country: "Denmark"},
+   {semi: 2,	country: "San Marino"},
+   {semi: 1,	country: "Greece"},
+   {semi: 2,	country: "United Kingdom"},
+   {semi: 1,	country: "Iceland"},
+   {semi: 2,	country: "Jordan"},
+   {semi: 1,	country: "Germany"},
+   {semi: 2,	country: "France"},
+   {semi: 1,	country: "Monaco"},
+   {semi: 1,	country: "Sweden"},
+   {semi: 1,	country: "Cyprus"},
+   {semi: 1,	country: "Finland"},
+   {semi: 2,	country: "Azerbaijan"},
+   {semi: 1,	country: "Australia"},
+   {semi: 2,	country: "Spain"},
+   {semi: 2,	country: "Andorra"},
+   {semi: 1,	country: "Moldova"},
+   {semi: 2,	country: "Poland"},
+   {semi: 2,	country: "Portugal"},
+   {semi: 2,	country: "Croatia"},
+   {semi: 1,	country: "Belgium"},
+   {semi: 1,	country: "Morocco"},
+   {semi: 2,	country: "Kazakhstan"},
+   {semi: 1,	country: "North Macedonia"},
+   {semi: 1,	country: "Russia"},
+   {semi: 2,	country: "Netherlands"}
+]
+
+coutriesBySemi.sort((a, b) => a.semi - b.semi || a.country.localeCompare(b.country)).forEach((entry, idx) => {
    entry.flag = flagNew(entry.country);
-   console.log(`${idx + 1}.${entry.flag} ${entry.country}`)
+   console.log(`${entry.semi} ${entry.flag} ${entry.country}`)
    // console.log(`${idx + 1}. ${entry.country}`)
 })
-
 
 // let countries = [
 // "Spain",
@@ -148,10 +189,3 @@ running.forEach((entry, idx) => {
 //    name25: "Loreen (SWE) - Is It Love",
 //    sponsor25: "",
 //  }
-
-Bulgaria 🇧🇬
-France 🇫🇷
-Croatia 🇭🇷
-Germany 🇩🇪
-Poland 🇵🇱
-N. Macedonia 🇲🇰
