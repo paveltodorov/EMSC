@@ -1,27 +1,58 @@
 import {flagNew} from "./countryStats.js";
 
-let running = [
-  { country: "Lithuania", scoreziwEntry: "Iglė (LTU) - Pašauk mane vardu"}, // fast
-  { country: "Monaco", scoreziwEntry: "reste (MON) - Louane - Topic"}, // mid tempo
-  { country: "Sweden", scoreziwEntry: "Benjamin Ingrosso (SWE) - Look Who's Laughing Now"}, //fast - boh raps
-  { country: "Cyprus", scoreziwEntry: "Ευρυδίκη (CYP) - Αερικό"}, // slow than faster electronic
-  { country: "Australia", scoreziwEntry: "Dean Lewis (AUS) - With You"}, // slow sea
-  { country: "Moldova", scoreziwEntry: "Sanda Onica (MDA) - Numai în Moldova"}, // fast female trad.instruments
-  { country: "Hungary", scoreziwEntry: "Myon feat. Nikol Apatini (HUN) - Ghost Town"}, // electronic mid great filler
-  { country: "Russia", scoreziwEntry: "Татьяна Куртукова (RUS) - Матушка"}, // mis, trad elements
-  { country: "Romania", scoreziwEntry: "INNA (ROU) - Gucci Balenciaga"}, //2nd fast - spanish boom sound
-  { country: "Iceland", scoreziwEntry: "BIRGO (ISL) - Stormchaser"}, // slow - than faster ice
-  { country: "Greece", scoreziwEntry: "Ανδρομάχη (GRE) - Το Φλιτζάνι"}, // fast
-  { country: "North Macedonia", scoreziwEntry: "Victoria Loba (MKD) - Bumerang"}, // mid tempo sea
-  { country: "Germany", scoreziwEntry: "CHRIS HARMS (GER) - I Love You"},
-  { country: "Finland", scoreziwEntry: "Chisu (FIN) - Mun kulta"}, // 2nd half slow ballad. slightly electronic
-  { country: "Belgium", scoreziwEntry: "Grace (BEL) - Shake My Pain Away"}, // fast
+let running = [ 
+  { country: "Portugal", scoreziwEntry: "Calema, Sara Correia (POR) - Respirar" },
+  { country: "Iceland", scoreziwEntry: "BIRGO (ISL) - Stormchaser" },
+  { country: "France", scoreziwEntry: "Nej' (FRA) - MAL LUNÉE " }, // 1
+  { country: "Jordan", scoreziwEntry: "Llunr (JOR) - Rebels of The Rule" }, // 1
+  { country: "United Kingdom", scoreziwEntry: "RAYE (UK) - Love Of Your Life" },
+  { country: "North Macedonia", scoreziwEntry: "Victoria Loba (MKD) - Bumerang" },
+  { country: "Germany", scoreziwEntry: "CHRIS HARMS (GER) - I Love You" },
+  { country: "Finland", scoreziwEntry: "Chisu (FIN) - Mun kulta" },
+  { country: "Spain", scoreziwEntry: "Lola Indigo (ESP) - LA REINA" },
+  { country: "Ireland", scoreziwEntry: "FINNEAS (IRL) - What They'll Say About Us" },
+  { country: "Ukraine", scoreziwEntry: "Ани Лорак — Лабиринт (UKR) - Ани Лорак" },
+  { country: "Denmark", scoreziwEntry: "Saveus (DEN) - Dark Vibrations" },
+  { country: "Cyprus", scoreziwEntry: "Ευρυδίκη (CYP) - Αερικό" },
+  { country: "San Marino", scoreziwEntry: "Virginio (SMR) - Amarene" },
+  { country: "Norway", scoreziwEntry: "SKAAR (NOR) - As Far As We Go" },
+  { country: "Andorra", scoreziwEntry: "ZETAK & Bomba Estéreo (AND) - Zoriontasuna" },
+  { country: "Russia", scoreziwEntry: "Татьяна Куртукова (RUS) - Матушка" },
+  { country: "Australia", scoreziwEntry: "Dean Lewis (AUS) - With You" },
+  { country: "Lithuania", scoreziwEntry: "Iglė (LTU) - Pašauk mane vardu" }, // 2
+  { country: "Monaco", scoreziwEntry: "reste (MON) - Louane - Topic" },
+  { country: "Netherlands", scoreziwEntry: "Wulf (NED) - Know That I'm Here" }, // 2
+  { country: "Hungary", scoreziwEntry: "Myon feat. Nikol Apatini (HUN) - Ghost Town" },
+  { country: "Sweden", scoreziwEntry: "Benjamin Ingrosso (SWE) - Look Who's Laughing Now" }, // 2
+  { country: "Italy", scoreziwEntry: "Giorgia (ITA) - LA CURA PER ME" },
+  { country: "Moldova", scoreziwEntry: "Sanda Onica (MDA) - Numai în Moldova" }, // 2
 ]
+
+
+let semi2 = [ 
+ {country: "Spain"},
+ {country: "Ireland"},
+ {country: "Kazakhstan"},
+ {country: "San Marino"},
+ {country: "Azerbaijan"},
+ {country: "Portugal"},
+ {country: "Netherlands"},
+ {country: "United Kingdom"},
+ {country: "Jordan"},
+ {country: "Norway"},
+ {country: "Croatia"},
+ {country: "Italy"},
+ {country: "Andorra"},
+ {country: "France"},
+ {country: "Denmark"},
+ {country: "Poland"},
+]
+
 
 running.forEach((entry, idx) => {
    entry.flag = flagNew(entry.country);
-   console.log(`${idx + 1}. ${entry.flag} ${entry.country}`)
-   // console.log(`${idx + 1}. ${entry.country}`)
+  //  console.log(`${idx + 1}. ${entry.flag} ${entry.country}`)
+   console.log(`${idx + 1}. ${entry.country}`)
    // console.log(`${entry.flag} ${entry.country}`)
 })
 
@@ -147,5 +178,3 @@ running.forEach((entry, idx) => {
 //    name25: "Loreen (SWE) - Is It Love",
 //    sponsor25: "",
 //  }
-
-
