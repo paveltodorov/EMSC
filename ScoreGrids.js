@@ -2223,7 +2223,7 @@ let scoreboards2502 = [
         "title": "EMSC 2502 - GRAND FINAL",
         "data": {
             "menu": {
-                "view": "https://scorewiz.eu/scoreboard/view/777495/emsc-2502---grand-final",
+                "view": "https://scorewiz.eu/scoreboard/view/777495/emsc-2502---grand-final/TvdJaqkb",
                 "edit": "https://scorewiz.eu/menu/777495/TvdJaqkb"
             },
             "details": [
@@ -2250,7 +2250,7 @@ let scoreboards2502 = [
         "title": "EMSC 2502 - GRAND FINAL - TELEVOTE",
         "data": {
             "menu": {
-                "view": "https://scorewiz.eu/scoreboard/view/777498/emsc-2502---grand-final---televote",
+                "view": "https://scorewiz.eu/scoreboard/view/777498/emsc-2502---grand-final---televote/QnYeVENQ",
                 "edit": "https://scorewiz.eu/menu/777498/QnYeVENQ"
             },
             "details": [
