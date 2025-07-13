@@ -2328,6 +2328,118 @@ let scoreboards2502 = [
     }
 ]
 
+let scoreboards2503 = [
+    {
+        "uniqId": "1:797306",
+        "title": "EMSC 2503 - GRAND FINAL",
+        "data": {
+            "menu": {
+                "view": "https://scorewiz.eu/scoreboard/view/797306/emsc-2503---grand-final",
+                "edit": "https://scorewiz.eu/menu/797306/bntBGzRW"
+            },
+            "details": [
+                "13 June 2025, 179 views",
+                "ID: 797306"
+            ],
+            "operations": [
+                [
+                    "move"
+                ],
+                [
+                    "delete",
+                    true
+                ]
+            ],
+            "meta": {
+                "visible": "yes",
+                "protected": "no"
+            }
+        }
+    },
+    {
+        "uniqId": "1:797308",
+        "title": "EMSC 2503 - GRAND FINAL - TELEVOTE",
+        "data": {
+            "menu": {
+                "view": "https://scorewiz.eu/scoreboard/view/797308/emsc-2503---grand-final---televote",
+                "edit": "https://scorewiz.eu/menu/797308/XafXCquf"
+            },
+            "details": [
+                "13 June 2025, 93 views",
+                "ID: 797308"
+            ],
+            "operations": [
+                [
+                    "move"
+                ],
+                [
+                    "delete",
+                    true
+                ]
+            ],
+            "meta": {
+                "visible": "yes",
+                "protected": "no"
+            }
+        }
+    },
+    {
+        "uniqId": "1:797307",
+        "title": "EMSC 2503 - SEMI FINAL 1",
+        "data": {
+            "menu": {
+                "view": "https://scorewiz.eu/scoreboard/view/797307/emsc-2503---semi-final-1",
+                "edit": "https://scorewiz.eu/menu/797307/6Bdstq9j"
+            },
+            "details": [
+                "13 June 2025, 197 views",
+                "ID: 797307"
+            ],
+            "operations": [
+                [
+                    "move"
+                ],
+                [
+                    "delete",
+                    true
+                ]
+            ],
+            "meta": {
+                "visible": "yes",
+                "protected": "no"
+            }
+        }
+    },
+    {
+        "uniqId": "1:797305",
+        "title": "EMSC 2503 - SEMI FINAL 2",
+        "data": {
+            "menu": {
+                "view": "https://scorewiz.eu/scoreboard/view/797305/emsc-2503---semi-final-2",
+                "edit": "https://scorewiz.eu/menu/797305/wWfLR97S"
+            },
+            "details": [
+                "13 June 2025, 220 views",
+                "ID: 797305"
+            ],
+            "operations": [
+                [
+                    "move"
+                ],
+                [
+                    "delete",
+                    true
+                ]
+            ],
+            "meta": {
+                "visible": "yes",
+                "protected": "no"
+            }
+        }
+    }
+]
+
 scoreGridData[0]["contents"].push(...missingScoreboards)
 scoreGridData[0]["contents"].push(...scoreboards2501)
 scoreGridData[0]["contents"].push(...scoreboards2502)
+scoreGridData[0]["contents"].push(...scoreboards2503)

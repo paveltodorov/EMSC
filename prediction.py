@@ -18,7 +18,7 @@ import joblib
 from sklearn.svm import NuSVC
 
 filename = "EmscFullStats.xlsx"
-filenameOther = "EMSC2502-Summary.xlsx"
+editionToPredictFileName = "EMSC2502-Summary.xlsx"
 # Read the Excel file into a DataFrame
 data = pd.read_excel(filename)
 print(data.columns)
@@ -119,7 +119,7 @@ pipeline.fit(X_train, y_train)
 mse = pipeline.score(X_test, y_test)
 print("Mean Squared Error:", mse)
 
-data = pd.read_excel(filenameOther)
+data = pd.read_excel(editionToPredictFileName)
 predictions = pipeline.predict(data) # X
 # Adding the predictions to the DataFrame
 data["Predicted Place Final"] = predictions

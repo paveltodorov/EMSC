@@ -288,7 +288,7 @@ let getHods = () => {
 
     let hods = [];
     hodStats.forEach(row => {
-        if (row.HOD) hods.push(row.HOD);
+        if (row.__EMPTY_5) hods.push(row.__EMPTY_5);
     });
 
     return hods;
@@ -656,7 +656,9 @@ let caculateFavoriteCountries = (edData) => {
 async function main() {
     let allEditionsData = [];
 
-    let editionsToCalculate = [/*1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,*/ 20];
+    let editionsToCalculate =
+        [/*1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        15, 16, 17, 18, 19, 20, 21, 22*/23];
     for (let i = 0; i < editionsToCalculate.length; i++) {
         const links = getLinks(editionsToCalculate[i]);
 
@@ -685,7 +687,7 @@ async function main() {
         // EMSC Stats Test 6 - 14
         // fileName: "EmscFullStats",
         // fileName: "EMSC2404-Summary",
-        fileName: "Emsc2405",
+        fileName: "EMSC2503",
         extraLength: 1, // A bigger number means that columns will be wider
         writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
         writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options

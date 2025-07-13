@@ -37,7 +37,7 @@ countries.all.forEach(countryEntry => {
 
 let parseTitle = (title, videoOwner) => {
     // let regex = /([^-–|]+)[ ]*[-–|][ ]*([\p{Latin}\wЁёА-я ]+).+/;
-    let regex = /([^-–|[•]+)[ ]*[-–|[•][ ]*([^-–|()\[•]+).*/;
+    let regex = /([^-–|[•]+)[ ]*[-–—|[•][ ]*([^-–|()\[•]+).*/;
 
     let m = title.match(regex);
     if (!m || !m[1] || !m[2]) {
@@ -90,6 +90,8 @@ let updateScoregridParticpants = (gridId, pass, songsData) => {
     })
     console.log(body);
     // $.post("https://scorewiz.eu/saveOptions/participants", body)
+    // visibility off
+    // https://scorewiz.eu/setOptions/797307/6Bdstq9j/visibility/off
 
     // axios.post('https://scorewiz.eu/saveOptions/participants', body, { headers: {
     //     'content-type': 'text/json'
@@ -107,7 +109,7 @@ async function main() {
     const key = conf['GOOGLE_API_TOKEN'];
     const playlistItemsApi = "https://www.googleapis.com/youtube/v3/playlistItems";
     // const playlistId = "PL2X_tHrqOyT3pjbXvov_QPLImsqZHX2gj";
-    const playlistId = "PL2X_tHrqOyT2PpNyoskm1bZAn-LWtlLDy"
+    const playlistId = "PL2X_tHrqOyT0i3aguZ2xqZ3mT0qHeqFgy"
 
     const itemsUri = `${playlistItemsApi}?key=${key}&part=snippet&playlistId=${playlistId}&maxResults=50`;
     let html = await axios.get(itemsUri);

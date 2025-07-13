@@ -19,7 +19,11 @@ const { client_id, client_secret, redirect_uris } = credentials.web;
 const REDIRECT_URI = "http://localhost:5000/callback";
 
 // Initialize OAuth2 Client
-const oauth2Client = new google.auth.OAuth2(client_id, client_secret, REDIRECT_URI);
+// const oauth2Client = new google.auth.OAuth2(client_id, client_secret, REDIRECT_URI);
+const oauth2Client = new google.auth.OAuth2(
+  "980340752240-a8kcnhesrv1vc1ams8artqs3noh2827s.apps.googleusercontent.com",
+  "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",
+  REDIRECT_URI);
 
 // Middleware to parse query params
 app.use(express.urlencoded({ extended: true }));

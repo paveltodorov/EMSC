@@ -13,7 +13,7 @@ const CREDENTIALS_PATH = path.join(__dirname, 'credentials.json');
 // Path to the file containing YouTube URLs
 const LINKS_PATH = path.join(__dirname, 'youtube_links.txt');
 // Path to store the tokens
-const TOKEN_PATH = path.join(__dirname, 'token.json');
+const TOKEN_PATH = path.join(__dirname, 'token-emsc.json');
 
 // Read credentials from the JSON file
 const credentials = JSON.parse(fs.readFileSync(CREDENTIALS_PATH, 'utf8'));
@@ -148,4 +148,7 @@ async function main() {
   }
 }
 
-main();
+// run local server
+await getNewToken()
+
+// main();

@@ -1,59 +1,74 @@
 import {flagNew} from "./countryStats.js";
 
-let running = [ 
-  { country: "Portugal", scoreziwEntry: "Calema, Sara Correia (POR) - Respirar" },
-  { country: "Iceland", scoreziwEntry: "BIRGO (ISL) - Stormchaser" },
-  { country: "France", scoreziwEntry: "Nej' (FRA) - MAL LUNÉE " }, // 1
-  { country: "Jordan", scoreziwEntry: "Llunr (JOR) - Rebels of The Rule" }, // 1
-  { country: "United Kingdom", scoreziwEntry: "RAYE (UK) - Love Of Your Life" },
-  { country: "North Macedonia", scoreziwEntry: "Victoria Loba (MKD) - Bumerang" },
-  { country: "Germany", scoreziwEntry: "CHRIS HARMS (GER) - I Love You" },
-  { country: "Finland", scoreziwEntry: "Chisu (FIN) - Mun kulta" },
-  { country: "Spain", scoreziwEntry: "Lola Indigo (ESP) - LA REINA" },
-  { country: "Ireland", scoreziwEntry: "FINNEAS (IRL) - What They'll Say About Us" },
-  { country: "Ukraine", scoreziwEntry: "Ани Лорак — Лабиринт (UKR) - Ани Лорак" },
-  { country: "Denmark", scoreziwEntry: "Saveus (DEN) - Dark Vibrations" },
-  { country: "Cyprus", scoreziwEntry: "Ευρυδίκη (CYP) - Αερικό" },
-  { country: "San Marino", scoreziwEntry: "Virginio (SMR) - Amarene" },
-  { country: "Norway", scoreziwEntry: "SKAAR (NOR) - As Far As We Go" },
-  { country: "Andorra", scoreziwEntry: "ZETAK & Bomba Estéreo (AND) - Zoriontasuna" },
-  { country: "Russia", scoreziwEntry: "Татьяна Куртукова (RUS) - Матушка" },
-  { country: "Australia", scoreziwEntry: "Dean Lewis (AUS) - With You" },
-  { country: "Lithuania", scoreziwEntry: "Iglė (LTU) - Pašauk mane vardu" }, // 2
-  { country: "Monaco", scoreziwEntry: "reste (MON) - Louane - Topic" },
-  { country: "Netherlands", scoreziwEntry: "Wulf (NED) - Know That I'm Here" }, // 2
-  { country: "Hungary", scoreziwEntry: "Myon feat. Nikol Apatini (HUN) - Ghost Town" },
-  { country: "Sweden", scoreziwEntry: "Benjamin Ingrosso (SWE) - Look Who's Laughing Now" }, // 2
-  { country: "Italy", scoreziwEntry: "Giorgia (ITA) - LA CURA PER ME" },
-  { country: "Moldova", scoreziwEntry: "Sanda Onica (MDA) - Numai în Moldova" }, // 2
+let running = [
+    { country: "Switzerland", scoreziwEntry: "Sivilian (SUI) - Chlorine"} ,
+    { country: "United Kingdom", scoreziwEntry: "JADE (UK) - Angel Of My Dreams"},// 2
+    { country: "Hungary", scoreziwEntry: "DÁNIELFY (HUN) - Orgonafa"} ,
+    { country: "Belgium", scoreziwEntry: "Camille (BEL) - Oostende"},
+    { country: "Italy", scoreziwEntry: "Annalisa (ITA) - Maschio"} , // 1
+    { country: "Greece", scoreziwEntry: "Γιώργος Αλκαίος (GRE) - Kύματα"} ,
+    { country: "Croatia", scoreziwEntry: "TOMA X ĐANA (CRO) - IDI"} ,
+    { country: "Iceland", scoreziwEntry: "ICEGUYS (ISL) - Gemmér Gemmér"} ,
+    { country: "North Macedonia", scoreziwEntry: "Robert Bilbilov (MKD) - Koj Otrov"} ,
+    { country: "Russia", scoreziwEntry: "Полина Гагарина (RUS) - НАВСЕГДА"} , // 1
+    { country: "Moldova", scoreziwEntry: "Misha Miller x Sasha Lopez (MDA) - Mahala"} , // 1
+    { country: "Ukraine", scoreziwEntry: "MAX BARSKIH — (UKR) - Замало"}
+
+    // { country: "Israel", scoreziwEntry: "Eden Golan (ISR) - You & I"} ,
+    // { country: "Latvia", scoreziwEntry: "BERMUDU DIVSTŪRIS (LAT) - BAD"} ,
+    // { country: "Germany", scoreziwEntry: "BAUSA x JAZEEK (GER) - WENN DER HIMMEL WEINT"} , // 2
+    // { country: "Algeria", scoreziwEntry: "L'Algérino, Josas (ALG) - Au soleil"} ,
+    // { country: "Malta", scoreziwEntry: "Out of This World I Love Island Malta Season 3 official theme song 🔥 (MLT) - Love Island Malta"} ,
 ]
 
+let semi1 = [
+  { country: "Croatia"},
+  { country: "Russia"},
+  { country: "Italy"},
+  { country: "Hungary"},
+  { country: "Belgium"},
+  { country: "Algeria"},
+  { country: "United Kingdom"},
+  { country: "North Macedonia"},
+  { country: "Greece"},
+  { country: "Malta"},
+  { country: "Iceland"},
+  { country: "Germany"},
+  { country: "Israel"},
+  { country: "Ukraine"},
+  { country: "Switzerland"},
+  { country: "Latvia"},
+  { country: "Moldova"},
+  { country: "Portugal"}
+].sort((a,b) => a.country.localeCompare(b.country))
 
-let semi2 = [ 
- {country: "Spain"},
- {country: "Ireland"},
- {country: "Kazakhstan"},
- {country: "San Marino"},
- {country: "Azerbaijan"},
- {country: "Portugal"},
- {country: "Netherlands"},
- {country: "United Kingdom"},
- {country: "Jordan"},
- {country: "Norway"},
- {country: "Croatia"},
- {country: "Italy"},
- {country: "Andorra"},
- {country: "France"},
- {country: "Denmark"},
- {country: "Poland"},
-]
+let semi2 = [
+  { country: "Austria" },
+  { country: "Estonia" },
+  { country: "Netherlands" },
+  { country: "Poland" },
+  { country: "Armenia" },
+  { country: "Australia" },
+  { country: "Spain" },
+  { country: "Romania" },
+  { country: "Monaco" },
+  { country: "Sweden" },
+  { country: "Bulgaria" },
+  { country: "France" },
+  { country: "Ireland" },
+  { country: "San Marino" },
+  { country: "Lithuania" },
+  { country: "Finland" },
+  { country: "Andorra" },
+  { country: "Azerbaijan" },
+]//.sort((a,b) => a.country.localeCompare(b.country))
 
 
 running.forEach((entry, idx) => {
-   entry.flag = flagNew(entry.country);
+  entry.flag = flagNew(entry.country);
   //  console.log(`${idx + 1}. ${entry.flag} ${entry.country}`)
-   console.log(`${idx + 1}. ${entry.country}`)
-   // console.log(`${entry.flag} ${entry.country}`)
+  // console.log(`${idx + 1}. ${entry.country}`)
+  console.log(`${entry.flag} ${entry.country}`)
 })
 
 // let countries = [

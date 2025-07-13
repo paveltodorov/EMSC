@@ -161,7 +161,7 @@ let calculateRunningOrderStats = (fileName, outputFileName) => {
 
     let runningAndEditionPoints = []
     for (let i = 0; i <= 25; i++) {
-        for (let j = 0; j <= 17; j++) {
+        for (let j = 0; j <= 21; j++) {
             if (!runningAndEditionPoints[i]) runningAndEditionPoints[i] = {};
             runningAndEditionPoints[i][j] = 0
         }

@@ -7,14 +7,19 @@ import xlsx from "json-as-xlsx";
 import { getPotDigit } from "./countryStats.js";
 // let renameProperty = (o, oldKey, newKey) => delete Object.assign(o, {[newKey]: o[oldKey] })[oldKey];
 
-const fileName = "EMSC-Draw.xlsx"
+const fileName = "EMSC - Draw.xlsx"
 const altCountryNames = new Map();
 altCountryNames.set("UK", "United Kingdom")
 altCountryNames.set("Utd. Kingdom", "United Kingdom")
 altCountryNames.set("Bosnia - H.", "Bosnia and Herzegovina")
+altCountryNames.set("Bosnia & H.", "Bosnia and Herzegovina")
 altCountryNames.set("N.Macedonia", "North Macedonia")
 const outputFileName = "Draw-Output"
 // const testAlgorithm = true
+
+//commands
+//pre-taken
+// end
 
 let drawnPlayers = new Set()
 let takenCountries = new Set()
@@ -159,7 +164,7 @@ const groupBy = (array, fn) => {
 
 function readDrawSplit() {
     const fileName = "EMSC - Split for Draw.xlsx"
-    const participantColumn = "EMSC 2405 - Draw Split "
+    const participantColumn = "EMSC 2503 - Draw Split "
 
     const workbook = readFile(fileName);
     let workbook_sheet = workbook.SheetNames;
@@ -173,8 +178,8 @@ function readDrawSplit() {
         playersSecondHalf : [],
         top5 : []
     }
-    split.playersFirstHalf = groupedArray["1st round"].map(x => x[participantColumn])
-    split.playersSecondHalf = groupedArray["2nd round"].map(x => x[participantColumn])
+    split.playersFirstHalf = groupedArray["1st part"].map(x => x[participantColumn])
+    split.playersSecondHalf = groupedArray["2nd part"].map(x => x[participantColumn])
     split.top5 = groupedArray["Top5"].map(x => x[participantColumn])
     console.log(split)
 
@@ -208,7 +213,7 @@ function makeDraw(excelstats, useUserInput = true) {
 
         let hasPreChosen = false
 
-        let pretakenData = entry["EMSC2405 - Bergen / Norway"] // TODO: fix column name
+        let pretakenData = entry["EMSC2503 - Lisbon / Portugal"] // TODO: fix column name
         if (pretakenData && (pretakenData.includes("-") || pretakenData.includes("–"))) {
             const drawnData = parseCountryAndPot(pretakenData)
             obj.drawnCountry = drawnData.country
@@ -236,11 +241,11 @@ function makeDraw(excelstats, useUserInput = true) {
             }
 
             // verify prioriy list
-            for (let i = 1; i <= 6; i++) {
-                if (takenPots[i] != 1) {
-                    console.log(`${obj.participant}'s priotities are not valid. Pot ${i} is represented ${takenPots[i]} in his/her list`)
-                }
-            }
+            // for (let i = 1; i <= 6; i++) {
+            //     if (takenPots[i] != 1) {
+            //         console.log(`${obj.participant}'s priotities are not valid. Pot ${i} is represented ${takenPots[i]} in his/her list`)
+            //     }
+            // }
         }
 
         drawData.set(entry["__EMPTY_1"], obj)
@@ -384,7 +389,7 @@ let writeDrawSimulation = (drawSim) => {
             label : `Prio ${i + 1}`,
             value : (row) => {
                 if (row.priorities[i]) {
-                    return row.priorities[i].country + " - " + row.accDrawnPercentage[i] + "%"
+                    return row.priorities[i].country + " - " + parseFloat(row.accDrawnPercentage[i]).toFixed(2) + "%"
                 } else {
                     return ""
                 }
@@ -452,8 +457,12 @@ function makeDrawSimulation(excelStats) {
             // accData.priorities = data.priorities
 
             // accData.accDrawnPriorities = [0, 0, 0, 0, 0, 0, 0]
-            accumulatedDrawData.get(data.participant).accDrawnPriorities[data.drawnPriority]++
-            accumulatedDrawData.get(data.participant).accDrawnPercentage[data.drawnPriority] += (1 / drawSimulationCount) * 100
+            if (data.drawnCountry || data.drawnPriority == 6 ) {
+                accumulatedDrawData.get(data.participant).accDrawnPriorities[data.drawnPriority]++
+                accumulatedDrawData.get(data.participant).accDrawnPercentage[data.drawnPriority] += (1 / drawSimulationCount) * 100
+            } else {
+                console.log(`Player ${data.participant} hasn't drawn any country`)
+            }
         })
 
         // combine accumulated datas
